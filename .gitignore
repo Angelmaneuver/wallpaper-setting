@@ -4,6 +4,9 @@ node_modules/
 # ignore temporary compilation result file.
 out/
 
+# ignore extension package file.
+*.vsix
+
 # ignore log files and databases
 *.log
 *.sql
