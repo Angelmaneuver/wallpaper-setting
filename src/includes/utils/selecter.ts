@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 
-export class FileSelecter {
+export class Selecter {
     public  canSelectFolders: boolean;
     public  canSelectFiles:   boolean;
     public  canSelectMany:    boolean;
@@ -9,7 +9,7 @@ export class FileSelecter {
     public  filters:          {};
     private fileUrls:         vscode.Uri[] | undefined;
 
-    constructor(initializer: Partial<FileSelecter>) {
+    constructor(initializer: Partial<Selecter>) {
         this.canSelectFolders = initializer.canSelectFolders ?? false;
         this.canSelectFiles   = initializer.canSelectFiles   ?? true;
         this.canSelectMany    = initializer.canSelectMany    ?? false;
@@ -17,7 +17,7 @@ export class FileSelecter {
         this.filters          = initializer.filters          ?? {};
     }
 
-    public async openFileDialog(callback: (result: FileSelecter) => void) {
+    public async openFileDialog(): Promise<Selecter> {
         this.fileUrls = await vscode.window.showOpenDialog(
             {
                 canSelectFolders: this.canSelectFolders,
@@ -28,7 +28,7 @@ export class FileSelecter {
             }
         );
 
-		callback(this);
+		return this;
     }
 
     get path(): string {

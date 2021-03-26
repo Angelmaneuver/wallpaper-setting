@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -15,7 +15,7 @@
 	"engines": {
 		"vscode": "^1.54.0"
 	},
-	"icon": "resource/icon.png",
+	"icon": "resource/AppIcon.png",
 	"categories": [
 		"Other"
 	],
@@ -25,34 +25,14 @@
 		"Mac"
 	],
 	"activationEvents": [
-		"onCommand:wallpaper-setting.imageSelect",
-		"onCommand:wallpaper-setting.opacitySet",
-		"onCommand:wallpaper-setting.install",
-		"onCommand:wallpaper-setting.uninstall",
-		"onCommand:wallpaper-setting.uninstallAll"
+		"onCommand:wallpaper-setting.guidance"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "wallpaper-setting.imageSelect",
-				"title": "Wallpaper Setting - Image Select"
-			},
-			{
-				"command": "wallpaper-setting.opacitySet",
-				"title": "Wallpaper Setting - Opacity Set"
-			},
-			{
-				"command": "wallpaper-setting.install",
-				"title": "Wallpaper Setting - Install"
-			},
-			{
-				"command": "wallpaper-setting.uninstall",
-				"title": "Wallpaper Setting - Uninstall"
-			},
-			{
-				"command": "wallpaper-setting.uninstallAll",
-				"title": "Wallpaper Setting - Uninstall All"
+				"command": "wallpaper-setting.guidance",
+				"title": "Wallpaper Setting"
 			}
 		],
 		"configuration": {
@@ -61,7 +41,7 @@
 				"wallpaper-setting.filePath": {
 					"type": "string",
 					"default": "",
-					"description": "The path of the selected image."
+					"description": "The path of the background image."
 				},
 				"wallpaper-setting.opacity": {
 					"type": "number",
@@ -69,6 +49,28 @@
 					"minimum": 0,
 					"default": 0.75,
 					"description": "The background image's opacity."
+				},
+				"wallpaper-setting.slideFilePaths": {
+					"type": "array",
+					"default": [],
+					"description": "The path of the images to use in the slide."
+				},
+				"wallpaper-setting.slideInterval": {
+					"type": "number",
+					"maximum": 65555,
+					"minimum": 0,
+					"default": 25,
+					"description": "The background image slide interval."
+				},
+				"wallpaper-setting.slideIntervalUnit": {
+					"type": "string",
+					"default": "Minute",
+					"enum": [
+						"Hour",
+						"Minute",
+						"Second",
+						"MilliSecond"
+					]
 				}
 			}
 		}

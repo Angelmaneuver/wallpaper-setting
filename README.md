@@ -2,20 +2,20 @@
 
 Set an image as the VSCode background.
 
-# Usage
+## Usage
 
-## Setting
+1. Press '⇧⌘P' to bring up the command pallete and enter 'Wallpaper Setting'
 
-- Set the image file path and opacity.
+![Guide image1](resource/preview1.png)
 
-## Wallpaper Activation
+2. Select the desired setting from the menu
 
-- Execute command Wallpaper Setting - Install.
+![Guide image2](resource/preview2.png)
 
-## Wallpaper Deactivation
+## Implementation schedule
 
-- Execute command Wallpaper Setting - Uninstall.
-
-## Run this extension before uninstalling it
-
-- Execute command Wallpaper Setting - Uninstall All.
+- Reconfigure only some of the settings
+- Retain recently set content
+- Random playback of slides * May not be done due to lack of skills.
+- Break Mode * May not be done due to lack （ry
+- Display the time * May not be done due （ry

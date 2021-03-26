@@ -14,6 +14,10 @@ export class SettingBase {
         key:   string,
         value: any
     ): void {
+		if(Reflect.has(this, key)) {
+			Reflect.set(this, key, value);
+		}
+
         this.config.update(
             key,
             value,
