@@ -15,20 +15,21 @@ import { MultiStepInput }   from "./utils/multiStepInput";
 import { Selecter }         from "./utils/selecter";
 
 export async function guidance(context: ExtensionContext) {
-	const title               = "Wallpaper Setting";
-	let totalSteps            = 0;
-	let installStyle: number;
-	const minimumOpacity      = 1;
-	const maximumOpacity      = 0.5;
-	const intervalUnits       = [
+	const title                 = "Wallpaper Setting";
+	let   totalSteps            = 0;
+	let   installStyle: number;
+	const minimumOpacity        = 1;
+	const maximumOpacity        = 0.5;
+	const minimumInterval       = 0.1;
+	const intervalUnits         = [
 		"Hour",
 		"Minute",
 		"Second",
 		"MilliSecond",
 	].map((label) => ({ label }));
-	const applyImages         = ["png", "jpg", "jpeg", "gif"];
-	const installType         = { Image: 0, Slide: 1 };
-	const processes           = {
+	const applyImages           = ["png", "jpg", "jpeg", "gif"];
+	const installType           = { Image: 0, Slide: 1 };
+	const processes             = {
 		Set: VSCodePreset.create(
 			VSCodePreset.Icons.debugStart,
 			"Set",
@@ -60,8 +61,8 @@ export async function guidance(context: ExtensionContext) {
 			"Remove all parameters for this extension."
 		),
 	};
-	const settings            = new ExtensionSetting();
-	const installLocation     = () => {
+	const settings              = new ExtensionSetting();
+	const installLocation       = () => {
 		let result: string | undefined;
 
 		if (require.main?.filename) {
@@ -74,7 +75,7 @@ export async function guidance(context: ExtensionContext) {
 
 		return result ? path.dirname(result) : "";
 	};
-	const installer           = new Wallpaper(
+	const installer             = new Wallpaper(
 		installLocation(),
 		"bootstrap-window.js",
 		settings,
@@ -99,7 +100,7 @@ export async function guidance(context: ExtensionContext) {
 		) {}
 	}
 
-	const openDialogButton    = new GuidanceButton(
+	const openDialogButton      = new GuidanceButton(
 		{
 			dark:  Uri.file(context.asAbsolutePath("resource/light/folder.svg")),
 			light: Uri.file(context.asAbsolutePath("resource/light/folder.svg")),
@@ -332,7 +333,7 @@ export async function guidance(context: ExtensionContext) {
 				ignoreFocusOut: true,
 				value: typeof   state.interval === "string" ? state.interval : "",
 				prompt:
-					"Enter a number between 0 and 65555 in " +
+					"Enter a number between 0.1 and 65555 in " +
 					state.intervalUnit?.label +
 					". (current interval: " +
 					settings.slideInterval +
@@ -378,7 +379,9 @@ export async function guidance(context: ExtensionContext) {
 	}
 
 	async function validateInterval(interval: string): Promise<string | undefined> {
-		return await validateNumber("interval", interval);
+		return await validateNumber("interval", interval, {
+			minimum: minimumInterval,
+		});
 	}
 
 	async function validateNumber(
