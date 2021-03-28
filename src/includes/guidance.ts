@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path            from "path";
 import {
 	window,
 	commands,
@@ -6,124 +6,122 @@ import {
 	QuickInputButton,
 	QuickPickItem,
 	Uri,
-} from 'vscode';
-
-import {Wallpaper}        from './wallpaper';
-import {ExtensionSetting} from './settings/extension';
-import {VSCodePreset}     from './utils/base/vscodePreset'
-import {File}             from './utils/base/file';
-import {MultiStepInput}   from './utils/multiStepInput';
-import {Selecter}         from './utils/selecter';
-
+} from "vscode";
+import { Wallpaper }        from "./wallpaper";
+import { ExtensionSetting } from "./settings/extension";
+import { VSCodePreset }     from "./utils/base/vscodePreset";
+import { File }             from "./utils/base/file";
+import { MultiStepInput }   from "./utils/multiStepInput";
+import { Selecter }         from "./utils/selecter";
 
 export async function guidance(context: ExtensionContext) {
-	const title                 = 'Wallpaper Setting';
-	let   totalSteps            = 0;
-	let   installStyle: number;
-	const minimumOpacity        = 1;
-	const maximumOpacity        = 0.5;
-	const intervalUnits         = ['Hour', 'Minute', 'Second', 'MilliSecond'].map(label => ({ label }))
-	const applyImages           = ['png', 'jpg', 'jpeg', 'gif'];
-	const installType           = {Image: 0, Slide: 1}
-	const processes             = {
+	const title               = "Wallpaper Setting";
+	let totalSteps            = 0;
+	let installStyle: number;
+	const minimumOpacity      = 1;
+	const maximumOpacity      = 0.5;
+	const intervalUnits       = [
+		"Hour",
+		"Minute",
+		"Second",
+		"MilliSecond",
+	].map((label) => ({ label }));
+	const applyImages         = ["png", "jpg", "jpeg", "gif"];
+	const installType         = { Image: 0, Slide: 1 };
+	const processes           = {
 		Set: VSCodePreset.create(
 			VSCodePreset.Icons.debugStart,
-			'Set',
-			'Set wallpaper with current settings.'
+			"Set",
+			"Set wallpaper with current settings."
 		),
 		Reset: VSCodePreset.create(
 			VSCodePreset.Icons.debugRerun,
-			'Reset',
-			'Reset wallpaper with current settings.'
+			"Reset",
+			"Reset wallpaper with current settings."
 		),
 		Crear: VSCodePreset.create(
 			VSCodePreset.Icons.debugStop,
-			'Clear',
-			'Erase the wallpaper.'
+			"Clear",
+			"Erase the wallpaper."
 		),
 		Setup: VSCodePreset.create(
 			VSCodePreset.Icons.fileMedia,
-			'Setup Image',
-			'Set an image to wallpaper.'
+			"Setup Image",
+			"Set an image to wallpaper."
 		),
 		SetUpAsSlide: VSCodePreset.create(
 			VSCodePreset.Icons.folder,
-			'Setup Slide',
-			'Set an image slide to wallpaper.'
+			"Setup Slide",
+			"Set an image slide to wallpaper."
 		),
 		Uninstall: VSCodePreset.create(
 			VSCodePreset.Icons.trashcan,
-			'Uninstall',
-			'Remove all parameters for this extension.'
-		)
-	}	
-	const settings              = new ExtensionSetting();
-	const installLocation = () => {
+			"Uninstall",
+			"Remove all parameters for this extension."
+		),
+	};
+	const settings            = new ExtensionSetting();
+	const installLocation     = () => {
 		let result: string | undefined;
-		
-		if(require.main?.filename) {
+
+		if (require.main?.filename) {
 			result = require.main?.filename;
 			console.debug('Use "require.main?.filename"');
 		} else {
 			result = process.mainModule?.filename;
 			console.debug('Use "process.mainModule?.filename"');
 		}
-	
-		return result ? path.dirname(result) : '';
-	}	
-	const installer             = new Wallpaper(
+
+		return result ? path.dirname(result) : "";
+	};
+	const installer           = new Wallpaper(
 		installLocation(),
-		'bootstrap-window.js',
+		"bootstrap-window.js",
 		settings,
-		'wallpaper-setting'
-	)
+		"wallpaper-setting"
+	);
 
 	interface State {
 		title:         string;
 		step:          number;
 		totalSteps:    number;
-		imagePath:     string         | undefined;
-		directoryPath: string         | undefined;
-		opacity:       string         | undefined;
+		imagePath:     string | undefined;
+		directoryPath: string | undefined;
+		opacity:       string | undefined;
 		intervalUnit:  QuickPickItem;
-		interval:      string         | undefined;
+		interval:      string | undefined;
 	}
 
 	class GuidanceButton implements QuickInputButton {
 		constructor(
-			public iconPath: { light: Uri; dark: Uri; },
+			public iconPath: { light: Uri; dark: Uri },
 			public tooltip:  string
-		) { }
+		) {}
 	}
 
-	const openDialogButton      = new GuidanceButton(
+	const openDialogButton    = new GuidanceButton(
 		{
-			dark:  Uri.file(context.asAbsolutePath('resource/light/folder.svg')),
-			light: Uri.file(context.asAbsolutePath('resource/light/folder.svg')),
+			dark:  Uri.file(context.asAbsolutePath("resource/light/folder.svg")),
+			light: Uri.file(context.asAbsolutePath("resource/light/folder.svg")),
 		},
-		'Open the file dialog.'
+		"Open the file dialog."
 	);
 
 	async function selectProcess() {
 		const installed: boolean = installer.isInstall();
-		const ready:     boolean = installer.isReady(); 
+		const ready: boolean     = installer.isReady();
 
 		let selection            = await window.showQuickPick(
-			new Array().concat(
-				!installed && ready ? [processes.Set] : []
-			).concat(
-				installed ? [processes.Reset, processes.Crear] : []
-			).concat(
-				processes.Setup,
-				processes.SetUpAsSlide,
-				processes.Uninstall,
-			)
+			new Array()
+				.concat(!installed && ready ? [processes.Set]                    : [])
+				.concat(installed           ? [processes.Reset, processes.Crear] : [])
+				.concat(processes.Setup, processes.SetUpAsSlide, processes.Uninstall)
 		);
 
 		let execute: boolean     = true;
 		let state;
 
-		switch(selection) {
+		switch (selection) {
 			case processes.Set:
 				execute      = await selectSetMode();
 				break;
@@ -136,15 +134,9 @@ export async function guidance(context: ExtensionContext) {
 			case processes.Setup:
 				installStyle = installType.Image;
 				state        = await wallpaperSetupInputs();
-				settings.set(
-					'filePath',
-					state.imagePath
-				);
-				if(state.opacity) {
-					settings.set(
-						'opacity',
-						Number(state.opacity)
-					);
+				settings.set("filePath", state.imagePath);
+				if (state.opacity) {
+					settings.set("opacity", Number(state.opacity));
 				}
 				installer.install();
 				break;
@@ -152,32 +144,23 @@ export async function guidance(context: ExtensionContext) {
 				installStyle = installType.Slide;
 				state        = await wallpaperSetupInputs();
 				settings.set(
-					'slideFilePaths',
+					"slideFilePaths",
 					File.getChldrens(
-						state.directoryPath ? state.directoryPath : '',
+						state.directoryPath ? state.directoryPath : "",
 						{
 							filters:   applyImages,
 							fullPath:  true,
-							recursive: false
+							recursive: false,
 						}
 					)
 				);
-				if(state.opacity) {
-					settings.set(
-						'opacity',
-						Number(state.opacity)
-					);
+				if (state.opacity) {
+					settings.set("opacity", Number(state.opacity));
 				}
-				if(state.interval) {
-					settings.set(
-						'slideInterval',
-						Number(state.interval)
-					)
+				if (state.interval) {
+					settings.set("slideInterval", Number(state.interval));
 				}
-				settings.set(
-					'slideIntervalUnit',
-					state.intervalUnit.label
-				)
+				settings.set("slideIntervalUnit", state.intervalUnit.label);
 				installer.installAsSlide();
 				break;
 			case processes.Uninstall:
@@ -185,10 +168,10 @@ export async function guidance(context: ExtensionContext) {
 				settings.uninstall();
 				break;
 			default:
-				execute = false;
-		};
+				execute      = false;
+		}
 
-		if(execute) {
+		if (execute) {
 			reload();
 		}
 	}
@@ -196,33 +179,30 @@ export async function guidance(context: ExtensionContext) {
 	async function selectSetMode(): Promise<boolean> {
 		let execute: boolean = true;
 
-		if(settings.filePath && !(settings.slideFilePaths.length > 0)) {
+		if (settings.filePath && !(settings.slideFilePaths.length > 0)) {
 			installer.install();
-		} else if(!settings.filePath && (settings.slideFilePaths.length > 0)) {
+		} else if (!settings.filePath && settings.slideFilePaths.length > 0) {
 			installer.installAsSlide();
 		} else {
 			let items      = [processes.Setup, processes.SetUpAsSlide];
-			items[0].label = items[0].label.replace('Setup ', '');
-			items[1].label = items[1].label.replace('Setup ', '');
+			items[0].label = items[0].label.replace("Setup ", "");
+			items[1].label = items[1].label.replace("Setup ", "");
 
-			let selection  = await window.showQuickPick(
-				items,
-				{
-					placeHolder: 'Select the type of wallpaper you want to set.'
-				}
-			)
+			let selection  = await window.showQuickPick(items, {
+				placeHolder: "Select the type of wallpaper you want to set.",
+			});
 
-			if(selection) {
-				switch(selection) {
+			if (selection) {
+				switch (selection) {
 					case items[0]:
 						installer.install();
 						break;
 					case items[1]:
-						installer.installAsSlide()
+						installer.installAsSlide();
 						break;
 				}
 			} else {
-				execute    = false;
+				execute = false;
 			}
 		}
 
@@ -232,7 +212,7 @@ export async function guidance(context: ExtensionContext) {
 	async function wallpaperSetupInputs() {
 		const state = {} as Partial<State>;
 		totalSteps  = installStyle === installType.Image ? 2 : 4;
-		await MultiStepInput.run(input => inputResorucePath(input, state));
+		await MultiStepInput.run((input) => inputResorucePath(input, state));
 
 		return state as State;
 	}
@@ -241,15 +221,14 @@ export async function guidance(context: ExtensionContext) {
 		input: MultiStepInput,
 		state: Partial<State>
 	) {
-		const prompt = (
-			installStyle === installType.Image ?
-			'Enter the path of the image file you want to set as the wallpaper, or select it from the file dialog that appears by clicking the button on the upper right.' :
-			'Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.'
-		)
+		const prompt   =
+			installStyle === installType.Image
+				? "Enter the path of the image file you want to set as the wallpaper, or select it from the file dialog that appears by clicking the button on the upper right."
+				: "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
 		let value: string | undefined;
-		let targetPath                 = undefined;
+		let targetPath = undefined;
 
-		if(installStyle === installType.Image) {
+		if (installStyle === installType.Image) {
 			value = state.imagePath;
 		} else {
 			value = state.directoryPath;
@@ -262,26 +241,28 @@ export async function guidance(context: ExtensionContext) {
 					step:         1,
 					totalSteps:   totalSteps,
 					buttons:      [openDialogButton],
-					value:        typeof value === 'string'          ? value             : '',
+					value:        typeof value === "string" ? value : "",
 					prompt:       prompt,
-					validate:     installStyle === installType.Image ? validateFileExist : validateDirectoryExist,
-					shouldResume: shouldResume
+					validate:
+						installStyle === installType.Image
+							? validateFileExist
+							: validateDirectoryExist,
+					shouldResume: shouldResume,
 				}
 			);
-	
+
 			if (result instanceof GuidanceButton) {
-				const options   = (
-					installStyle === installType.Image ?
-					{filters: {'Images': applyImages}} :
-					{
-						canSelectFolders: true,
-						canSelectFiles:   false,
-					}
-				)
+				const options   =
+					installStyle === installType.Image
+						? { filters: { Images: applyImages } }
+						: {
+								canSelectFolders: true,
+								canSelectFiles: false,
+						  };
 
 				const selection = await new Selecter(options).openFileDialog();
 
-				if(selection && selection.path) {
+				if (selection && selection.path) {
 					targetPath = selection.path;
 				}
 			} else {
@@ -289,7 +270,7 @@ export async function guidance(context: ExtensionContext) {
 			}
 		} while (!targetPath);
 
-		if(installStyle === installType.Image) {
+		if (installStyle === installType.Image) {
 			state.imagePath     = targetPath;
 		} else {
 			state.directoryPath = targetPath;
@@ -298,24 +279,26 @@ export async function guidance(context: ExtensionContext) {
 		return (input: MultiStepInput) => inputOpacity(input, state);
 	}
 
-	async function inputOpacity(
-		input: MultiStepInput,
-		state: Partial<State>
-	) {
+	async function inputOpacity(input: MultiStepInput, state: Partial<State>) {
 		state.opacity = await input.showInputBox(
 			{
 				title:          title,
 				step:           2,
 				totalSteps:     totalSteps,
 				ignoreFocusOut: true,
-				value:          typeof state.opacity === 'string' ? state.opacity : '',
-				prompt:         'Enter a number between ' + maximumOpacity + ' and 1 for opacity. (current opacity:' + settings.opacity + ')',
+				value:          typeof state.opacity === "string" ? state.opacity : "",
+				prompt:
+					"Enter a number between " +
+					maximumOpacity +
+					" and 1 for opacity. (current opacity:" +
+					settings.opacity +
+					")",
 				validate:       validateOpacity,
-				shouldResume:   shouldResume
+				shouldResume:   shouldResume,
 			}
 		);
 
-		if(installStyle === installType.Slide) {
+		if (installStyle === installType.Slide) {
 			return (input: MultiStepInput) => inputIntervalUnit(input, state);
 		}
 	}
@@ -326,101 +309,116 @@ export async function guidance(context: ExtensionContext) {
 	) {
 		state.intervalUnit = await input.showQuickPick(
 			{
-				title:          title,
-				step:           3,
-				totalSteps:     totalSteps,
-				placeholder:    'Select the unit of slide interval to enter next.',
-				items:          intervalUnits,
-				activeItem:     state.intervalUnit,
-				validate:       () => undefined,
-				shouldResume:   shouldResume
-
+				title:        title,
+				step:         3,
+				totalSteps:   totalSteps,
+				placeholder:  "Select the unit of slide interval to enter next.",
+				items:        intervalUnits,
+				activeItem:   state.intervalUnit,
+				validate:     () => undefined,
+				shouldResume: shouldResume,
 			}
 		);
 
-		return (input:MultiStepInput) => inputInterval(input, state);
+		return (input: MultiStepInput) => inputInterval(input, state);
 	}
 
-	async function inputInterval(
-		input: MultiStepInput,
-		state: Partial<State>
-	) {
+	async function inputInterval(input: MultiStepInput, state: Partial<State>) {
 		state.interval = await input.showInputBox(
 			{
 				title:          title,
 				step:           4,
 				totalSteps:     totalSteps,
 				ignoreFocusOut: true,
-				value:          typeof state.interval === 'string' ? state.interval : '',
-				prompt:         'Enter a number between 0 and 65555 in ' + state.intervalUnit?.label + '. (current interval: ' + settings.slideInterval + settings.slideIntervalUnit + ')',
+				value: typeof   state.interval === "string" ? state.interval : "",
+				prompt:
+					"Enter a number between 0 and 65555 in " +
+					state.intervalUnit?.label +
+					". (current interval: " +
+					settings.slideInterval +
+					settings.slideIntervalUnit +
+					")",
 				validate:       validateInterval,
-				shouldResume:   shouldResume
+				shouldResume:   shouldResume,
 			}
 		);
 	}
 
-	async function validateFileExist(filePath: string): Promise<string | undefined> {
-		if(!File.isFile(filePath, applyImages)) {
+	async function validateFileExist(filePath: string): Promise<string | undefined>
+	{
+		if (!File.isFile(filePath, applyImages)) {
 			return new Promise<string>(
 				(resolve, reject) => {
-					resolve('Invalid path.');
+					resolve("Invalid path.");
 				}
-			)
+			);
 		} else {
 			return undefined;
 		}
 	}
 
-	async function validateDirectoryExist(filePath: string): Promise<string | undefined> {
-		if(!File.isDirectory(filePath)) {
+	async function validateDirectoryExist(filePath: string): Promise<string | undefined>
+	{
+		if (!File.isDirectory(filePath)) {
 			return new Promise<string>(
 				(resolve, reject) => {
-					resolve('Invalid path.');
+					resolve("Invalid path.");
 				}
-			)
+			);
 		} else {
 			return undefined;
 		}
 	}
 
-	async function validateOpacity(
-		opacity: string
-	): Promise<string | undefined> {
-		return await validateNumber('opacity', opacity, {minimum: maximumOpacity, maximum: minimumOpacity});
+	async function validateOpacity(opacity: string): Promise<string | undefined> {
+		return await validateNumber("opacity", opacity, {
+			minimum: maximumOpacity,
+			maximum: minimumOpacity,
+		});
 	}
 
-	async function validateInterval(
-		interval: string
-	): Promise<string | undefined> {
-		return await validateNumber('interval', interval);
+	async function validateInterval(interval: string): Promise<string | undefined> {
+		return await validateNumber("interval", interval);
 	}
 
 	async function validateNumber(
 		name:     string,
 		value:    string,
 		options?: {
-			minimum?: number,
-			maximum?: number
+			minimum?: number;
+			maximum?: number;
 		}
 	): Promise<string | undefined> {
 		let minimum: number = 0;
 		let maximum: number = 65555;
 
-		if(options) {
+		if (options) {
 			minimum = options.minimum ? options.minimum : minimum;
 			maximum = options.maximum ? options.maximum : maximum;
 		}
 
-		let string2Number   = Number(value)
+		let string2Number   = Number(value);
 
-		if(!value || (string2Number >= minimum && string2Number <= maximum)) {
+		if (!value || (string2Number >= minimum && string2Number <= maximum)) {
 			return undefined;
-		} else if(isNaN(string2Number) || string2Number > maximum || string2Number < minimum) {
+		} else if (
+			isNaN(string2Number) ||
+			string2Number > maximum ||
+			string2Number < minimum
+		) {
 			return new Promise<string>(
 				(resolve, reject) => {
-					resolve('Enter a number between ' + minimum + ' and ' + maximum + ' for ' + name + '.');
+					resolve(
+						"Enter a number between " +
+							minimum +
+							" and " +
+							maximum +
+							" for " +
+							name +
+							"."
+					);
 				}
-			)
+			);
 		} else {
 			return undefined;
 		}
@@ -434,7 +432,7 @@ export async function guidance(context: ExtensionContext) {
 	}
 
 	function reload(): void {
-		commands.executeCommand('workbench.action.reloadWindow');
+		commands.executeCommand("workbench.action.reloadWindow");
 	}
 
 	await selectProcess();

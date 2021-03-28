@@ -5,8 +5,7 @@ import {
 	QuickInputButton,
 	QuickInputButtons,
 	QuickPickItem,
-} from 'vscode';
-
+} from "vscode";
 
 type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
@@ -49,23 +48,23 @@ export class MultiStepInput {
 	private async stepThrough<T>(start: InputStep) {
 		let step: InputStep | void = start;
 
-		while(step) {
+		while (step) {
 			this.steps.push(step);
 
-			if(this.current) {
+			if (this.current) {
 				this.current.enabled = false;
 				this.current.busy    = true;
 			}
 
 			try {
 				step = await step(this);
-			} catch(error) {
-				if(error === InputFlowAction.back) {
+			} catch (error) {
+				if (error === InputFlowAction.back) {
 					this.steps.pop();
 					step = this.steps.pop();
-				} else if(error === InputFlowAction.resume) {
+				} else if (error === InputFlowAction.resume) {
 					step = this.steps.pop();
-				} else if(error === InputFlowAction.cancel) {
+				} else if (error === InputFlowAction.cancel) {
 					step = undefined;
 				} else {
 					throw error;
@@ -73,7 +72,7 @@ export class MultiStepInput {
 			}
 		}
 
-		if(this.current) {
+		if (this.current) {
 			this.current.dispose();
 		}
 	}
@@ -87,13 +86,13 @@ export class MultiStepInput {
 			activeItem,
 			placeholder,
 			buttons,
-			shouldResume
+			shouldResume,
 		}: P
 	) {
 		const disposable: Disposable[] = [];
 
 		try {
-			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I: never)> (
+			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I : never)>(
 				(resolve, reject) => {
 					const input       = window.createQuickPick<T>();
 					input.title       = title;
@@ -102,46 +101,48 @@ export class MultiStepInput {
 					input.placeholder = placeholder;
 					input.items       = items;
 
-					if(activeItem) {
-						input.activeItems = [activeItem];
-					}
-
-					input.buttons     = [
-						...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-						...(buttons || [])
-					];
-
-					disposable.push(
-						input.onDidTriggerButton(
-							item => {
-								if(item === QuickInputButtons.Back) {
-									reject(InputFlowAction.back);
-								} else {
-									resolve(<any>item);
-								}
-							}
-						),
-						input.onDidChangeSelection(items => resolve(items[0])),
-						input.onDidHide(
-							() => {
-								(async () => {
-									reject(shouldResume && await shouldResume() ? InputFlowAction.resume : InputFlowAction.cancel)
-								})()
-								.catch(reject);
-							}
-						)
-					);
-
-					if(this.current) {
-						this.current.dispose();
-					}
-
-					this.current = input;
-					this.current.show();
+				if (activeItem) {
+					input.activeItems = [activeItem];
 				}
-			);
+
+				input.buttons = [
+					...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+					...(buttons || []),
+				];
+
+				disposable.push(
+					input.onDidTriggerButton(
+						(item) => {
+							if (item === QuickInputButtons.Back) {
+								reject(InputFlowAction.back);
+							} else {
+								resolve(<any>item);
+							}
+						}
+					),
+					input.onDidChangeSelection(
+						(items) => resolve(items[0])
+					),
+					input.onDidHide(() => {
+						(async () => {
+							reject(
+								shouldResume && (await shouldResume())
+									? InputFlowAction.resume
+									: InputFlowAction.cancel
+							);
+						})().catch(reject);
+					})
+				);
+
+				if (this.current) {
+					this.current.dispose();
+				}
+
+				this.current = input;
+				this.current.show();
+			});
 		} finally {
-			disposable.forEach(d => d.dispose());
+			disposable.forEach((d) => d.dispose());
 		}
 	}
 
@@ -154,82 +155,84 @@ export class MultiStepInput {
 			prompt,
 			validate,
 			buttons,
-			shouldResume
+			shouldResume,
 		}: P
 	) {
 		const disposable: Disposable[] = [];
 
 		try {
-			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I: never)>(
+			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>(
 				(resolve, reject) => {
 					const input      = window.createInputBox();
 					input.title      = title;
 					input.step       = step;
 					input.totalSteps = totalSteps;
-					input.value      = value || '';
+					input.value      = value || "";
 					input.prompt     = prompt;
 					input.buttons    = [
 						...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-						...(buttons || [])
+						...(buttons || []),
 					];
 
-					let validating = validate('');
+				let validating       = validate("");
 
-					disposable.push(
-						input.onDidTriggerButton(
-							item => {
-								if(item === QuickInputButtons.Back) {
-									reject(InputFlowAction.back);
-								} else {
-									resolve(<any>item);
-								}
+				disposable.push(
+					input.onDidTriggerButton(
+						(item) => {
+							if (item === QuickInputButtons.Back) {
+								reject(InputFlowAction.back);
+							} else {
+								resolve(<any>item);
 							}
-						),
-						input.onDidAccept(
-							async() => {
-								const value   = input.value;
-								input.enabled = false;
-								input.busy    = true;
+						}
+					),
+					input.onDidAccept(
+						async () => {
+							const value   = input.value;
+							input.enabled = false;
+							input.busy    = true;
 
-								if(!(await validate(value))) {
-									resolve(value);
-								}
-
-								input.enabled = true;
-								input.busy    = false;
+							if (!(await validate(value))) {
+								resolve(value);
 							}
-						),
-						input.onDidChangeValue(
-							async text => {
-								const current           = validate(text);
-								validating              = current;
-								const validationMessage = await current;
 
-								if(current === validating) {
-									input.validationMessage = validationMessage;
-								}
+							input.enabled = true;
+							input.busy    = false;
+						}
+					),
+					input.onDidChangeValue(
+						async (text) => {
+							const current = validate(text);
+							validating    = current;
+							const validationMessage = await current;
+
+							if (current === validating) {
+								input.validationMessage = validationMessage;
 							}
-						),
-						input.onDidHide(
-							() => {
-								(async () => {
-									reject(shouldResume && await shouldResume() ? InputFlowAction.resume : InputFlowAction.cancel);
-								})()
-								.catch(reject);
-							}
-						)
-					);
+						}
+					),
+					input.onDidHide(
+						() => {
+							(async () => {
+								reject(
+									shouldResume && (await shouldResume())
+										? InputFlowAction.resume
+										: InputFlowAction.cancel
+								);
+							})().catch(reject);
+						}
+					)
+				);
 
-					if(this.current) {
-						this.current.dispose();
-					}
-
-					this.current = input;
-					this.current.show();
+				if (this.current) {
+					this.current.dispose();
 				}
-			);
+
+				this.current = input;
+				this.current.show();
+			});
 		} finally {
-			disposable.forEach(d => d.dispose());
+			disposable.forEach((d) => d.dispose());
 		}
 	}
 }
