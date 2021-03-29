@@ -135,16 +135,16 @@ export async function guidance(context: ExtensionContext) {
 			case processes.Setup:
 				installStyle = installType.Image;
 				state        = await wallpaperSetupInputs();
-				settings.set("filePath", state.imagePath);
+				await settings.set("filePath", state.imagePath);
 				if (state.opacity) {
-					settings.set("opacity", Number(state.opacity));
+					await settings.set("opacity", Number(state.opacity));
 				}
 				installer.install();
 				break;
 			case processes.SetUpAsSlide:
 				installStyle = installType.Slide;
 				state        = await wallpaperSetupInputs();
-				settings.set(
+				await settings.set(
 					"slideFilePaths",
 					File.getChldrens(
 						state.directoryPath ? state.directoryPath : "",
@@ -156,17 +156,17 @@ export async function guidance(context: ExtensionContext) {
 					)
 				);
 				if (state.opacity) {
-					settings.set("opacity", Number(state.opacity));
+					await settings.set("opacity", Number(state.opacity));
 				}
 				if (state.interval) {
-					settings.set("slideInterval", Number(state.interval));
+					await settings.set("slideInterval", Number(state.interval));
 				}
-				settings.set("slideIntervalUnit", state.intervalUnit.label);
+				await settings.set("slideIntervalUnit", state.intervalUnit.label);
 				installer.installAsSlide();
 				break;
 			case processes.Uninstall:
 				installer.uninstall();
-				settings.uninstall();
+				await settings.uninstall();
 				break;
 			default:
 				execute      = false;

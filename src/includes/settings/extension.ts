@@ -33,11 +33,11 @@ export class ExtensionSetting extends SettingBase {
 		return this.slideInterval * baseTime;
 	}
 
-	public uninstall(): void {
-		this.remove("filePath");
-		this.remove("slideFilePaths");
-		this.remove("opacity");
-		this.remove("slideInterval");
-		this.remove("slideIntervalUnit");
+	public async uninstall(): Promise<void> {
+		await this.remove("filePath");
+		await this.remove("slideFilePaths");
+		await this.remove("opacity");
+		await this.remove("slideInterval");
+		await this.remove("slideIntervalUnit");
 	}
 }
