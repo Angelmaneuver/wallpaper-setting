@@ -1,4 +1,5 @@
-import { SettingBase } from "./base";
+import { ConfigurationTarget } from 'vscode';
+import { SettingBase }         from "./base";
 
 export class ExtensionSetting extends SettingBase {
 	public filePath:          string;
@@ -8,7 +9,7 @@ export class ExtensionSetting extends SettingBase {
 	public slideIntervalUnit: string;
 
 	constructor() {
-		super("wallpaper-setting");
+		super("wallpaper-setting", ConfigurationTarget.Global);
 		this.filePath          = this.get("filePath");
 		this.slideFilePaths    = this.get("slideFilePaths");
 		this.opacity           = this.get("opacity");
