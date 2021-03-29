@@ -124,8 +124,6 @@ export async function guidance(context: ExtensionContext) {
 
 		switch (selection) {
 			case processes.Set:
-				execute      = await selectSetMode();
-				break;
 			case processes.Reset:
 				execute      = await selectSetMode();
 				break;
