@@ -36,10 +36,19 @@ export class Wallpaper {
 		return script ? true : false;
 	}
 
-	public isReady(): boolean {
-		return this.settings.filePath.length > 0 || this.settings.slideFilePaths.length > 0
-			? true
-			: false;
+	public isReady(): {
+		image: boolean,
+		slide: boolean
+
+	} | boolean {
+		if ( !(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0) ) {
+			return false;
+		} else {
+			return {
+				"image": this.settings.filePath.length > 0       ? true : false,
+				"slide": this.settings.slideFilePaths.length > 0 ? true : false
+			};
+		}
 	}
 
 	public install(): void {
