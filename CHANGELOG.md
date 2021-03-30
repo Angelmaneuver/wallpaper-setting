@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.2.1
+- Fixed a bug that caused unintended transitions when changing opacity settings after changing slide settings in indivisual settings.
+
 ## 0.2.0
 - Fixed a bug that allowed invalid values to be entered for the scan interval
 - Fixed a bug that prevented parameters from being set correctly
