@@ -14,7 +14,7 @@ Set an image as the VSCode background.
 
 ## Implementation schedule
 
-- Reconfigure only some of the settings
+- [x] Reconfigure only some of the settings
 - Retain recently set content
 - Random playback of slides * May not be done due to lack of skills.
 - Break Mode * May not be done due to lack （ry
