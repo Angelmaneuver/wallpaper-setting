@@ -443,7 +443,7 @@ export async function guidance(context: ExtensionContext) {
 
 		state.editedOpacity = true;
 
-		if (installStyle === installType.Slide) {
+		if (totalSteps > 0 && installStyle === installType.Slide) {
 			return (input: MultiStepInput) => inputIntervalUnit(input, state);
 		}
 	}
