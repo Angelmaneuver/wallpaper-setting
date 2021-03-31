@@ -70,7 +70,8 @@
 						"Minute",
 						"Second",
 						"MilliSecond"
-					]
+					],
+					"description": "Slide interval's unit."
 				}
 			}
 		}
