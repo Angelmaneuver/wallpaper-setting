@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 export class SettingBase {
-	private key: string = "";
+	private key:    string = "";
 	private config: vscode.WorkspaceConfiguration;
 	private target: vscode.ConfigurationTarget;
 
@@ -25,5 +25,9 @@ export class SettingBase {
 
 	public async remove(key: string): Promise<void> {
 		await this.set(key, undefined);
+
+		if (Reflect.has(this, key)) {
+			Reflect.set(this, key, this.get(key));
+		}
 	}
 }

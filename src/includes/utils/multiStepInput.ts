@@ -7,7 +7,7 @@ import {
 	QuickPickItem,
 } from "vscode";
 
-type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
+export type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
 interface InputBoxParameters {
 	title:        string;
@@ -31,7 +31,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
 	shouldResume: () => Thenable<boolean>;
 }
 
-class InputFlowAction {
+export class InputFlowAction {
 	static back   = new InputFlowAction();
 	static cancel = new InputFlowAction();
 	static resume = new InputFlowAction();

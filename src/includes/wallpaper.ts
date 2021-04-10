@@ -36,11 +36,10 @@ export class Wallpaper {
 		return script ? true : false;
 	}
 
-	public isReady(): {
+	public isReady(): boolean | {
 		image: boolean,
 		slide: boolean
-
-	} | boolean {
+	} {
 		if ( !(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0) ) {
 			return false;
 		} else {

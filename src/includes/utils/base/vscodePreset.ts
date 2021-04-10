@@ -1,4 +1,4 @@
-import {QuickPickItem} from "vscode";
+import { QuickPickItem } from "vscode";
 
 export class VSCodePreset {
 	// @see https://code.visualstudio.com/api/references/icons-in-labels
@@ -446,7 +446,7 @@ export class VSCodePreset {
 		description?:     string
 	): QuickPickItem {
 		return {
-			label: baseIcon.label + (additionalLabel ? " " + additionalLabel : ""),
+			label:       baseIcon.label + (additionalLabel ? " " + additionalLabel : ""),
 			description: description ? description : baseIcon.description
 		};
 	}

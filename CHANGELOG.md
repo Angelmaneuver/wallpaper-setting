@@ -1,7 +1,11 @@
 # Change Log
 
+## 0.3.0
+- Code review
+- Added the function to manage favorite wallpaper settings
+
 ## 0.2.1
-- Fixed a bug that caused unintended transitions when changing opacity settings after changing slide settings in indivisual settings.
+- Fixed a bug that caused unintended transitions when the opacity setting was changed after the slide setting was changed in the individual settings
 
 ## 0.2.0
 - Fixed a bug that allowed invalid values to be entered for the scan interval

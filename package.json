@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -72,6 +72,16 @@
 						"MilliSecond"
 					],
 					"description": "Slide interval's unit."
+				},
+				"wallpaper-setting.favoriteWallpaperImageSet": {
+					"type": "object",
+					"default": {},
+					"description": "Favorite wallpaper image settings."
+				},
+				"wallpaper-setting.favoriteWallpaperSlideSet": {
+					"type": "object",
+					"default": {},
+					"description": "Favorite wallpaper slide settings."
 				}
 			}
 		}
@@ -88,13 +98,13 @@
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.20.7",
-		"@types/vscode": "^1.54.0",
-		"@typescript-eslint/eslint-plugin": "^4.20.0",
-		"@typescript-eslint/parser": "^4.20.0",
-		"eslint": "^7.23.0",
+		"@types/vscode": "^1.55.0",
+		"@typescript-eslint/eslint-plugin": "^4.21.0",
+		"@typescript-eslint/parser": "^4.21.0",
+		"eslint": "^7.24.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.2.1",
-		"typescript": "^4.1.3",
+		"typescript": "^4.2.4",
 		"vscode-test": "^1.5.2"
 	}
 }

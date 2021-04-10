@@ -12,7 +12,7 @@ export class File {
 			try {
 				this.content = fs.readFileSync(path.resolve(this.path), options);
 			} catch (e) {
-				this.content = null;
+				throw e;
 			}
 		}
 	}
@@ -68,7 +68,7 @@ export class File {
 	}
 
 	public static isFile(
-		targetPath: string,
+		targetPath:       string,
 		matchExtensions?: Array<string>
 	): boolean {
 		let result: boolean = false;
@@ -108,7 +108,7 @@ export class File {
 
 	public static getChldrens(
 		targetPath: string,
-		options?: {
+		options?:   {
 			filters?:   Array<any>;
 			fullPath?:  boolean;
 			recursive?: boolean;
@@ -123,7 +123,7 @@ export class File {
 
 	private static getChildren(
 		targetPath: string,
-		options?: {
+		options?:   {
 			filters?:   Array<any>;
 			fullPath?:  boolean;
 			recursive?: boolean;
@@ -144,7 +144,7 @@ export class File {
 		}
 
 		let dirents = fs.readdirSync(targetPath, { withFileTypes: true });
-		files = dirents
+		files       = dirents
 			.filter(
 				(dirent) =>
 					dirent.isFile() &&
@@ -152,7 +152,7 @@ export class File {
 			)
 			.map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
 
-		result = result.concat(files);
+		result      = result.concat(files);
 
 		if (recursive) {
 			let directories = dirents
