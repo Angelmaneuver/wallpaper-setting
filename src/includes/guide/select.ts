@@ -4,6 +4,13 @@ import { State }                     from "./base/base";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { Type }                      from "./favorite";
 import { GuideFactory }              from "./factory/base";
+import { ImageFilePathGuide }        from "./image";
+import {
+	SlideFilePathsGuide,
+	SlideIntervalGuide,
+	SlideIntervalUnitGuide
+} from "./slide";
+import { OpacityGuide }              from "./opacity";
 import { Constant }                  from "../constant";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
 import { File }                      from "../utils/base/file";
@@ -66,7 +73,12 @@ export class SelectParameterType extends BaseQuickPickGuide {
 	}
 
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		this.items = [
+		const imageId             = this.getId(ImageFilePathGuide.itemId);
+		const slideId             = this.getId(SlideFilePathsGuide.itemId);
+		const opacityId           = this.getId(OpacityGuide.itemId);
+		const slideIntervalId     = this.getId(SlideIntervalGuide.itmeId);
+		const slideIntervalUnitId = this.getId(SlideIntervalUnitGuide.itemId);
+		this.items                = [
 			this.templateItems[0],
 			this.templateItems[1],
 			this.templateItems[2],
@@ -77,7 +89,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				? this.templateItems[5]
 				: []
 		).concat(this.templateItems[6]);
-		this.nextStep = undefined;
+		this.nextStep             = undefined;
 
 		await super.show(input);
 
@@ -85,8 +97,8 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			case this.templateItems[0]:
 				this.state.title       = this.title + " - Image Path";
 				this.state.inputResult =
-					this.state.resultSet["filePath"]
-						? this.state.resultSet["filePath"]
+					this.state.resultSet[imageId]
+						? this.state.resultSet[imageId]
 						: this.settings.filePath;
 				this.setNextStep(GuideFactory.create("ImageFilePathGuide", this.state));
 				break;
@@ -97,24 +109,24 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			case this.templateItems[2]:
 				this.state.title       = this.title + " - Opacity";
 				this.state.inputResult =
-					this.state.resultSet["opacity"]
-						? this.state.resultSet["opacity"]
+					this.state.resultSet[opacityId]
+						? this.state.resultSet[opacityId]
 						: this.settings.opacity;
 				this.setNextStep(GuideFactory.create("OpacityGuide", this.state));
 				break;
 			case this.templateItems[3]:
 				this.state.title       = this.title + " - Slide Interval";
 				this.state.inputResult =
-					this.state.resultSet["slideInterval"]
-						? this.state.resultSet["slideInterval"]
+					this.state.resultSet[slideIntervalId]
+						? this.state.resultSet[slideIntervalId]
 						: this.settings.slideInterval;
 				this.setNextStep(GuideFactory.create("SlideIntervalGuide", this.state));
 				break;
 			case this.templateItems[4]:
 				this.state.title       = this.title + " - Slide Interval Unit";
 				this.state.activeItem  =
-					this.state.resultSet["slideIntervalUnit"]
-						? this.state.resultSet["slideIntervalUnit"]
+					this.state.resultSet[slideIntervalUnitId]
+						? this.state.resultSet[slideIntervalUnitId]
 						: Constant.slideIntervalUnit.find(
 							(item) => {
 								return item.label === this.settings.slideIntervalUnit;
@@ -124,15 +136,15 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				break;
 			case this.templateItems[5]:
 				if (this.state.resultSet) {
-					if (this.state.resultSet["filePath"]) {
-						await this.settings.set("filePath", this.state.resultSet["filePath"]);
+					if (this.state.resultSet[imageId]) {
+						await this.settings.set(ImageFilePathGuide.itemId, this.state.resultSet[imageId]);
 					}
 
-					if (this.state.resultSet["slideFilePaths"]) {
+					if (this.state.resultSet[slideId]) {
 						await this.settings.set(
-							"slideFilePaths",
+							SlideFilePathsGuide.itemId,
 							File.getChldrens(
-								this.state.resultSet["slideFilePaths"],
+								this.state.resultSet[slideId],
 								{
 									filters:   Constant.applyImageFile,
 									fullPath:  true,
@@ -142,20 +154,20 @@ export class SelectParameterType extends BaseQuickPickGuide {
 						);
 					}
 
-					if (this.state.resultSet["opacity"] && this.state.resultSet["opacity"].length > 0) {
-						await this.settings.set("opacity",  Number(this.state.resultSet["opacity"]));
+					if (this.state.resultSet[opacityId] && this.state.resultSet[opacityId].length > 0) {
+						await this.settings.set(OpacityGuide.itemId,  Number(this.state.resultSet[opacityId]));
 					}
 
-					if (this.state.resultSet["slideIntervalUnit"]) {
-						await this.settings.set("slideIntervalUnit", this.state.resultSet["slideIntervalUnit"].label);
+					if (this.state.resultSet[slideIntervalUnitId]) {
+						await this.settings.set(SlideIntervalUnitGuide.itemId, this.state.resultSet[slideIntervalUnitId].label);
 					}
 
-					if (this.state.resultSet["slideInterval"] && this.state.resultSet["slideInterval"].length > 0) {
-						await this.settings.set("slideInterval", Number(this.state.resultSet["slideInterval"]));
-					}		
+					if (this.state.resultSet[slideIntervalId] && this.state.resultSet[slideIntervalId].length > 0) {
+						await this.settings.set(SlideIntervalGuide.itmeId, Number(this.state.resultSet[slideIntervalId]));
+					}
 				}
 
-				const ready            = this.installer.isReady();
+				const ready       = this.installer.isReady();
 
 				if (!(typeof(ready) === "boolean")) {
 					if (ready.image && !ready.slide) {
