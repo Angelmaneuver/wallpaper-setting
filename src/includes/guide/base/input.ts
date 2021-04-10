@@ -24,7 +24,9 @@ export class BaseInputGuide extends BaseGuide {
 			}
 		);
 
-		this.setResultSet(this.inputResult);
+		if (typeof (this.inputResult) === "string") {
+			this.setResultSet(this.inputResult);
+		}
 	}
 
 	protected setResultSet(value: any): void {
@@ -73,7 +75,9 @@ export class InputResourceGuide extends BaseInputGuide {
 			await super.show(input);
 
 			if (this.inputResult instanceof GuideButton) {
-				const options  =
+				this.inputResult = undefined;
+
+				const options    =
 					this.type === Type.File
 						? { filters: { Images: Constant.applyImageFile } }
 						: {
@@ -81,9 +85,9 @@ export class InputResourceGuide extends BaseInputGuide {
 								canSelectFiles:   false,
 						  };
 
-				const selected = await new Selecter(options).openFileDialog();
+				const selected   = await new Selecter(options).openFileDialog();
 
-				if (selected && selected.path) {
+				if (selected && selected.path.length) {
 					this.inputResult = selected.path;
 					this.setResultSet(this.inputResult);
 				}
