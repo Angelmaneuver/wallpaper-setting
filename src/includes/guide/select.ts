@@ -240,13 +240,11 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 					if (registered.image && !registered.slide) {
 						this.state.title        += " - Image wallpaper";
 						this.state.guideGroupId += "Image";
-						this.state.itemId       =  "favoriteWallpaperImageSet";
-						this.setNextStep(GuideFactory.create("RegisterFavoriteGuide", this.state, Type.Image));
+						this.setNextStep(GuideFactory.create("LoadFavoriteGuide", this.state, Type.Image));
 					} else if (!registered.image && registered.slide) {
 						this.state.title        += " - Slide wallpaper";
 						this.state.guideGroupId += "Slide";
-						this.state.itemId       =  "favoriteWallpaperSlideSet";
-						this.setNextStep(GuideFactory.create("RegisterFavoriteGuide", this.state, Type.Slide));	
+						this.setNextStep(GuideFactory.create("LoadFavoriteGuide", this.state, Type.Slide));	
 					} else {
 						this.setNextStep(GuideFactory.create("SelectFavoriteLoadType", this.state));
 					}
