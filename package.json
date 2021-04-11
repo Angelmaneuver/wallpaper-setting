@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -72,6 +72,16 @@
 						"MilliSecond"
 					],
 					"description": "Slide interval's unit."
+				},
+				"wallpaper-setting.slideRandomPlay": {
+					"type": "boolean",
+					"default": false,
+					"description": "Randomize the order in which images slide."
+				},
+				"wallpaper-setting.slideEffectFadeIn": {
+					"type": "boolean",
+					"default": true,
+					"description": "Fade in when the slide image changes."
 				},
 				"wallpaper-setting.favoriteWallpaperImageSet": {
 					"type": "object",

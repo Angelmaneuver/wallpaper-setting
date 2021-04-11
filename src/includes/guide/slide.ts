@@ -6,6 +6,7 @@ import { OpacityGuide }                              from "./opacity";
 import { Constant }                                  from "../constant";
 import { BaseValidator }                             from "./validator/base";
 import { File }                                      from "../utils/base/file";
+import { VSCodePreset }                              from "../utils/base/vscodePreset";
 
 export class SlideFilePathsGuide extends InputResourceGuide {
 	public static itemId = "slideFilePaths";
@@ -22,13 +23,14 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 
 export class SlideIntervalUnitGuide extends BaseQuickPickGuide {
 	public static itemId = "slideIntervalUnit";
+	public static items  = ["Hour", "Minute", "Second", "MilliSecond"].map((label) => ({ label }));
 
 	constructor(
 		state: State,
 	) {
 		state.itemId      = SlideIntervalUnitGuide.itemId;
 		state.placeholder = "Select the unit of slide interval to enter next.";
-		state.items       = Constant.slideIntervalUnit;
+		state.items       = SlideIntervalUnitGuide.items;
 
 		super(state);
 	}
@@ -66,7 +68,43 @@ export class SlideIntervalGuide extends BaseInputGuide {
 
 		if (this.totalSteps === 0) {
 			this.prev();
-		} else if (this.totalSteps === 4) {
+		}
+	}
+
+	public static async validateSlideInterval(slideInterval: string): Promise<string | undefined> {
+		return await BaseValidator.validateNumber(
+			"slide interval",
+			slideInterval,
+			{
+				minimum: Constant.minimumSlideInterval,
+			}
+		);
+	}
+}
+
+export class SlideRandomPlayGuide extends BaseQuickPickGuide {
+	public static itemId = "slideRandomPlay";
+	public static items  = [
+		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Random"),
+		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not random"),
+	];
+
+	constructor(
+		state: State,
+	) {
+		state.itemId      = SlideRandomPlayGuide.itemId;
+		state.placeholder = "Do you want to randomize the sliding order of images?";
+		state.items       = SlideRandomPlayGuide.items;
+
+		super(state);
+	}
+
+	public async show(input: MultiStepInput): Promise<void | InputStep> {
+		await super.show(input);
+		
+		if (this.totalSteps === 0) {
+			this.prev();
+		} else if (this.totalSteps === 5) {
 			await this.settings.set(
 				SlideFilePathsGuide.itemId,
 				File.getChldrens(
@@ -90,24 +128,49 @@ export class SlideIntervalGuide extends BaseInputGuide {
 
 			await this.settings.set(SlideIntervalUnitGuide.itemId, this.state.resultSet[this.getId(SlideIntervalUnitGuide.itemId)].label);
 
-			if (this.inputResult.length > 0) {
-				await this.settings.set(SlideIntervalGuide.itmeId, Number(this.inputResult));
+			if (
+				this.state.resultSet[this.getId(SlideIntervalGuide.itmeId)] &&
+				this.state.resultSet[this.getId(SlideIntervalGuide.itmeId)].length > 0
+			) {
+				await this.settings.set(SlideIntervalGuide.itmeId, Number(this.state.resultSet[this.getId(SlideIntervalGuide.itmeId)]));
 			} else {
 				await this.settings.remove(SlideIntervalGuide.itmeId);
+			}
+
+			if (this.activeItem === this.items[0]) {
+				await this.settings.set(SlideRandomPlayGuide.itemId, true);
+			} else {
+				await this.settings.remove(SlideRandomPlayGuide.itemId);
 			}
 
 			this.installer.installAsSlide();
 			this.state.reload = true;
 		}
 	}
+}
 
-	public static async validateSlideInterval(slideInterval: string): Promise<string | undefined> {
-		return await BaseValidator.validateNumber(
-			"slide interval",
-			slideInterval,
-			{
-				minimum: Constant.minimumSlideInterval,
-			}
-		);
+export class SlideEffectFadeInGuide extends BaseQuickPickGuide {
+	public static itemId = "slideEffectFadeIn";
+	public static items  = [
+		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Fade in effect"),
+		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not effect"),
+	];
+
+	constructor(
+		state: State,
+	) {
+		state.itemId      = SlideEffectFadeInGuide.itemId;
+		state.placeholder = "Do you want to fade in effect when the slide image changes?";
+		state.items       = SlideEffectFadeInGuide.items;
+
+		super(state);
+	}
+
+	public async show(input: MultiStepInput): Promise<void | InputStep> {
+		await super.show(input);
+		
+		if (this.totalSteps === 0) {
+			this.prev();
+		}
 	}
 }

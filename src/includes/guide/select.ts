@@ -8,7 +8,9 @@ import { ImageFilePathGuide }        from "./image";
 import {
 	SlideFilePathsGuide,
 	SlideIntervalGuide,
-	SlideIntervalUnitGuide
+	SlideIntervalUnitGuide,
+	SlideRandomPlayGuide,
+	SlideEffectFadeInGuide
 } from "./slide";
 import { OpacityGuide }              from "./opacity";
 import { Constant }                  from "../constant";
@@ -66,9 +68,10 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			VSCodePreset.create(VSCodePreset.Icons.eye,       "Opacity",               "Set the opacity of the wallpaper."),
 			VSCodePreset.create(VSCodePreset.Icons.clock,     "Slide Interval",        "Set the slide interval."),
 			VSCodePreset.create(VSCodePreset.Icons.law,       "Slide Interval's Unit", "Set the slide interval's unit."),
+			VSCodePreset.create(VSCodePreset.Icons.merge,     "Slide Random Playback", "set whether to play the slides randomly."),
+			VSCodePreset.create(VSCodePreset.Icons.foldDown,  "Effect Fade in",        "set whether to use fade in effect."),
 			VSCodePreset.create(VSCodePreset.Icons.save,      "Save",                  "Save changes."),
 			VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return",                "Return without saving any changes."),
-
 		];
 	}
 
@@ -78,17 +81,21 @@ export class SelectParameterType extends BaseQuickPickGuide {
 		const opacityId           = this.getId(OpacityGuide.itemId);
 		const slideIntervalId     = this.getId(SlideIntervalGuide.itmeId);
 		const slideIntervalUnitId = this.getId(SlideIntervalUnitGuide.itemId);
+		const SlideRandomPlayId   = this.getId(SlideRandomPlayGuide.itemId);
+		const SlideEffectFadeInId = this.getId(SlideEffectFadeInGuide.itemId);
 		this.items                = [
 			this.templateItems[0],
 			this.templateItems[1],
 			this.templateItems[2],
 			this.templateItems[3],
-			this.templateItems[4]
+			this.templateItems[4],
+			this.templateItems[5],
+			this.templateItems[6]
 		].concat(
 			Object.keys(this.state.resultSet).length > 0
-				? this.templateItems[5]
+				? this.templateItems[7]
 				: []
-		).concat(this.templateItems[6]);
+		).concat(this.templateItems[8]);
 		this.nextStep             = undefined;
 
 		await super.show(input);
@@ -108,8 +115,9 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				break;
 			case this.templateItems[2]:
 				this.state.title       = this.title + " - Opacity";
+				console.log(this.state.resultSet);
 				this.state.inputResult =
-					this.state.resultSet[opacityId]
+					typeof(this.state.resultSet[opacityId]) === "string"
 						? this.state.resultSet[opacityId]
 						: this.settings.opacity;
 				this.setNextStep(GuideFactory.create("OpacityGuide", this.state));
@@ -117,7 +125,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			case this.templateItems[3]:
 				this.state.title       = this.title + " - Slide Interval";
 				this.state.inputResult =
-					this.state.resultSet[slideIntervalId]
+					typeof(this.state.resultSet[slideIntervalId]) === "string"
 						? this.state.resultSet[slideIntervalId]
 						: this.settings.slideInterval;
 				this.setNextStep(GuideFactory.create("SlideIntervalGuide", this.state));
@@ -127,7 +135,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				this.state.activeItem  =
 					this.state.resultSet[slideIntervalUnitId]
 						? this.state.resultSet[slideIntervalUnitId]
-						: Constant.slideIntervalUnit.find(
+						: SlideIntervalUnitGuide.items.find(
 							(item) => {
 								return item.label === this.settings.slideIntervalUnit;
 							}
@@ -135,6 +143,22 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				this.setNextStep(GuideFactory.create("SlideIntervalUnitGuide", this.state));
 				break;
 			case this.templateItems[5]:
+				this.state.title       = this.title + " - Slide Random Playback";
+				this.state.activeItem  =
+					this.state.resultSet[SlideRandomPlayId]
+						? this.state.resultSet[SlideRandomPlayId]
+						: (this.settings.slideRandomPlay ? SlideRandomPlayGuide.items[0] : SlideRandomPlayGuide.items[1]);
+				this.setNextStep(GuideFactory.create("SlideRandomPlayGuide", this.state));
+				break;
+			case this.templateItems[6]:
+				this.state.title       = this.title + " - Slide Effect Fade in";
+				this.state.activeItem  =
+					this.state.resultSet[SlideEffectFadeInId]
+						? this.state.resultSet[SlideEffectFadeInId]
+						: (this.settings.slideEffectFadeIn ? SlideEffectFadeInGuide.items[0] : SlideEffectFadeInGuide.items[1]);
+				this.setNextStep(GuideFactory.create("SlideEffectFadeInGuide", this.state));
+				break;
+			case this.templateItems[7]:
 				if (this.state.resultSet) {
 					if (this.state.resultSet[imageId]) {
 						await this.settings.set(ImageFilePathGuide.itemId, this.state.resultSet[imageId]);
@@ -154,16 +178,40 @@ export class SelectParameterType extends BaseQuickPickGuide {
 						);
 					}
 
-					if (this.state.resultSet[opacityId] && this.state.resultSet[opacityId].length > 0) {
-						await this.settings.set(OpacityGuide.itemId,  Number(this.state.resultSet[opacityId]));
+					if (typeof(this.state.resultSet[opacityId]) === "string") {
+						if (this.state.resultSet[opacityId].length > 0) {
+							await this.settings.set(OpacityGuide.itemId,  Number(this.state.resultSet[opacityId]));
+						} else {
+							await this.settings.remove(OpacityGuide.itemId);
+						}
 					}
 
 					if (this.state.resultSet[slideIntervalUnitId]) {
 						await this.settings.set(SlideIntervalUnitGuide.itemId, this.state.resultSet[slideIntervalUnitId].label);
 					}
 
-					if (this.state.resultSet[slideIntervalId] && this.state.resultSet[slideIntervalId].length > 0) {
-						await this.settings.set(SlideIntervalGuide.itmeId, Number(this.state.resultSet[slideIntervalId]));
+					if (typeof(this.state.resultSet[slideIntervalId]) === "string") {
+						if (this.state.resultSet[slideIntervalId].length > 0) {
+							await this.settings.set(SlideIntervalGuide.itmeId, Number(this.state.resultSet[slideIntervalId]));
+						} else {
+							await this.settings.remove(SlideIntervalGuide.itmeId);
+						}
+					}
+
+					if (this.state.resultSet[SlideRandomPlayId]) {
+						if (this.state.resultSet[SlideRandomPlayId] === SlideRandomPlayGuide.items[0]) {
+							await this.settings.set(SlideRandomPlayGuide.itemId, true);
+						} else {
+							await this.settings.remove(SlideRandomPlayGuide.itemId);
+						}
+					}
+
+					if (this.state.resultSet[SlideEffectFadeInId]) {
+						if (this.state.resultSet[SlideEffectFadeInId] === SlideEffectFadeInGuide.items[0]) {
+							await this.settings.remove(SlideEffectFadeInGuide.itemId);
+						} else {
+							await this.settings.set(SlideEffectFadeInGuide.itemId, false);
+						}
 					}
 				}
 
@@ -185,7 +233,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				}
 
 				break;
-			case this.templateItems[6]:
+			case this.templateItems[8]:
 				this.prev();
 				break;
 			default:

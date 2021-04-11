@@ -91,11 +91,12 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.state.title        = this.title + " - Slide Setup";
 				this.state.guideGroupId = "setupAsSlide";
 				this.state.step         = 0;
-				this.state.totalSteps   = 4;
+				this.state.totalSteps   = 5;
 				this.setNextStep(GuideFactory.create("SlideFilePathsGuide",    this.state))
 					.setNextStep(GuideFactory.create("OpacityGuide",           this.state))
 					.setNextStep(GuideFactory.create("SlideIntervalUnitGuide", this.state))
-					.setNextStep(GuideFactory.create("SlideIntervalGuide",     this.state));
+					.setNextStep(GuideFactory.create("SlideIntervalGuide",     this.state))
+					.setNextStep(GuideFactory.create("SlideRandomPlayGuide",   this.state));
 				break;
 			case items.Uninstall:
 				this.installer.uninstall();

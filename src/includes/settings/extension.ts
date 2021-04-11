@@ -7,7 +7,9 @@ export interface Favorite {
 		slideFilePaths?:    string[],
 		opacity?:           number,
 		slideInterval?:     number,
-		slideIntervalUnit?: string
+		slideIntervalUnit?: string,
+		slideRandomPlay?:   boolean,
+		slideEffectFadeIn?: boolean
 	}
 }
 
@@ -17,6 +19,8 @@ export class ExtensionSetting extends SettingBase {
 	public opacity:           number;
 	public slideInterval:     number;
 	public slideIntervalUnit: string;
+	public slideRandomPlay:   boolean;
+	public slideEffectFadeIn: boolean;
 	public favoriteImageSet:  Favorite;
 	public favoriteSlideSet:  Favorite;
 
@@ -27,6 +31,8 @@ export class ExtensionSetting extends SettingBase {
 		this.opacity           = this.get("opacity");
 		this.slideInterval     = this.get("slideInterval");
 		this.slideIntervalUnit = this.get("slideIntervalUnit");
+		this.slideRandomPlay   = this.get("slideRandomPlay");
+		this.slideEffectFadeIn = this.get("slideEffectFadeIn");
 		this.favoriteImageSet  = this.get("favoriteWallpaperImageSet");
 		this.favoriteSlideSet  = this.get("favoriteWallpaperSlideSet");
 	}
@@ -68,6 +74,8 @@ export class ExtensionSetting extends SettingBase {
 		await this.remove("opacity");
 		await this.remove("slideInterval");
 		await this.remove("slideIntervalUnit");
+		await this.remove("slideRandomPlay");
+		await this.remove("slideEffectFadeIn");
 		await this.remove("favoriteWallpaperImageSet");
 		await this.remove("favoriteWallpaperSlideSet");
 	}

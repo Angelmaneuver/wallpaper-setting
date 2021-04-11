@@ -12,7 +12,9 @@ import { OpacityGuide }              from "./opacity";
 import {
 	SlideFilePathsGuide,
 	SlideIntervalGuide,
-	SlideIntervalUnitGuide
+	SlideIntervalUnitGuide,
+	SlideRandomPlayGuide,
+	SlideEffectFadeInGuide
 } from "./slide";
 
 export const Type = { Image: 0, Slide: 1 };
@@ -52,6 +54,8 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 				opacity:           this.settings.opacity,
 				slideInterval:     this.settings.slideIntervalUnit2Millisecond,
 				slideIntervalUnit: this.settings.slideIntervalUnit,
+				slideRandomPlay:   this.settings.slideRandomPlay,
+				slideEffectFadeIn: this.settings.slideEffectFadeIn
 			}
 			registeredFavorite         = this.settings.favoriteSlideSet;
 		}
@@ -162,6 +166,8 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 						await this.settings.set(OpacityGuide.itemId,           favorite.opacity);
 						await this.settings.set(SlideIntervalGuide.itmeId,     favorite.slideInterval);
 						await this.settings.set(SlideIntervalUnitGuide.itemId, favorite.slideIntervalUnit);
+						await this.settings.set(SlideRandomPlayGuide.itemId,   favorite.slideRandomPlay   ? favorite.slideRandomPlay   : false);
+						await this.settings.set(SlideEffectFadeInGuide.itemId, favorite.slideEffectFadeIn ? favorite.slideEffectFadeIn : false);
 
 						this.installer.installAsSlide();
 						this.state.reload = true;

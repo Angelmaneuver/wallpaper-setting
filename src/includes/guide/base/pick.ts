@@ -16,7 +16,7 @@ export class BaseQuickPickGuide extends BaseGuide {
 			}
 		);
 
-		if (this.id && this.id.length > 0) {
+		if (this.id.length > 0) {
 			this.state.resultSet[this.id] = this.activeItem;
 		}
 	}

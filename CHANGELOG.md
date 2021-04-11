@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.4.0
+- Added the function to random playback of slide
+- Added fade in effect to slide
+
 ## 0.3.0
 - Code review
 - Added the function to manage favorite wallpaper settings

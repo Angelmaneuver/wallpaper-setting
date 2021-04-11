@@ -7,7 +7,9 @@ import { OpacityGuide }       from "../opacity";
 import {
 	SlideFilePathsGuide,
 	SlideIntervalUnitGuide,
-	SlideIntervalGuide
+	SlideIntervalGuide,
+	SlideRandomPlayGuide,
+	SlideEffectFadeInGuide
  } from "../slide";
 import {
 	SelectSetupType,
@@ -56,6 +58,8 @@ export abstract class GuideFactory {
 			SlideFilePathsGuide,
 			SlideIntervalUnitGuide,
 			SlideIntervalGuide,
+			SlideRandomPlayGuide,
+			SlideEffectFadeInGuide,
 			SelectSetupType,
 			SelectParameterType,
 			SelectFavoriteProcess,

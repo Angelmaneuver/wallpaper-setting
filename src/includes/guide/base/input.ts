@@ -7,7 +7,7 @@ import { BaseValidator }             from "../validator/base";
 
 export class BaseInputGuide extends BaseGuide {
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		if (this.state.resultSet[this.id] && this.state.resultSet[this.id].length > 0) {
+		if (this.state.resultSet[this.id]) {
 			this.inputResult = this.state.resultSet[this.id];
 		}
 
@@ -30,7 +30,7 @@ export class BaseInputGuide extends BaseGuide {
 	}
 
 	protected setResultSet(value: any): void {
-		if (this.id.length > 0 && value.length > 0) {
+		if (this.id.length > 0) {
 			this.state.resultSet[this.id] = value;
 		}
 	}
@@ -87,7 +87,7 @@ export class InputResourceGuide extends BaseInputGuide {
 
 				const selected   = await new Selecter(options).openFileDialog();
 
-				if (selected && selected.path.length) {
+				if (selected) {
 					this.inputResult = selected.path;
 					this.setResultSet(this.inputResult);
 				}

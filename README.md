@@ -16,6 +16,6 @@ Set an image as the VSCode background.
 
 - [x] Reconfigure only some of the settings
 - [x] Retain recently set content
-- Random playback of slides * May not be done due to lack of skills.
+- [x] Random playback of slides * May not be done due to lack of skills.
 - Break Mode * May not be done due to lack （ry
 - Display the time * May not be done due （ry

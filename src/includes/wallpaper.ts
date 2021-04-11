@@ -68,7 +68,9 @@ export class Wallpaper {
 			this.getSlideScript(
 				this.settings.slideFilePaths,
 				this.settings.opacity,
-				this.settings.slideIntervalUnit2Millisecond
+				this.settings.slideIntervalUnit2Millisecond,
+				this.settings.slideRandomPlay,
+				this.settings.slideEffectFadeIn
 			);
 
 		editFile.write({ encoding: "utf-8" });
@@ -102,30 +104,47 @@ export class Wallpaper {
 	private getSlideScript(
 		filePaths: Array<string>,
 		opacity:   number,
-		interval:  number
+		interval:  number,
+		random:    boolean,
+		feedin:    boolean
 	): string {
 		let result: string = "";
 
 		if (filePaths.length > 0 && opacity && interval) {
+			const script1     =
+				feedin
+					? `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;`
+					: ``;
+			const script2     = feedin ? `await feedin(${opacity},0.01,50);` : ``;
 			let temp: string  = `let images=new Array();`;
-			let count: number = 0;
 
 			filePaths.forEach((filePath) => {
 				let image = new File(filePath);
 				temp += `images.push('url("data:image/${
 					image.extension
 				};base64,${image.toBase64()}")');`;
-				count += 1;
 			});
 
-			temp += `let i=0;`;
-			temp += `document.body.style.backgroundImage=images[i];i++;if(i===${count}){i=0;}`;
-			temp += `setInterval(`;
-			temp += `()=>{`;
-			temp += `document.body.style.backgroundImage=images[i];i++;if(i===${count}){i=0;}`;
-			temp += `},`;
-			temp += `${interval}`;
-			temp += `);`;
+			temp += formatByArray(
+				`const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`,
+				script1,
+				script2
+			);
+
+			if (random) {
+				temp += `let played=new Array();let i=0;`;
+				temp += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;
+				temp += `const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};`;
+				temp += `i=choice(0,images.length-1);`;
+				temp += `document.body.style.backgroundImage=images[i];after(i);`;
+			} else {
+				temp += `let i=0;`;
+				temp += `const choice=(min,max)=>{i++; return i===max?min:i;};`
+				temp += `const after=(index)=>{return;};`;
+				temp += `document.body.style.backgroundImage=images[i];`;
+			}
+
+			temp += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
 
 			result = formatByArray(this.getScriptTemplate(opacity), temp);
 		}
