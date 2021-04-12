@@ -105,7 +105,85 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 
 		this.settings.set(key, favorites);
 
-		this.state.message = `Added ${name} to my favorites!`;
+		this.state.message = `Registered ${name} to my favorites!`;
+	}
+}
+
+export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
+	private static labelling: string = "$(file-media) ";
+	private type:             number;
+	private returnItem:       QuickPickItem;
+
+	constructor(
+		state: State,
+		type:  number
+	) {
+		state.placeholder = "Select the favorite settings to unregister.";
+
+		super(state);
+
+		this.type         = type;
+		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without unregister.");
+
+		if (this.type === Type.Image) {
+			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
+		} else {
+			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
+		}
+
+		this.items        = this.items.concat([this.returnItem]);
+	}
+
+	public async show(input: MultiStepInput):Promise<void | InputStep> {
+		await super.show(input);
+
+		if (this.activeItem === this.returnItem) {
+			this.prev();
+		} else if (this.activeItem) {
+			const name                 = this.activeItem.label.replace(UnRegisterFavoriteGuide.labelling, "");
+			let   registered: Favorite = {};
+			let   favorite:   Favorite = {};
+
+			if (this.type === Type.Image) {
+				registered = this.settings.favoriteImageSet;
+			} else {
+				registered = this.settings.favoriteSlideSet;
+			}
+
+			Object.keys(this.settings.favoriteImageSet).filter(
+				(key) => {
+					if (name !== key) {
+						favorite[key] = registered[key];
+					}
+				}
+			);
+
+			this.state.title           = this.title + " - Confirm";
+			this.state.placeholder     = "Do you want to unregister it?";
+			this.setNextStep(
+				GuideFactory.create(
+					"BaseConfirmGuide",
+					this.state,
+					{
+						yes: "UnRegister.",
+						no:  "Back to previous.",
+					},
+					this.registerFavorite,
+					this.itemId,
+					Object.keys(favorite).length > 0 ? favorite : undefined
+				)
+			);
+		}
+	}
+
+	public async registerFavorite(
+		key:                string,
+		name:               string,
+		favorite:           Partial<Favorite> | undefined
+	): Promise<void> {
+		this.settings.set(key, favorite);
+
+		this.state.message = `UnRegistered ${name} from my favorites!`;
 	}
 }
 

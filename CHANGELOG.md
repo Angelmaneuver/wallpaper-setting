@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.4.0
+- Added the function to unregister from favorite wallpaper settings
 - Added the function to random playback of slide
 - Added fade in effect to slide
 

@@ -18,12 +18,13 @@ export class BaseConfirmGuide extends BaseQuickPickGuide {
 	) {
 		super(state);
 
-		this.items    = [
+		this.items      = [
 			VSCodePreset.create(VSCodePreset.Icons.check, "Yes", description.yes),
 			VSCodePreset.create(VSCodePreset.Icons.x,     "No",  description.no),
 		];
-		this.callback = callback;
-		this.args     = args;
+		this.activeItem = this.items[1];
+		this.callback   = callback;
+		this.args       = args;
 	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
