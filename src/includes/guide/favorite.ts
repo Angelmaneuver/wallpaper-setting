@@ -1,21 +1,12 @@
-import { QuickPickItem }             from "vscode";
-import { InputStep, MultiStepInput } from "../utils/multiStepInput";
-import { State }                     from "./base/base";
-import { BaseInputGuide }            from "./base/input";
-import { BaseQuickPickGuide }        from "./base/pick";
-import { Favorite }                  from "../settings/extension";
-import { BaseValidator }             from "./validator/base";
-import { GuideFactory }              from "./factory/base";
-import { VSCodePreset }              from "../utils/base/vscodePreset";
-import { ImageFilePathGuide }        from "./image";
-import { OpacityGuide }              from "./opacity";
-import {
-	SlideFilePathsGuide,
-	SlideIntervalGuide,
-	SlideIntervalUnitGuide,
-	SlideRandomPlayGuide,
-	SlideEffectFadeInGuide
-} from "./slide";
+import { QuickPickItem }              from "vscode";
+import { InputStep, MultiStepInput }  from "../utils/multiStepInput";
+import { State }                      from "./base/base";
+import { BaseInputGuide }             from "./base/input";
+import { BaseQuickPickGuide }         from "./base/pick";
+import { BaseValidator }              from "./validator/base";
+import { GuideFactory }               from "./factory/base";
+import { ExtensionSetting, Favorite } from "../settings/extension";
+import { VSCodePreset }               from "../utils/base/vscodePreset";
 
 export const Type = { Image: 0, Slide: 1 };
 
@@ -52,7 +43,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 			favorite[this.inputResult] = {
 				slideFilePaths:    this.settings.slideFilePaths,
 				opacity:           this.settings.opacity,
-				slideInterval:     this.settings.slideIntervalUnit2Millisecond,
+				slideInterval:     this.settings.slideInterval,
 				slideIntervalUnit: this.settings.slideIntervalUnit,
 				slideRandomPlay:   this.settings.slideRandomPlay,
 				slideEffectFadeIn: this.settings.slideEffectFadeIn
@@ -150,7 +141,7 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 				registered = this.settings.favoriteSlideSet;
 			}
 
-			Object.keys(this.settings.favoriteImageSet).filter(
+			Object.keys(registered).map(
 				(key) => {
 					if (name !== key) {
 						favorite[key] = registered[key];
@@ -170,6 +161,7 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 					},
 					this.registerFavorite,
 					this.itemId,
+					name,
 					Object.keys(favorite).length > 0 ? favorite : undefined
 				)
 			);
@@ -225,12 +217,11 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 					let favorite = this.settings.favoriteImageSet[name];
 	
 					if (favorite["filePath"] && favorite["opacity"]) {
-						await this.settings.set(ImageFilePathGuide.itemId, favorite.filePath);
-						await this.settings.set(OpacityGuide.itemId,       favorite.opacity);
+						await this.settings.set(ExtensionSetting.propertyIds.filePath, favorite.filePath);
+						await this.settings.set(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
 					}
 
 					this.installer.install();
-					this.state.reload = true;
 				} else if (this.type === Type.Slide) {
 					let favorite = this.settings.favoriteSlideSet[name];
 
@@ -240,17 +231,23 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 						favorite["slideInterval"] &&
 						favorite["slideIntervalUnit"]
 					) {
-						await this.settings.set(SlideFilePathsGuide.itemId,    favorite.slideFilePaths);
-						await this.settings.set(OpacityGuide.itemId,           favorite.opacity);
-						await this.settings.set(SlideIntervalGuide.itmeId,     favorite.slideInterval);
-						await this.settings.set(SlideIntervalUnitGuide.itemId, favorite.slideIntervalUnit);
-						await this.settings.set(SlideRandomPlayGuide.itemId,   favorite.slideRandomPlay   ? favorite.slideRandomPlay   : false);
-						await this.settings.set(SlideEffectFadeInGuide.itemId, favorite.slideEffectFadeIn ? favorite.slideEffectFadeIn : false);
+						await this.settings.set(ExtensionSetting.propertyIds.slideFilePaths,    favorite.slideFilePaths);
+						await this.settings.set(ExtensionSetting.propertyIds.opacity,           favorite.opacity);
+						await this.settings.set(ExtensionSetting.propertyIds.slideInterval,     favorite.slideInterval);
+						await this.settings.set(ExtensionSetting.propertyIds.slideIntervalUnit, favorite.slideIntervalUnit);
+						await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay,   favorite.slideRandomPlay          ? favorite.slideRandomPlay   : false);
+						await this.settings.set(
+							ExtensionSetting.propertyIds.slideEffectFadeIn,
+							favorite.slideEffectFadeIn
+								? favorite.slideEffectFadeIn
+								: false
+						);
 
 						this.installer.installAsSlide();
-						this.state.reload = true;
 					}
 				}
+
+				this.state.reload = true;
 			}
 		}
 	}

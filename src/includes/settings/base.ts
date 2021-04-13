@@ -14,8 +14,13 @@ export class SettingBase {
 	public async set(key: string, value: any): Promise<void> {
 		await this.config.update(key, value, this.target);
 
-		if (Reflect.has(this, key)) {
-			Reflect.set(this, key, value);
+		const method = Reflect.get(
+			this,
+			"set" + key.replace(/^./, (match) => { return match.toUpperCase(); })
+		);
+
+		if (method) {
+			Reflect.apply(method, this, [value]);
 		}
 	}
 
@@ -25,9 +30,5 @@ export class SettingBase {
 
 	public async remove(key: string): Promise<void> {
 		await this.set(key, undefined);
-
-		if (Reflect.has(this, key)) {
-			Reflect.set(this, key, this.get(key));
-		}
 	}
 }

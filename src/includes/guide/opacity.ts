@@ -1,17 +1,15 @@
 import { InputStep, MultiStepInput } from "../utils/multiStepInput";
 import { State }                     from "./base/base";
 import { BaseInputGuide }            from "./base/input";
-import { Constant }                  from "../constant";
 import { BaseValidator }             from "./validator/base";
-import { ImageFilePathGuide }        from "./image";
+import { ExtensionSetting }          from "../settings/extension";
+import { Constant }                  from "../constant";
 
 export class OpacityGuide extends BaseInputGuide {
-	public static itemId = "opacity";
-
 	constructor(
 		state: State,
 	) {
-		state.itemId   = OpacityGuide.itemId;
+		state.itemId   = ExtensionSetting.propertyIds.opacity;
 		state.prompt   =
 			"Enter a number between "
 				+ Constant.maximumOpacity
@@ -30,12 +28,15 @@ export class OpacityGuide extends BaseInputGuide {
 		if (this.totalSteps === 0) {
 			this.prev();
 		} else if (this.totalSteps === 2) {
-			await this.settings.set(ImageFilePathGuide.itemId, this.state.resultSet[this.getId(ImageFilePathGuide.itemId)]);
+			await this.settings.set(
+				ExtensionSetting.propertyIds.filePath,
+				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.filePath)]
+			);
 
 			if (this.inputResult.length > 0) {
-				await this.settings.set(OpacityGuide.itemId,  Number(this.inputResult));
+				await this.settings.set(this.itemId,  Number(this.inputResult));
 			} else {
-				await this.settings.remove(OpacityGuide.itemId);
+				await this.settings.remove(this.itemId);
 			}
 
 			this.installer.install();
@@ -46,7 +47,7 @@ export class OpacityGuide extends BaseInputGuide {
 
 	public static async validateOpacity(opacity: string): Promise<string | undefined> {
 		return await BaseValidator.validateNumber(
-			OpacityGuide.itemId,
+			ExtensionSetting.propertyIds.opacity,
 			opacity,
 			{
 				minimum: Constant.maximumOpacity,

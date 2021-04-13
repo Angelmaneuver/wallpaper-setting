@@ -4,18 +4,16 @@ import { State }                     from "./base/base";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { Type }                      from "./favorite";
 import { GuideFactory }              from "./factory/base";
-import { ImageFilePathGuide }        from "./image";
+import { ExtensionSetting }          from "../settings/extension";
+import { File }                      from "../utils/base/file";
+import { Constant }                  from "../constant";
+import { VSCodePreset }              from "../utils/base/vscodePreset";
 import {
-	SlideFilePathsGuide,
-	SlideIntervalGuide,
 	SlideIntervalUnitGuide,
 	SlideRandomPlayGuide,
 	SlideEffectFadeInGuide
 } from "./slide";
-import { OpacityGuide }              from "./opacity";
-import { Constant }                  from "../constant";
-import { VSCodePreset }              from "../utils/base/vscodePreset";
-import { File }                      from "../utils/base/file";
+
 
 export class SelectSetupType extends BaseQuickPickGuide {
 	constructor(
@@ -76,13 +74,13 @@ export class SelectParameterType extends BaseQuickPickGuide {
 	}
 
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		const imageId             = this.getId(ImageFilePathGuide.itemId);
-		const slideId             = this.getId(SlideFilePathsGuide.itemId);
-		const opacityId           = this.getId(OpacityGuide.itemId);
-		const slideIntervalId     = this.getId(SlideIntervalGuide.itmeId);
-		const slideIntervalUnitId = this.getId(SlideIntervalUnitGuide.itemId);
-		const SlideRandomPlayId   = this.getId(SlideRandomPlayGuide.itemId);
-		const SlideEffectFadeInId = this.getId(SlideEffectFadeInGuide.itemId);
+		const imageId             = this.getId(ExtensionSetting.propertyIds.filePath);
+		const slideId             = this.getId(ExtensionSetting.propertyIds.slideFilePaths);
+		const opacityId           = this.getId(ExtensionSetting.propertyIds.opacity);
+		const slideIntervalId     = this.getId(ExtensionSetting.propertyIds.slideInterval);
+		const slideIntervalUnitId = this.getId(ExtensionSetting.propertyIds.slideIntervalUnit);
+		const SlideRandomPlayId   = this.getId(ExtensionSetting.propertyIds.slideRandomPlay);
+		const SlideEffectFadeInId = this.getId(ExtensionSetting.propertyIds.slideEffectFadeIn);
 		this.items                = [
 			this.templateItems[0],
 			this.templateItems[1],
@@ -161,12 +159,12 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			case this.templateItems[7]:
 				if (this.state.resultSet) {
 					if (this.state.resultSet[imageId]) {
-						await this.settings.set(ImageFilePathGuide.itemId, this.state.resultSet[imageId]);
+						await this.settings.set(ExtensionSetting.propertyIds.filePath, this.state.resultSet[imageId]);
 					}
 
 					if (this.state.resultSet[slideId]) {
 						await this.settings.set(
-							SlideFilePathsGuide.itemId,
+							ExtensionSetting.propertyIds.slideFilePaths,
 							File.getChldrens(
 								this.state.resultSet[slideId],
 								{
@@ -180,37 +178,46 @@ export class SelectParameterType extends BaseQuickPickGuide {
 
 					if (typeof(this.state.resultSet[opacityId]) === "string") {
 						if (this.state.resultSet[opacityId].length > 0) {
-							await this.settings.set(OpacityGuide.itemId,  Number(this.state.resultSet[opacityId]));
+							await this.settings.set(
+								ExtensionSetting.propertyIds.opacity,
+								Number(this.state.resultSet[opacityId])
+							);
 						} else {
-							await this.settings.remove(OpacityGuide.itemId);
+							await this.settings.remove(ExtensionSetting.propertyIds.opacity);
 						}
 					}
 
 					if (this.state.resultSet[slideIntervalUnitId]) {
-						await this.settings.set(SlideIntervalUnitGuide.itemId, this.state.resultSet[slideIntervalUnitId].label);
+						await this.settings.set(
+							ExtensionSetting.propertyIds.slideIntervalUnit,
+							this.state.resultSet[slideIntervalUnitId].label
+						);
 					}
 
 					if (typeof(this.state.resultSet[slideIntervalId]) === "string") {
 						if (this.state.resultSet[slideIntervalId].length > 0) {
-							await this.settings.set(SlideIntervalGuide.itmeId, Number(this.state.resultSet[slideIntervalId]));
+							await this.settings.set(
+								ExtensionSetting.propertyIds.slideInterval,
+								Number(this.state.resultSet[slideIntervalId])
+							);
 						} else {
-							await this.settings.remove(SlideIntervalGuide.itmeId);
+							await this.settings.remove(ExtensionSetting.propertyIds.slideInterval);
 						}
 					}
 
 					if (this.state.resultSet[SlideRandomPlayId]) {
 						if (this.state.resultSet[SlideRandomPlayId] === SlideRandomPlayGuide.items[0]) {
-							await this.settings.set(SlideRandomPlayGuide.itemId, true);
+							await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay, true);
 						} else {
-							await this.settings.remove(SlideRandomPlayGuide.itemId);
+							await this.settings.remove(ExtensionSetting.propertyIds.slideRandomPlay);
 						}
 					}
 
 					if (this.state.resultSet[SlideEffectFadeInId]) {
 						if (this.state.resultSet[SlideEffectFadeInId] === SlideEffectFadeInGuide.items[0]) {
-							await this.settings.remove(SlideEffectFadeInGuide.itemId);
+							await this.settings.remove(ExtensionSetting.propertyIds.slideEffectFadeIn);
 						} else {
-							await this.settings.set(SlideEffectFadeInGuide.itemId, false);
+							await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, false);
 						}
 					}
 				}
