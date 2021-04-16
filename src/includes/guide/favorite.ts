@@ -252,3 +252,33 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 		}
 	}
 }
+
+export class FavoriteRandomSetGuide extends BaseQuickPickGuide {
+	public static items  = [
+		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Random wallpaper at start up."),
+		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not random."),
+	];
+
+	constructor(
+		state: State,
+	) {
+		state.itemId      = ExtensionSetting.propertyIds.slideEffectFadeIn;
+		state.placeholder = "Do you want to set a random wallpaper from your favorite settings at start up?";
+		state.items       = FavoriteRandomSetGuide.items;
+
+		super(state);
+	}
+
+	public async show(input: MultiStepInput): Promise<void | InputStep> {
+		await super.show(input);
+
+		if (this.activeItem) {
+			if (this.activeItem === this.items[0]) {
+				await this.settings.set(ExtensionSetting.propertyIds.favoriteRandomSet, true);
+				this.state.reload = true;
+			} else {
+				this.settings.remove(ExtensionSetting.propertyIds.favoriteRandomSet);
+			}
+		}
+	}
+}

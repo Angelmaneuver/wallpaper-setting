@@ -2,7 +2,6 @@ import { QuickPickItem }             from "vscode";
 import { InputStep, MultiStepInput } from "../utils/multiStepInput";
 import { State }                     from "./base/base";
 import { BaseQuickPickGuide }        from "./base/pick";
-import { Type }                      from "./favorite";
 import { GuideFactory }              from "./factory/base";
 import { ExtensionSetting }          from "../settings/extension";
 import { File }                      from "../utils/base/file";
@@ -13,7 +12,10 @@ import {
 	SlideRandomPlayGuide,
 	SlideEffectFadeInGuide
 } from "./slide";
-
+import {
+	Type,
+	FavoriteRandomSetGuide
+} from "./favorite";
 
 export class SelectSetupType extends BaseQuickPickGuide {
 	constructor(
@@ -263,6 +265,7 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 			VSCodePreset.create(VSCodePreset.Icons.repoPush,   "Register",   "Register the current settings to favorite."),
 			VSCodePreset.create(VSCodePreset.Icons.repoDelete, "UnRegister", "UnRegister favorite settings."),
 			VSCodePreset.create(VSCodePreset.Icons.repoPull,   "Load",       "Load favorite settings."),
+			VSCodePreset.create(VSCodePreset.Icons.merge,      "Start Up",   "Start up settings."),
 			VSCodePreset.create(VSCodePreset.Icons.mailReply,  "Return",     "Return without saving any changes."),
 		];
 	}
@@ -272,8 +275,8 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 		const registered = this.settings.isFavoriteExist;
 		this.items       =
 			[this.templateItems[0]]
-			.concat(this.settings.isFavoriteExist ? [this.templateItems[1], this.templateItems[2]] : [])
-			.concat([this.templateItems[3]]);
+			.concat(this.settings.isFavoriteExist ? [this.templateItems[1], this.templateItems[2], this.templateItems[3]] : [])
+			.concat([this.templateItems[4]]);
 		this.nextStep    = undefined;
 
 		await super.show(input);
@@ -338,6 +341,12 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 				}
 				break;
 			case this.templateItems[3]:
+				this.state.title        = this.title + " - Start up";
+				this.state.guideGroupId += "Startup";
+				this.state.activeItem   = this.settings.favoriteRandomSet ? FavoriteRandomSetGuide.items[0] : FavoriteRandomSetGuide.items[1];
+				this.setNextStep(GuideFactory.create("FavoriteRandomSetGuide", this.state));
+				break;
+			case this.templateItems[4]:
 				this.prev();
 				break;
 			default:

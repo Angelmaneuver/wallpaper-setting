@@ -23,7 +23,8 @@ export class ExtensionSetting extends SettingBase {
 		slideRandomPlay:   "slideRandomPlay",
 		slideEffectFadeIn: "slideEffectFadeIn",
 		favoriteImageSet:  "favoriteWallpaperImageSet",
-		favoriteSlideSet:  "favoriteWallpaperSlideSet"
+		favoriteSlideSet:  "favoriteWallpaperSlideSet",
+		favoriteRandomSet: "favoriteWallpaperRandomSet"
 	};
 
 	private _filePath:          string;
@@ -35,6 +36,7 @@ export class ExtensionSetting extends SettingBase {
 	private _slideEffectFadeIn: boolean;
 	private _favoriteImageSet:  Favorite;
 	private _favoriteSlideSet:  Favorite;
+	private _favoriteRandomSet: boolean;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -47,6 +49,7 @@ export class ExtensionSetting extends SettingBase {
 		this._slideEffectFadeIn = this.get(ExtensionSetting.propertyIds.slideEffectFadeIn);
 		this._favoriteImageSet  = this.get(ExtensionSetting.propertyIds.favoriteImageSet);
 		this._favoriteSlideSet  = this.get(ExtensionSetting.propertyIds.favoriteSlideSet);
+		this._favoriteRandomSet = this.get(ExtensionSetting.propertyIds.favoriteRandomSet);
 	}
 
 	public setFilePath(value: string | undefined): void {
@@ -121,7 +124,15 @@ export class ExtensionSetting extends SettingBase {
 		return this._favoriteSlideSet;
 	}
 
-	get slideIntervalUnit2Millisecond(): number {
+	public setFavoriteRandomSet(value: boolean | undefined): void {
+		this._favoriteRandomSet = value === undefined ? false : value;
+	}
+
+	public get favoriteRandomSet(): boolean {
+		return this._favoriteRandomSet;
+	}
+
+	public get slideIntervalUnit2Millisecond(): number {
 		let baseTime: number = 1;
 
 		switch (this.slideIntervalUnit) {
@@ -162,5 +173,6 @@ export class ExtensionSetting extends SettingBase {
 		await this.remove(ExtensionSetting.propertyIds.slideEffectFadeIn);
 		await this.remove(ExtensionSetting.propertyIds.favoriteImageSet);
 		await this.remove(ExtensionSetting.propertyIds.favoriteSlideSet);
+		await this.remove(ExtensionSetting.propertyIds.favoriteRandomSet);
 	}
 }

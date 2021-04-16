@@ -22,7 +22,8 @@ import {
 import {
 	RegisterFavoriteGuide,
 	UnRegisterFavoriteGuide,
-	LoadFavoriteGuide
+	LoadFavoriteGuide,
+	FavoriteRandomSetGuide
 } from "../favorite";
 
 interface Constructable<T> extends Function {
@@ -70,7 +71,8 @@ export abstract class GuideFactory {
 			SelectFavoriteUnRegisterType,
 			RegisterFavoriteGuide,
 			UnRegisterFavoriteGuide,
-			LoadFavoriteGuide
+			LoadFavoriteGuide,
+			FavoriteRandomSetGuide
 		)
 	}
 }
