@@ -48,16 +48,24 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 			case items.Reset:
 				if (!(typeof(ready) === "boolean")) {
 					if (ready.image && !ready.slide) {
-						this.installer.install();
+						if (!this.settings.favoriteRandomSet) {
+							this.installer.install();
+						}
 						this.state.reload = true;
 					} else if (!ready.image && ready.slide) {
-						this.installer.installAsSlide();
+						if (!this.settings.favoriteRandomSet) {
+							this.installer.installAsSlide();
+						}
 						this.state.reload = true;
 					} else {
-						this.state.title      = this.title + " - Select Setup Type";
-						this.state.step       = 0;
-						this.state.totalSteps = 0;
-						this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
+						if (this.settings.favoriteRandomSet) {
+							this.state.reload = true;
+						} else {
+							this.state.title      = this.title + " - Select Setup Type";
+							this.state.step       = 0;
+							this.state.totalSteps = 0;
+							this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
+						}
 					}
 				}
 				break;
