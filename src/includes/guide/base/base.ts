@@ -1,8 +1,8 @@
-import * as path                        from "path";
 import { ExtensionContext }             from "vscode";
 import { AbstractState, AbstractGuide } from "./abc";
 import { Wallpaper }                    from "../../wallpaper";
 import { ExtensionSetting }             from "../../settings/extension";
+import * as Installer                   from "../../installer";
 
 export interface State extends AbstractState {
 	context:   ExtensionContext,
@@ -34,24 +34,7 @@ export abstract class BaseGuide extends AbstractGuide {
 
 	public get installer(): Wallpaper {
 		if (!this.state.installer) {
-			this.state.installer = new Wallpaper(
-				(() => {
-					let result: string | undefined;
-
-					if (require.main?.filename) {
-						result = require.main?.filename;
-						console.debug('Use "require.main?.filename"');
-					} else {
-						result = process.mainModule?.filename;
-						console.debug('Use "process.mainModule?.filename"');
-					}
-			
-					return result ? path.dirname(result) : "";
-				})(),
-				"bootstrap-window.js",
-				this.settings,
-				"wallpaper-setting"
-			);
+			this.state.installer = Installer.getInstance(this.settings);
 		}
 
 		return this.state.installer;
