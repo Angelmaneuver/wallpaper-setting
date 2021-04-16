@@ -1,5 +1,7 @@
 # Wallpaper Setting
 
+![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting) [![Maintainability](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage) [![License](https://img.shields.io/github/license/Angelmaneuver/wallpaper-setting)](LICENSE)
+
 Set an image as the VSCode background.
 
 ## Usage
