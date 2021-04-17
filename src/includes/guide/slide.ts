@@ -88,19 +88,9 @@ export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 				)
 			);
 
-			if (this.checkEnteredAndSetDefaultWhenNotEntered(ExtensionSetting.propertyIds.opacity)) {
-				await this.settings.set(
-					ExtensionSetting.propertyIds.opacity, 
-					Number(this.state.resultSet[this.getId(ExtensionSetting.propertyIds.opacity)])
-				);
-			}
+			await this.inputResult2SettingByNumber(ExtensionSetting.propertyIds.opacity);
 
-			if (this.checkEnteredAndSetDefaultWhenNotEntered(ExtensionSetting.propertyIds.slideInterval)) {
-				await this.settings.set(
-					ExtensionSetting.propertyIds.slideInterval,
-					Number(this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideInterval)])
-				);
-			}
+			await this.inputResult2SettingByNumber(ExtensionSetting.propertyIds.slideInterval);
 
 			if (this.activeItem === this.items[0]) {
 				await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay, true);

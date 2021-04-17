@@ -56,4 +56,10 @@ export abstract class BaseGuide extends AbstractGuide {
 			return false;
 		}
 	}
+
+	protected async inputResult2SettingByNumber(itemId: string): Promise<void> {
+		if (await this.checkEnteredAndSetDefaultWhenNotEntered(itemId)) {
+			this.settings.set(itemId, Number(this.state.resultSet[this.getId(itemId)]));
+		}
+	}
 }
