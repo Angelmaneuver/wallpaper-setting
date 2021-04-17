@@ -49,7 +49,8 @@ export const Type = {
 }
 
 export class InputResourceGuide extends BaseInputGuide {
-	private type: number;
+	private type:    number;
+	private options: {};
 
 	constructor(
 		state: State,
@@ -58,6 +59,10 @@ export class InputResourceGuide extends BaseInputGuide {
 		super(state);
 
 		this.type    = type;
+		this.options =
+			this.type === Type.File
+				? { filters: { Images: Constant.applyImageFile } }
+				: { canSelectFolders: true, canSelectFiles: false };
 		this.buttons = [
 			new GuideButton(
 				{
@@ -76,16 +81,7 @@ export class InputResourceGuide extends BaseInputGuide {
 
 			if (this.inputResult instanceof GuideButton) {
 				this.inputResult = undefined;
-
-				const options    =
-					this.type === Type.File
-						? { filters: { Images: Constant.applyImageFile } }
-						: {
-								canSelectFolders: true,
-								canSelectFiles:   false,
-						  };
-
-				const selected   = await new Selecter(options).openFileDialog();
+				const selected   = await new Selecter(this.options).openFileDialog();
 
 				if (selected) {
 					this.inputResult = selected.path;
