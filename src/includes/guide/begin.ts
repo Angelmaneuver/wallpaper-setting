@@ -37,9 +37,12 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	}
 
 	public async show(input: MultiStepInput): Promise<void |  InputStep> {
-		this.nextStep = undefined;
+		this.nextStep         = undefined;
 
 		await super.show(input);
+
+		this.state.step       = 0;
+		this.state.totalSteps = 0;
 
 		switch (this.activeItem) {
 			case items.Set:
@@ -88,8 +91,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 					this.state.reload = true;
 				} else {
 					this.state.title      = this.title + " - Select Setup Type";
-					this.state.step       = 0;
-					this.state.totalSteps = 0;
 					this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
 				}
 			}
@@ -104,23 +105,18 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	private selectSetting(): void {
 		this.state.title        = this.title + " - Individual Settings";
 		this.state.guideGroupId = "setting";
-		this.state.step         = 0;
-		this.state.totalSteps   = 0;
 		this.setNextStep(GuideFactory.create("SelectParameterType", this.state));
 	}
 
 	private selectFavorite(): void {
 		this.state.title        = this.title + " - Favorite Settings";
 		this.state.guideGroupId = "favorite";
-		this.state.step         = 0;
-		this.state.totalSteps   = 0;
 		this.setNextStep(GuideFactory.create("SelectFavoriteProcess", this.state));
 	}
 
 	private selectSetup(): void {
 		this.state.title        = this.title + " - Image Setup";
 		this.state.guideGroupId = "setup";
-		this.state.step         = 0;
 		this.state.totalSteps   = 2;
 		this.setNextStep(GuideFactory.create("ImageFilePathGuide", this.state))
 			.setNextStep(GuideFactory.create("OpacityGuide",       this.state));
@@ -129,7 +125,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	private selectSetupAsSlide(): void {
 		this.state.title        = this.title + " - Slide Setup";
 		this.state.guideGroupId = "setupAsSlide";
-		this.state.step         = 0;
 		this.state.totalSteps   = 5;
 		this.setNextStep(GuideFactory.create("SlideFilePathsGuide",    this.state))
 			.setNextStep(GuideFactory.create("OpacityGuide",           this.state))
