@@ -17,7 +17,7 @@ const favorite2array = (
 )
 
 export async function randomSet() {
-	if (!(typeof(setting.isFavoriteExist) === "boolean") && setting.favoriteRandomSet) {
+	if (setting.isRegisterd && setting.favoriteRandomSet) {
 		let favorites: {
 			name: string,
 			type: number

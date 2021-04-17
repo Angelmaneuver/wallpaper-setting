@@ -3,8 +3,8 @@ import {
 	commands,
 	ExtensionContext
 } from "vscode";
-import { State }                      from "./guide/base/base";
 import { MultiStepInput }             from "./utils/multiStepInput";
+import { State }                      from "./guide/base/base";
 import { GuideFactory }               from "./guide/factory/base";
 
 export async function guidance(context: ExtensionContext) {

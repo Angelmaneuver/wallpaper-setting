@@ -13,6 +13,11 @@ export interface Favorite {
 	}
 }
 
+type Registerd = {
+	image: boolean,
+	slide: boolean
+};
+
 export class ExtensionSetting extends SettingBase {
 	public static propertyIds = {
 		filePath:          "filePath",
@@ -37,6 +42,7 @@ export class ExtensionSetting extends SettingBase {
 	private _favoriteImageSet:  Favorite;
 	private _favoriteSlideSet:  Favorite;
 	private _favoriteRandomSet: boolean;
+	private _isRegisterd:       undefined | Registerd;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -50,6 +56,15 @@ export class ExtensionSetting extends SettingBase {
 		this._favoriteImageSet  = this.get(ExtensionSetting.propertyIds.favoriteImageSet);
 		this._favoriteSlideSet  = this.get(ExtensionSetting.propertyIds.favoriteSlideSet);
 		this._favoriteRandomSet = this.get(ExtensionSetting.propertyIds.favoriteRandomSet);
+
+		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
+			this._isRegisterd = {
+				image: Object.keys(this.favoriteImageSet).length > 0,
+				slide: Object.keys(this.favoriteSlideSet).length > 0,
+			};
+		} else {
+			this._isRegisterd = undefined;
+		}
 	}
 
 	public setFilePath(value: string | undefined): void {
@@ -149,18 +164,8 @@ export class ExtensionSetting extends SettingBase {
 		return this.slideInterval * baseTime;
 	}
 
-	public get isFavoriteExist(): {
-		image: boolean,
-		slide: boolean
-	} | boolean {
-		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
-			return {
-				image: Object.keys(this.favoriteImageSet).length > 0,
-				slide: Object.keys(this.favoriteSlideSet).length > 0,
-			};
-		} else {
-			return false;
-		}
+	public get isRegisterd(): undefined | Registerd {
+		return this._isRegisterd;
 	}
 
 	public async uninstall(): Promise<void> {

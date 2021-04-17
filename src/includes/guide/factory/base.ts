@@ -12,13 +12,17 @@ import {
 	SlideEffectFadeInGuide
  } from "../slide";
 import {
-	SelectSetupType,
-	SelectParameterType,
+	SelectSetupType
+} from "../select/wallpaper";
+import {
+	SelectParameterType
+} from "../select/parameter";
+import {
 	SelectFavoriteProcess,
 	SelectFavoriteRegisterType,
-	SelectFavoriteLoadType,
-	SelectFavoriteUnRegisterType
-} from "../select";
+	SelectFavoriteUnRegisterType,
+	SelectFavoriteLoadType
+} from "../select/favorite";
 import {
 	RegisterFavoriteGuide,
 	UnRegisterFavoriteGuide,

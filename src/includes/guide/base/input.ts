@@ -1,9 +1,9 @@
-import { QuickInputButton, Uri }     from "vscode";
 import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
 import { State, BaseGuide }          from "./base";
+import { QuickInputButton, Uri }     from "vscode";
+import { BaseValidator }             from "../validator/base";
 import { Selecter }                  from "../../utils/selecter";
 import { Constant }                  from "../../constant";
-import { BaseValidator }             from "../validator/base";
 
 export class BaseInputGuide extends BaseGuide {
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
@@ -89,9 +89,5 @@ export class InputResourceGuide extends BaseInputGuide {
 				}
 			}
 		} while (!(this.inputResult) || this.inputResult.length === 0);
-
-		if (this.totalSteps === 0) {
-			this.prev();
-		}
 	}
 }

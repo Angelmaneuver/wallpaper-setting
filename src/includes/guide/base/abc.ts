@@ -1,5 +1,5 @@
-import { QuickPickItem }                              from "vscode";
 import { InputStep, MultiStepInput, InputFlowAction } from "../../utils/multiStepInput";
+import { QuickPickItem }                              from "vscode";
 import { State }                                      from "./base";
 import { GuideFactory }                               from "../factory/base";
 
@@ -88,7 +88,10 @@ export abstract class AbstractGuide {
 		guideGroupId: string,
 		step:         number,
 		totalSteps:   number,
-		guideKeys:    string[]
+		guides:       {
+			key:   string,
+			args?: any[]
+		}[]
 	) {
 		this.state.title                              = title;
 		this.state.guideGroupId                       = guideGroupId;
@@ -98,15 +101,16 @@ export abstract class AbstractGuide {
 		let guideInstances: undefined | AbstractGuide = undefined;
 		let preInstance:    undefined | AbstractGuide = undefined;
 
-		guideKeys.forEach(
-			(guideKey) => {
-				let guide = GuideFactory.create(guideKey, this.state);
+		guides.forEach(
+			(guide) => {
+				let   args          = guide.args ? guide.args : [];
+				const guideInstance = GuideFactory.create(guide.key, this.state, ...args);
 
 				if (guideInstances === undefined && preInstance === undefined) {
-					guideInstances = guide;
-					preInstance    = guide;
+					guideInstances = guideInstance;
+					preInstance    = guideInstance;
 				} else {
-					preInstance = preInstance?.setNextStep(guide);
+					preInstance = preInstance?.setNextStep(guideInstance);
 				}
 			}
 		);
@@ -118,6 +122,7 @@ export abstract class AbstractGuide {
 
 	public async start(input: MultiStepInput): Promise<void | InputStep> {
 		await this.show(input);
+		await this.after();
 
 		if (this.nextStep instanceof AbstractGuide) {
 			return () => this.nextStep.start(input);
@@ -125,6 +130,12 @@ export abstract class AbstractGuide {
 	}
 
 	abstract show(input: MultiStepInput): Promise<void | InputStep>;
+
+	public async after(): Promise<void> {
+		if (this.totalSteps === 0) {
+			this.prev();
+		}
+	}
 
 	protected get id(): string {
 		return this.guideGroupId.length > 0 || this.itemId.length > 0

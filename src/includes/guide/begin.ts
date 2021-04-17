@@ -1,9 +1,9 @@
-import { ExtensionContext }          from "vscode";
-import { VSCodePreset }              from "../utils/base/vscodePreset";
-import { Constant }                  from "../constant";
-import { State }                     from "./base/base";
-import { BaseQuickPickGuide }        from "./base/pick";
 import { InputStep, MultiStepInput } from "../utils/multiStepInput";
+import { BaseQuickPickGuide }        from "./base/pick";
+import { State }                     from "./base/base";
+import { ExtensionContext }          from "vscode";
+import { Constant }                  from "../constant";
+import { VSCodePreset }              from "../utils/base/vscodePreset";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -18,9 +18,6 @@ const items = {
 };
 
 export class StartMenuGuide extends BaseQuickPickGuide {
-	private autoSet: undefined | number;
-	private random:  boolean;
-
 	constructor(
 		state:   State,
 		context: ExtensionContext
@@ -29,29 +26,15 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 
 		super(state, context);
 
-		const installed   = this.installer.isInstall();
-		const ready       = this.installer.isReady();
 		this.items        = new Array()
-								.concat(!installed && ready               ? [items.Set]                : [])
-								.concat(installed                         ? [items.Reset, items.Crear] : [])
-								.concat(ready                             ? [items.Setting]            : [])
-								.concat(!(!this.settings.isFavoriteExist) ? [items.Favorite]           : [])
+								.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
+								.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
+								.concat(this.installer.isReady                              ? [items.Setting]            : [])
+								.concat(this.settings.isRegisterd                           ? [items.Favorite]           : [])
 								.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
-		this.autoSet      = undefined;
-		this.random       = this.settings.favoriteRandomSet;
-
-		if (!(typeof(ready) === "boolean")) {
-			if (ready.image && !ready.slide) {
-				this.autoSet = Constant.WallpaperType.Image;
-			} else if (!ready.image && ready.slide) {
-				this.autoSet = Constant.WallpaperType.Slide;
-			}
-		}
 	}
 
 	public async show(input: MultiStepInput): Promise<void |  InputStep> {
-		this.nextStep         = undefined;
-
 		await super.show(input);
 
 		switch (this.activeItem) {
@@ -63,13 +46,13 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.setNextSteps(this.title + " - Individual Settings", "setting", 0, 0, ["SelectParameterType"]);
+				this.setNextSteps(this.title + " - Individual Settings", "setting",  0, 0, [{ key: "SelectParameterType" }]);
 				break;
 			case items.Favorite:
-				this.setNextSteps(this.title + " - Favorite Settings", "favorite", 0, 0, ["SelectFavoriteProcess"]);
+				this.setNextSteps(this.title + " - Favorite Settings",   "favorite", 0, 0, [{ key: "SelectFavoriteProcess" }]);
 				break;
 			case items.Setup:
-				this.setNextSteps(this.title + " - Image Setup", "setup", 0, 2, ["ImageFilePathGuide", "OpacityGuide"]);
+				this.setNextSteps(this.title + " - Image Setup",         "setup",    0, 2, [{ key: "ImageFilePathGuide" }, { key: "OpacityGuide" }]);
 				break;
 			case items.SetUpAsSlide:
 				this.setNextSteps(
@@ -77,7 +60,7 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 					"setupAsSlide",
 					0,
 					5,
-					["SlideFilePathsGuide", "OpacityGuide", "SlideIntervalUnitGuide", "SlideIntervalGuide", "SlideRandomPlayGuide"]
+					[{ key: "SlideFilePathsGuide" }, { key: "OpacityGuide" }, { key: "SlideIntervalUnitGuide" }, { key: "SlideIntervalGuide" }, { key: "SlideRandomPlayGuide" }]
 				);
 				break;
 			case items.Uninstall:
@@ -89,19 +72,21 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		};
 	}
 
+	public async after(): Promise<void> {}
+
 	private selectSetWallpaper(): void {
-		if (this.autoSet === undefined) {
-			if (this.random) {
+		if (this.installer.isAutoSet === undefined) {
+			if (this.settings.favoriteRandomSet) {
 				this.state.reload = true;
 			} else {
-				this.setNextSteps(this.title + " - Select Setup Type", "", 0, 0, ["SelectSetupType"]);
+				this.setNextSteps(this.title + " - Select Setup Type", "", 0, 0, [{ key: "SelectSetupType" }]);
 			}
 		} else {
-			switch (this.autoSet) {
-				case Constant.WallpaperType.Image:
+			switch (this.installer.isAutoSet) {
+				case Constant.wallpaperType.Image:
 					this.installer.install();
 					break;
-				case Constant.WallpaperType.Slide:
+				case Constant.wallpaperType.Slide:
 					this.installer.installAsSlide();
 					break;
 				default:

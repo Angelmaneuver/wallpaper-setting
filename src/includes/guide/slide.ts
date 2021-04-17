@@ -1,12 +1,10 @@
-import { InputStep, MultiStepInput }                 from "../utils/multiStepInput";
-import { State }                                     from "./base/base";
 import { BaseInputGuide, InputResourceGuide, Type }  from "./base/input";
 import { BaseQuickPickGuide }                        from "./base/pick";
+import { State }                                     from "./base/base";
 import { BaseValidator }                             from "./validator/base";
 import { ExtensionSetting }                          from "../settings/extension";
-import { File }                                      from "../utils/base/file";
 import { Constant }                                  from "../constant";
-import { VSCodePreset }                              from "../utils/base/vscodePreset";
+import { File }                                      from "../utils/base/file";
 
 export class SlideFilePathsGuide extends InputResourceGuide {
 	constructor(
@@ -20,24 +18,14 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 }
 
 export class SlideIntervalUnitGuide extends BaseQuickPickGuide {
-	public static items  = ["Hour", "Minute", "Second", "MilliSecond"].map((label) => ({ label }));
-
 	constructor(
 		state: State,
 	) {
 		state.itemId      = ExtensionSetting.propertyIds.slideIntervalUnit;
 		state.placeholder = "Select the unit of slide interval to enter next.";
-		state.items       = SlideIntervalUnitGuide.items;
+		state.items       = Constant.slideIntervalUnit;
 
 		super(state);
-	}
-
-	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		await super.show(input);
-		
-		if (this.totalSteps === 0) {
-			this.prev();
-		}
 	}
 }
 
@@ -62,14 +50,6 @@ export class SlideIntervalGuide extends BaseInputGuide {
 				+ ". (Default: 25)";
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		await super.show(input);
-
-		if (this.totalSteps === 0) {
-			this.prev();
-		}
-	}
-
 	public static async validateSlideInterval(slideInterval: string): Promise<string | undefined> {
 		return await BaseValidator.validateNumber(
 			"slide interval",
@@ -82,27 +62,20 @@ export class SlideIntervalGuide extends BaseInputGuide {
 }
 
 export class SlideRandomPlayGuide extends BaseQuickPickGuide {
-	public static items  = [
-		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Random"),
-		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not random"),
-	];
-
 	constructor(
 		state: State,
 	) {
 		state.itemId      = ExtensionSetting.propertyIds.slideRandomPlay;
 		state.placeholder = "Do you want to randomize the sliding order of images?";
-		state.items       = SlideRandomPlayGuide.items;
+		state.items       = Constant.slideRandomPlay;
 
 		super(state);
 	}
 
-	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		await super.show(input);
+	public async after(): Promise<void> {
+		await super.after();
 		
-		if (this.totalSteps === 0) {
-			this.prev();
-		} else if (this.totalSteps === 5) {
+		if (this.totalSteps === 5) {
 			await this.settings.set(
 				ExtensionSetting.propertyIds.slideFilePaths,
 				File.getChldrens(
@@ -157,26 +130,13 @@ export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 }
 
 export class SlideEffectFadeInGuide extends BaseQuickPickGuide {
-	public static items  = [
-		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Fade in effect"),
-		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not effect"),
-	];
-
 	constructor(
 		state: State,
 	) {
 		state.itemId      = ExtensionSetting.propertyIds.slideEffectFadeIn;
 		state.placeholder = "Do you want to fade in effect when the slide image changes?";
-		state.items       = SlideEffectFadeInGuide.items;
+		state.items       = Constant.slideEffectFadeIn;
 
 		super(state);
-	}
-
-	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		await super.show(input);
-		
-		if (this.totalSteps === 0) {
-			this.prev();
-		}
 	}
 }

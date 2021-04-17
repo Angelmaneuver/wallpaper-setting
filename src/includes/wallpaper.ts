@@ -1,9 +1,17 @@
 import * as path            from "path";
-import { formatByArray }    from "./utils/base/string";
 import { ExtensionSetting } from "./settings/extension";
+import { Constant }         from "./constant";
+import { formatByArray }    from "./utils/base/string";
 import { File }             from "./utils/base/file";
 
 const packageInfo = require("./../../package.json");
+
+type Ready = {
+	image: boolean,
+	slide: boolean
+};
+
+type AutoSet = number;
 
 export class Wallpaper {
 	private installLocation: string;
@@ -11,6 +19,9 @@ export class Wallpaper {
 	private installPath:     string;
 	private settings:        ExtensionSetting;
 	private extensionKey:    string;
+	private _isInstall:      boolean;
+	private _isReady:        boolean   | Ready;
+	private _isAutoSet:      undefined | AutoSet;
 
 	constructor(
 		locationPath: any,
@@ -26,28 +37,43 @@ export class Wallpaper {
 		);
 		this.settings        = settings;
 		this.extensionKey    = extensionKey;
-	}
+		this._isAutoSet      = undefined;
 
-	public isInstall(): boolean {
-		let script = new File(this.installPath, { encoding: "utf-8" })
-			.toString()
-			.match(this.getScriptMatch());
+		const script         =
+			new File(this.installPath, { encoding: "utf-8" })
+				.toString()
+				.match(this.getScriptMatch());
 
-		return script ? true : false;
-	}
+		this._isInstall      = script ? true : false;
 
-	public isReady(): boolean | {
-		image: boolean,
-		slide: boolean
-	} {
-		if ( !(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0) ) {
-			return false;
+		if (!(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0)) {
+			this._isReady = false;
 		} else {
-			return {
+			this._isReady =  {
 				"image": this.settings.filePath.length > 0       ? true : false,
 				"slide": this.settings.slideFilePaths.length > 0 ? true : false
 			};
 		}
+
+		if (!(typeof(this.isReady) === "boolean")) {
+			if (this.isReady.image && !this.isReady.slide) {
+				this._isAutoSet = Constant.wallpaperType.Image;
+			} else if (!this.isReady.image && this.isReady.slide) {
+				this._isAutoSet = Constant.wallpaperType.Slide;
+			}
+		}
+	}
+
+	public get isInstall(): boolean {
+		return this._isInstall;
+	}
+
+	public get isReady(): boolean | Ready {
+		return this._isReady;
+	}
+
+	public get isAutoSet(): undefined | AutoSet {
+		return this._isAutoSet;
 	}
 
 	public install(): void {

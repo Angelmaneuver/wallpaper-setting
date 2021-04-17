@@ -1,14 +1,11 @@
-import { QuickPickItem }              from "vscode";
-import { InputStep, MultiStepInput }  from "../utils/multiStepInput";
-import { State }                      from "./base/base";
 import { BaseInputGuide }             from "./base/input";
 import { BaseQuickPickGuide }         from "./base/pick";
+import { State }                      from "./base/base";
+import { QuickPickItem }              from "vscode";
 import { BaseValidator }              from "./validator/base";
-import { GuideFactory }               from "./factory/base";
 import { ExtensionSetting, Favorite } from "../settings/extension";
 import { VSCodePreset }               from "../utils/base/vscodePreset";
-
-export const Type = { Image: 0, Slide: 1 };
+import { Constant }                   from "../constant";
 
 export class RegisterFavoriteGuide extends BaseInputGuide {
 	private type: number;
@@ -25,15 +22,11 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		this.type      = type;
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		this.nextStep                             = undefined;
-
-		await super.show(input);
-
+	public async after(): Promise<void> {
 		let favorite: Partial<Favorite>           = {};
 		let registeredFavorite: Partial<Favorite> = {};
 
-		if (this.type === Type.Image) {
+		if (this.type === Constant.wallpaperType.Image) {
 			favorite[this.inputResult] = {
 				filePath: this.settings.filePath,
 				opacity:  this.settings.opacity
@@ -52,22 +45,23 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		}
 
 		if (Object.keys(registeredFavorite).includes(this.inputResult)) {
-			this.state.title       = this.title + " - Confirm";
 			this.state.placeholder = "There is a favorite setting with the same name, do you want to overwrite it?";
-			this.setNextStep(
-				GuideFactory.create(
-					"BaseConfirmGuide",
-					this.state,
-					{
-						yes: "Overwrite.",
-						no:  "Back to previous.",
-					},
-					this.registerFavorite,
-					this.itemId,
-					this.inputResult,
-					favorite,
-					registeredFavorite
-				)
+			this.setNextSteps(
+				this.title + " - Confirm",
+				this.guideGroupId,
+				0,
+				0,
+				[{
+					key:  "BaseConfirmGuide",
+					args: [
+						{ yes: "Overwrite", no: "Back to previous."},
+						this.registerFavorite,
+						this.itemId,
+						this.inputResult,
+						favorite,
+						registeredFavorite
+					]
+				}],
 			);
 		} else {
 			this.registerFavorite(this.itemId, this.inputResult, favorite, registeredFavorite);
@@ -114,9 +108,9 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 		super(state);
 
 		this.type         = type;
-		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without unregister.");
+		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", "Return without unregister.");
 
-		if (this.type === Type.Image) {
+		if (this.type === Constant.wallpaperType.Image) {
 			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
 		} else {
 			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
@@ -125,9 +119,7 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 		this.items        = this.items.concat([this.returnItem]);
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		await super.show(input);
-
+	public async after(): Promise<void> {
 		if (this.activeItem === this.returnItem) {
 			this.prev();
 		} else if (this.activeItem) {
@@ -135,7 +127,7 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 			let   registered: Favorite = {};
 			let   favorite:   Favorite = {};
 
-			if (this.type === Type.Image) {
+			if (this.type === Constant.wallpaperType.Image) {
 				registered = this.settings.favoriteImageSet;
 			} else {
 				registered = this.settings.favoriteSlideSet;
@@ -149,21 +141,22 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 				}
 			);
 
-			this.state.title           = this.title + " - Confirm";
 			this.state.placeholder     = "Do you want to unregister it?";
-			this.setNextStep(
-				GuideFactory.create(
-					"BaseConfirmGuide",
-					this.state,
-					{
-						yes: "UnRegister.",
-						no:  "Back to previous.",
-					},
-					this.registerFavorite,
-					this.itemId,
-					name,
-					Object.keys(favorite).length > 0 ? favorite : undefined
-				)
+			this.setNextSteps(
+				this.title + " - Confirm",
+				this.guideGroupId,
+				0,
+				0,
+				[{
+					key:  "BaseConfirmGuide",
+					args: [
+						{ yes: "UnRegister", no: "Back to previous."},
+						this.registerFavorite,
+						this.itemId,
+						name,
+						Object.keys(favorite).length > 0 ? favorite : undefined
+					]
+				}],
 			);
 		}
 	}
@@ -193,9 +186,9 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 		super(state);
 
 		this.type         = type;
-		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without loading any changes.");
+		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", "Return without loading any changes.");
 
-		if (this.type === Type.Image) {
+		if (this.type === Constant.wallpaperType.Image) {
 			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: LoadFavoriteGuide.labelling + label }));
 		} else {
 			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: LoadFavoriteGuide.labelling + label }));
@@ -204,75 +197,61 @@ export class LoadFavoriteGuide extends BaseQuickPickGuide {
 		this.items        = this.items.concat([this.returnItem]);
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		await super.show(input);
-
+	public async after(): Promise<void> {
 		if (this.activeItem === this.returnItem) {
 			this.prev();
-		} else {
-			if (this.activeItem) {
-				const name = this.activeItem.label.replace(LoadFavoriteGuide.labelling, "");
+		} else if (this.activeItem) {
+			const name = this.activeItem.label.replace(LoadFavoriteGuide.labelling, "");
 
-				if (this.type === Type.Image) {
-					let favorite = this.settings.favoriteImageSet[name];
-	
-					if (favorite["filePath"] && favorite["opacity"]) {
-						await this.settings.set(ExtensionSetting.propertyIds.filePath, favorite.filePath);
-						await this.settings.set(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
-					}
+			if (this.type === Constant.wallpaperType.Image) {
+				let favorite = this.settings.favoriteImageSet[name];
 
-					this.installer.install();
-				} else if (this.type === Type.Slide) {
-					let favorite = this.settings.favoriteSlideSet[name];
-
-					if (
-						favorite["slideFilePaths"] &&
-						favorite["opacity"] &&
-						favorite["slideInterval"] &&
-						favorite["slideIntervalUnit"]
-					) {
-						await this.settings.set(ExtensionSetting.propertyIds.slideFilePaths,    favorite.slideFilePaths);
-						await this.settings.set(ExtensionSetting.propertyIds.opacity,           favorite.opacity);
-						await this.settings.set(ExtensionSetting.propertyIds.slideInterval,     favorite.slideInterval);
-						await this.settings.set(ExtensionSetting.propertyIds.slideIntervalUnit, favorite.slideIntervalUnit);
-						await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay,   favorite.slideRandomPlay          ? favorite.slideRandomPlay   : false);
-						await this.settings.set(
-							ExtensionSetting.propertyIds.slideEffectFadeIn,
-							favorite.slideEffectFadeIn
-								? favorite.slideEffectFadeIn
-								: false
-						);
-
-						this.installer.installAsSlide();
-					}
+				if (favorite["filePath"] && favorite["opacity"]) {
+					await this.settings.set(ExtensionSetting.propertyIds.filePath, favorite.filePath);
+					await this.settings.set(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
 				}
 
-				this.state.reload = true;
+				this.installer.install();
+			} else {
+				let favorite = this.settings.favoriteSlideSet[name];
+
+				if (
+					favorite["slideFilePaths"] &&
+					favorite["opacity"] &&
+					favorite["slideInterval"] &&
+					favorite["slideIntervalUnit"]
+				) {
+					await this.settings.set(ExtensionSetting.propertyIds.slideFilePaths,    favorite.slideFilePaths);
+					await this.settings.set(ExtensionSetting.propertyIds.opacity,           favorite.opacity);
+					await this.settings.set(ExtensionSetting.propertyIds.slideInterval,     favorite.slideInterval);
+					await this.settings.set(ExtensionSetting.propertyIds.slideIntervalUnit, favorite.slideIntervalUnit);
+					await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay,   favorite.slideRandomPlay     ? favorite.slideRandomPlay   : false);
+					await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, favorite.slideEffectFadeIn   ? favorite.slideEffectFadeIn : false);
+
+					this.installer.installAsSlide();
+				}
 			}
+
+			this.state.reload = true;
 		}
 	}
 }
 
 export class FavoriteRandomSetGuide extends BaseQuickPickGuide {
-	public static items  = [
-		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", "Random wallpaper at start up."),
-		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  "Not random."),
-	];
-
 	constructor(
 		state: State,
 	) {
 		state.itemId      = ExtensionSetting.propertyIds.slideEffectFadeIn;
 		state.placeholder = "Do you want to set a random wallpaper from your favorite settings at start up?";
-		state.items       = FavoriteRandomSetGuide.items;
+		state.items       = Constant.favoriteRandomSet;
 
 		super(state);
 	}
 
-	public async show(input: MultiStepInput): Promise<void | InputStep> {
-		await super.show(input);
-
-		if (this.activeItem) {
+	public async after(): Promise<void> {
+		if (this.activeItem === this.items[2]) {
+			this.prev();
+		} else {
 			if (this.activeItem === this.items[0]) {
 				await this.settings.set(ExtensionSetting.propertyIds.favoriteRandomSet, true);
 				this.state.reload = true;

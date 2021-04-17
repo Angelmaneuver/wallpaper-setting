@@ -1,6 +1,5 @@
-import { InputStep, MultiStepInput } from "../utils/multiStepInput";
-import { State }                     from "./base/base";
 import { BaseInputGuide }            from "./base/input";
+import { State }                     from "./base/base";
 import { BaseValidator }             from "./validator/base";
 import { ExtensionSetting }          from "../settings/extension";
 import { Constant }                  from "../constant";
@@ -22,12 +21,10 @@ export class OpacityGuide extends BaseInputGuide {
 		super(state);
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		await super.show(input);
+	public async after():Promise<void> {
+		await super.after();
 
-		if (this.totalSteps === 0) {
-			this.prev();
-		} else if (this.totalSteps === 2) {
+		if (this.totalSteps === 2) {
 			await this.settings.set(
 				ExtensionSetting.propertyIds.filePath,
 				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.filePath)]

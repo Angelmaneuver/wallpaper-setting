@@ -1,7 +1,7 @@
-import { ExtensionContext }             from "vscode";
 import { AbstractState, AbstractGuide } from "./abc";
-import { Wallpaper }                    from "../../wallpaper";
+import { ExtensionContext }             from "vscode";
 import { ExtensionSetting }             from "../../settings/extension";
+import { Wallpaper }                    from "../../wallpaper";
 import * as Installer                   from "../../installer";
 
 export interface State extends AbstractState {

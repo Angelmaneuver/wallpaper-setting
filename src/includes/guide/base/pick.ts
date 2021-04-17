@@ -3,6 +3,7 @@ import { BaseGuide }                 from "./base";
 
 export class BaseQuickPickGuide extends BaseGuide {
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
+		this.nextStep   = this.totalSteps === 0 ? undefined : this.nextStep;
 		this.activeItem = await input.showQuickPick(
 			{
 				title:        this.title,
