@@ -6,6 +6,7 @@ import { ExtensionSetting }          from "../../settings/extension";
 import { VSCodePreset }              from "../../utils/base/vscodePreset";
 import { Constant }                  from "../../constant";
 import { File }                      from "../../utils/base/file";
+import * as Wallpaper                from "../select/wallpaper";
 
 export class SelectParameterType extends BaseQuickPickGuide {
 	private templateItems:       QuickPickItem[];
@@ -188,25 +189,6 @@ export class SelectParameterType extends BaseQuickPickGuide {
 			}
 		}
 
-		if (this.installer.isAutoSet === undefined) {
-			if (this.settings.favoriteRandomSet) {
-				this.state.reload = true;
-			} else {
-				this.setNextSteps(this.title + " - Select Setup Type", "", 0, 0, [{ key: "SelectSetupType" }]);
-			}
-		} else {
-			switch (this.installer.isAutoSet) {
-				case Constant.wallpaperType.Image:
-					this.installer.install();
-					break;
-				case Constant.wallpaperType.Slide:
-					this.installer.installAsSlide();
-					break;
-				default:
-					break;
-			}
-
-			this.state.reload = true;
-		}
+		Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state);
 	}
 }

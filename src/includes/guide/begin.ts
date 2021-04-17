@@ -2,8 +2,8 @@ import { InputStep, MultiStepInput } from "../utils/multiStepInput";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { State }                     from "./base/base";
 import { ExtensionContext }          from "vscode";
-import { Constant }                  from "../constant";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
+import * as Wallpaper                from "./select/wallpaper";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -40,26 +40,22 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
-				this.selectSetWallpaper();
+				Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state);
 				break;
 			case items.Crear:
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.setNextSteps(this.title + " - Individual Settings", "setting",  0, 0, [{ key: "SelectParameterType" }]);
+				this.setNextSteps(this.title + " - Individual Settings", "setting",      0, 0, [{ key: "SelectParameterType" }]);
 				break;
 			case items.Favorite:
-				this.setNextSteps(this.title + " - Favorite Settings",   "favorite", 0, 0, [{ key: "SelectFavoriteProcess" }]);
+				this.setNextSteps(this.title + " - Favorite Settings",   "favorite",     0, 0, [{ key: "SelectFavoriteProcess" }]);
 				break;
 			case items.Setup:
-				this.setNextSteps(this.title + " - Image Setup",         "setup",    0, 2, [{ key: "ImageFilePathGuide" }, { key: "OpacityGuide" }]);
+				this.setNextSteps(this.title + " - Image Setup",         "setup",        0, 2, [{ key: "ImageFilePathGuide" }, { key: "OpacityGuide" }]);
 				break;
 			case items.SetUpAsSlide:
-				this.setNextSteps(
-					this.title + " - Slide Setup",
-					"setupAsSlide",
-					0,
-					5,
+				this.setNextSteps(this.title + " - Slide Setup",         "setupAsSlide", 0, 5,
 					[{ key: "SlideFilePathsGuide" }, { key: "OpacityGuide" }, { key: "SlideIntervalUnitGuide" }, { key: "SlideIntervalGuide" }, { key: "SlideRandomPlayGuide" }]
 				);
 				break;
@@ -73,29 +69,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	}
 
 	public async after(): Promise<void> {}
-
-	private selectSetWallpaper(): void {
-		if (this.installer.isAutoSet === undefined) {
-			if (this.settings.favoriteRandomSet) {
-				this.state.reload = true;
-			} else {
-				this.setNextSteps(this.title + " - Select Setup Type", "", 0, 0, [{ key: "SelectSetupType" }]);
-			}
-		} else {
-			switch (this.installer.isAutoSet) {
-				case Constant.wallpaperType.Image:
-					this.installer.install();
-					break;
-				case Constant.wallpaperType.Slide:
-					this.installer.installAsSlide();
-					break;
-				default:
-					break;
-			}
-
-			this.state.reload = true;
-		}
-	}
 
 	private selectClear(): void {
 		this.installer.uninstall();

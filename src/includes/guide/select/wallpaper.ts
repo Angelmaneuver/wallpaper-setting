@@ -1,6 +1,32 @@
+import { AbstractGuide }      from "../base/abc";
 import { BaseQuickPickGuide } from "../base/pick";
 import { State }              from "../base/base";
+import { Wallpaper }          from "../../wallpaper";
+import { ExtensionSetting }   from "../../settings/extension";
 import { VSCodePreset }       from "../../utils/base/vscodePreset";
+import { Constant }           from "../../constant";
+
+export function delegation2Transition(
+	guide:     AbstractGuide,
+	installer: Wallpaper,
+	setting:   ExtensionSetting,
+	state:     Partial<State>) {
+	if (installer.isAutoSet === undefined) {
+		if (setting.favoriteRandomSet) {
+			state.reload = true;
+		} else {
+			guide.setNextSteps(state.title + " - Select Setup Type", "", 0, 0, [{ key: "SelectSetupType" }]);
+		}
+	} else {
+		if (installer.isAutoSet === Constant.wallpaperType.Image) {
+			installer.install();
+		} else {
+			installer.installAsSlide();
+		}
+
+		state.reload = true;
+	}
+}
 
 export class SelectSetupType extends BaseQuickPickGuide {
 	constructor(
