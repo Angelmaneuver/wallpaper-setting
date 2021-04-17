@@ -1,5 +1,6 @@
 import { ExtensionContext }          from "vscode";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
+import { Constant }                  from "../constant";
 import { State }                     from "./base/base";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { InputStep, MultiStepInput } from "../utils/multiStepInput";
@@ -18,6 +19,9 @@ const items = {
 };
 
 export class StartMenuGuide extends BaseQuickPickGuide {
+	private autoSet: undefined | number;
+	private random:  boolean;
+
 	constructor(
 		state:   State,
 		context: ExtensionContext
@@ -30,10 +34,21 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		const installed   = this.installer.isInstall();
 		const ready       = this.installer.isReady();
 		this.items        = new Array()
-								.concat(!installed && ready ? [items.Set]                     : [])
-								.concat(installed           ? [items.Reset, items.Crear]      : [])
-								.concat(ready               ? [items.Setting, items.Favorite] : [])
+								.concat(!installed && ready               ? [items.Set]                : [])
+								.concat(installed                         ? [items.Reset, items.Crear] : [])
+								.concat(ready                             ? [items.Setting]            : [])
+								.concat(!(!this.settings.isFavoriteExist) ? [items.Favorite]           : [])
 								.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
+		this.autoSet      = undefined;
+		this.random       = this.settings.favoriteRandomSet;
+
+		if (!(typeof(ready) === "boolean")) {
+			if (ready.image && !ready.slide) {
+				this.autoSet = Constant.WallpaperType.Image;
+			} else if (!ready.image && ready.slide) {
+				this.autoSet = Constant.WallpaperType.Slide;
+			}
+		}
 	}
 
 	public async show(input: MultiStepInput): Promise<void |  InputStep> {
@@ -73,27 +88,26 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	}
 
 	private selectSetWallpaper(): void {
-		const ready = this.installer.isReady();
-
-		if (!(typeof(ready) === "boolean")) {
-			if (ready.image && !ready.slide) {
-				if (!this.settings.favoriteRandomSet) {
-					this.installer.install();
-				}
-				this.state.reload = true;
-			} else if (!ready.image && ready.slide) {
-				if (!this.settings.favoriteRandomSet) {
-					this.installer.installAsSlide();
-				}
+		if (this.autoSet === undefined) {
+			if (this.random) {
 				this.state.reload = true;
 			} else {
-				if (this.settings.favoriteRandomSet) {
-					this.state.reload = true;
-				} else {
-					this.state.title      = this.title + " - Select Setup Type";
-					this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
-				}
+				this.state.title = this.title + " - Select Setup Type";
+				this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
 			}
+		} else {
+			switch (this.autoSet) {
+				case Constant.WallpaperType.Image:
+					this.installer.install();
+					break;
+				case Constant.WallpaperType.Slide:
+					this.installer.installAsSlide();
+					break;
+				default:
+					break;
+			}
+
+			this.state.reload = true;
 		}
 	}
 
