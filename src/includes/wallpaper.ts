@@ -20,7 +20,7 @@ export class Wallpaper {
 	private settings:        ExtensionSetting;
 	private extensionKey:    string;
 	private _isInstall:      boolean;
-	private _isReady:        boolean   | Ready;
+	private _isReady:        undefined | Ready;
 	private _isAutoSet:      undefined | AutoSet;
 
 	constructor(
@@ -37,38 +37,51 @@ export class Wallpaper {
 		);
 		this.settings        = settings;
 		this.extensionKey    = extensionKey;
-		this._isAutoSet      = undefined;
+		this._isInstall      = this.checkIsInstall();
+		this._isReady        = this.checkIsReady();
+		this._isAutoSet      = this.checkIsAutoSet();
+	}
 
-		const script         =
-			new File(this.installPath, { encoding: "utf-8" })
-				.toString()
-				.match(this.getScriptMatch());
+	private checkIsInstall(): boolean {
+		const script =  new File(this.installPath, { encoding: "utf-8" }).toString().match(this.getScriptMatch());
 
-		this._isInstall      = script ? true : false;
+		return script ? true : false;
+	}
+
+	private checkIsReady(): undefined | Ready {
+		let checkResult: undefined | Ready;
 
 		if (!(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0)) {
-			this._isReady = false;
+			checkResult = undefined;
 		} else {
-			this._isReady =  {
+			checkResult =  {
 				"image": this.settings.filePath.length > 0       ? true : false,
 				"slide": this.settings.slideFilePaths.length > 0 ? true : false
 			};
 		}
 
-		if (!(typeof(this.isReady) === "boolean")) {
+		return checkResult;
+	}
+
+	private checkIsAutoSet(): undefined | AutoSet {
+		let checkResult: undefined | AutoSet = undefined;
+
+		if (this.isReady) {
 			if (this.isReady.image && !this.isReady.slide) {
-				this._isAutoSet = Constant.wallpaperType.Image;
+				checkResult = Constant.wallpaperType.Image;
 			} else if (!this.isReady.image && this.isReady.slide) {
-				this._isAutoSet = Constant.wallpaperType.Slide;
+				checkResult = Constant.wallpaperType.Slide;
 			}
 		}
+
+		return checkResult;
 	}
 
 	public get isInstall(): boolean {
 		return this._isInstall;
 	}
 
-	public get isReady(): boolean | Ready {
+	public get isReady(): undefined | Ready {
 		return this._isReady;
 	}
 
