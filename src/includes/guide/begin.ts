@@ -4,7 +4,6 @@ import { Constant }                  from "../constant";
 import { State }                     from "./base/base";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { InputStep, MultiStepInput } from "../utils/multiStepInput";
-import { GuideFactory }              from "./factory/base";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -26,7 +25,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		state:   State,
 		context: ExtensionContext
 	) {
-
 		state.placeholder = "Select the item you want to do.";
 
 		super(state, context);
@@ -56,9 +54,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 
 		await super.show(input);
 
-		this.state.step       = 0;
-		this.state.totalSteps = 0;
-
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
@@ -68,19 +63,26 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.selectSetting();
+				this.setNextSteps(this.title + " - Individual Settings", "setting", 0, 0, ["SelectParameterType"]);
 				break;
 			case items.Favorite:
-				this.selectFavorite();
+				this.setNextSteps(this.title + " - Favorite Settings", "favorite", 0, 0, ["SelectFavoriteProcess"]);
 				break;
 			case items.Setup:
-				this.selectSetup();
+				this.setNextSteps(this.title + " - Image Setup", "setup", 0, 2, ["ImageFilePathGuide", "OpacityGuide"]);
 				break;
 			case items.SetUpAsSlide:
-				this.selectSetupAsSlide();
+				this.setNextSteps(
+					this.title + " - Slide Setup",
+					"setupAsSlide",
+					0,
+					5,
+					["SlideFilePathsGuide", "OpacityGuide", "SlideIntervalUnitGuide", "SlideIntervalGuide", "SlideRandomPlayGuide"]
+				);
 				break;
 			case items.Uninstall:
-				this.selectUninstall();
+				this.selectClear();
+				this.installer.uninstall();
 				break;
 			default:
 				break;
@@ -92,8 +94,7 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 			if (this.random) {
 				this.state.reload = true;
 			} else {
-				this.state.title = this.title + " - Select Setup Type";
-				this.setNextStep(GuideFactory.create("SelectSetupType", this.state));
+				this.setNextSteps(this.title + " - Select Setup Type", "", 0, 0, ["SelectSetupType"]);
 			}
 		} else {
 			switch (this.autoSet) {
@@ -114,41 +115,5 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	private selectClear(): void {
 		this.installer.uninstall();
 		this.state.reload = true;
-	}
-
-	private selectSetting(): void {
-		this.state.title        = this.title + " - Individual Settings";
-		this.state.guideGroupId = "setting";
-		this.setNextStep(GuideFactory.create("SelectParameterType", this.state));
-	}
-
-	private selectFavorite(): void {
-		this.state.title        = this.title + " - Favorite Settings";
-		this.state.guideGroupId = "favorite";
-		this.setNextStep(GuideFactory.create("SelectFavoriteProcess", this.state));
-	}
-
-	private selectSetup(): void {
-		this.state.title        = this.title + " - Image Setup";
-		this.state.guideGroupId = "setup";
-		this.state.totalSteps   = 2;
-		this.setNextStep(GuideFactory.create("ImageFilePathGuide", this.state))
-			.setNextStep(GuideFactory.create("OpacityGuide",       this.state));
-	}
-
-	private selectSetupAsSlide(): void {
-		this.state.title        = this.title + " - Slide Setup";
-		this.state.guideGroupId = "setupAsSlide";
-		this.state.totalSteps   = 5;
-		this.setNextStep(GuideFactory.create("SlideFilePathsGuide",    this.state))
-			.setNextStep(GuideFactory.create("OpacityGuide",           this.state))
-			.setNextStep(GuideFactory.create("SlideIntervalUnitGuide", this.state))
-			.setNextStep(GuideFactory.create("SlideIntervalGuide",     this.state))
-			.setNextStep(GuideFactory.create("SlideRandomPlayGuide",   this.state));
-	}
-
-	private async selectUninstall(): Promise<void> {
-		this.selectClear();
-		await this.settings.uninstall();
 	}
 }

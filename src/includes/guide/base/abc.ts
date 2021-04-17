@@ -1,6 +1,7 @@
 import { QuickPickItem }                              from "vscode";
 import { InputStep, MultiStepInput, InputFlowAction } from "../../utils/multiStepInput";
 import { State }                                      from "./base";
+import { GuideFactory }                               from "../factory/base";
 
 export interface AbstractState{
 	guideGroupId?: string,
@@ -82,6 +83,39 @@ export abstract class AbstractGuide {
 		return guide;
 	}
 
+	public setNextSteps(
+		title:        string,
+		guideGroupId: string,
+		step:         number,
+		totalSteps:   number,
+		guideKeys:    string[]
+	) {
+		this.state.title                              = title;
+		this.state.guideGroupId                       = guideGroupId;
+		this.state.step                               = step;
+		this.state.totalSteps                         = totalSteps;
+
+		let guideInstances: undefined | AbstractGuide = undefined;
+		let preInstance:    undefined | AbstractGuide = undefined;
+
+		guideKeys.forEach(
+			(guideKey) => {
+				let guide = GuideFactory.create(guideKey, this.state);
+
+				if (guideInstances === undefined && preInstance === undefined) {
+					guideInstances = guide;
+					preInstance    = guide;
+				} else {
+					preInstance = preInstance?.setNextStep(guide);
+				}
+			}
+		);
+
+		if (guideInstances) {
+			this.setNextStep(guideInstances);
+		}
+	}
+
 	public async start(input: MultiStepInput): Promise<void | InputStep> {
 		await this.show(input);
 
@@ -90,7 +124,7 @@ export abstract class AbstractGuide {
 		}
 	}
 
-	abstract show (input: MultiStepInput): Promise<void | InputStep>;
+	abstract show(input: MultiStepInput): Promise<void | InputStep>;
 
 	protected get id(): string {
 		return this.guideGroupId.length > 0 || this.itemId.length > 0
