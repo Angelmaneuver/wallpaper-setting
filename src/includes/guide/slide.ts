@@ -88,33 +88,18 @@ export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 				)
 			);
 
-			if (
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.opacity)] &&
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.opacity)].length > 0
-			) {
+			if (this.checkEnteredAndSetDefaultWhenNotEntered(ExtensionSetting.propertyIds.opacity)) {
 				await this.settings.set(
 					ExtensionSetting.propertyIds.opacity, 
 					Number(this.state.resultSet[this.getId(ExtensionSetting.propertyIds.opacity)])
 				);
-			} else {
-				await this.settings.remove(ExtensionSetting.propertyIds.opacity);
 			}
 
-			await this.settings.set(
-				ExtensionSetting.propertyIds.slideIntervalUnit,
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideIntervalUnit)].label
-			);
-
-			if (
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideInterval)] &&
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideInterval)].length > 0
-			) {
+			if (this.checkEnteredAndSetDefaultWhenNotEntered(ExtensionSetting.propertyIds.slideInterval)) {
 				await this.settings.set(
 					ExtensionSetting.propertyIds.slideInterval,
 					Number(this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideInterval)])
 				);
-			} else {
-				await this.settings.remove(ExtensionSetting.propertyIds.slideInterval);
 			}
 
 			if (this.activeItem === this.items[0]) {

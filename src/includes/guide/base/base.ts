@@ -47,4 +47,13 @@ export abstract class BaseGuide extends AbstractGuide {
 
 		return this.state.settings;
 	}
+
+	protected async checkEnteredAndSetDefaultWhenNotEntered(itemId: string): Promise<boolean> {
+		if (this.state.resultSet[this.getId(itemId)] && this.state.resultSet[this.getId(itemId)].length > 0) {
+			return true;
+		} else {
+			await this.settings.remove(itemId);
+			return false;
+		}
+	}
 }
