@@ -1,7 +1,9 @@
 import { VSCodePreset } from "./utils/base/vscodePreset";
 
 export class Constant {
-	public static wallpaperType        = { Image: 0, Slide: 1 };
+	public static wallpaperType: {
+		[key: string]: number
+	}                                  = { Image: 0, Slide: 1 };
 	public static applyImageFile       = ["png", "jpg", "jpeg", "gif"];
 	public static slideIntervalUnit    = ["Hour", "Minute", "Second", "MilliSecond"].map((label) => ({ label }));
 	public static slideRandomPlay      = [

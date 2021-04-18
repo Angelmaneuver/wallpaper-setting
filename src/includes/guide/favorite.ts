@@ -54,6 +54,10 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		super(state);
 
 		this.type      = type;
+		this.itemId    =
+			this.type === Constant.wallpaperType.Image
+				? ExtensionSetting.propertyIds.favoriteImageSet
+				: ExtensionSetting.propertyIds.favoriteSlideSet;
 	}
 
 	public async after(): Promise<void> {

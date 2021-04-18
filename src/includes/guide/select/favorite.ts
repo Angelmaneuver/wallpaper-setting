@@ -52,17 +52,17 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 				key:   `SelectFavorite${key}Type`,
 				state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` }
 			}]);
-		} else if (this.installer.isAutoSet === Constant.wallpaperType.Image) {
-			this.setNextSteps([{
-				key:   `${key}FavoriteGuide`,
-				state: { title: `${this.title} - ${key} - Image wallpaper`, guideGroupId: `${this.guideGroupId}${key}Image` },
-				args:  [Constant.wallpaperType.Image]
-			}]);
 		} else {
+			let typeName = Object.keys(Constant.wallpaperType).filter(
+				(key) => {
+					return Constant.wallpaperType[key] === this.installer.isAutoSet;
+				}
+			)[0];
+
 			this.setNextSteps([{
 				key:   `${key}FavoriteGuide`,
-				state: { title: `${this.title} - ${key} - Slide wallpaper`, guideGroupId: `${this.guideGroupId}${key}Slide` },
-				args:  [Constant.wallpaperType.Slide]
+				state: { title: `${this.title} - ${key} - ${typeName} wallpaper`, guideGroupId: `${this.guideGroupId}${key}${typeName}` },
+				args:  [this.installer.isAutoSet]
 			}]);
 		}
 	}
