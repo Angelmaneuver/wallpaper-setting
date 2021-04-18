@@ -25,64 +25,13 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	public async after(): Promise<void> {
 		switch (this.activeItem) {
 			case Constant.favoriteProcess[0]:
-				if (this.installer.isAutoSet === undefined) {
-					this.setNextSteps([{
-						key:   "SelectFavoriteRegisterType",
-						state: { title: this.title + " - Register", guideGroupId: this.guideGroupId + "Register" }
-					}]);
-				} else if (this.installer.isAutoSet === Constant.wallpaperType.Image) {
-					this.setNextSteps([{
-						key:   "RegisterFavoriteGuide",
-						state: { title: this.title + " - Register - Image wallpaper", guideGroupId: this.guideGroupId + "RegisterImage" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-				} else {
-					this.setNextSteps([{
-						key:   "RegisterFavoriteGuide",
-						state: { title: this.title + " - Register - Slide wallpaper", guideGroupId: this.guideGroupId + "RegisterSlide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-				}
+				this.setTransition("Register");
 				break;
 			case Constant.favoriteProcess[1]:
-				if (this.installer.isAutoSet === undefined) {
-					this.setNextSteps([{
-						key:   "SelectFavoriteUnRegisterType",
-						state: { title: this.title + " - UnRegister", guideGroupId: this.guideGroupId + "UnRegister" }
-					}]);
-				} else if (this.installer.isAutoSet === Constant.wallpaperType.Image) {
-					this.setNextSteps([{
-						key:   "UnRegisterFavoriteGuide",
-						state: { title: this.title + " - UnRegister - Image wallpaper", guideGroupId: this.guideGroupId + "UnRegisterImage" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-				} else {
-					this.setNextSteps([{
-						key:   "UnRegisterFavoriteGuide",
-						state: { title: this.title + " - UnRegister - Slide wallpaper", guideGroupId: this.guideGroupId + "UnRegisterSlide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-				}
+				this.setTransition("UnRegister");
 				break;
 			case Constant.favoriteProcess[2]:
-				if (this.installer.isAutoSet === undefined) {
-					this.setNextSteps([{
-						key:   "SelectFavoriteLoadType",
-						state: { title: this.title + " - Load", guideGroupId: this.title + " - Load" }
-					}]);
-				} else if (this.installer.isAutoSet === Constant.wallpaperType.Image) {
-					this.setNextSteps([{
-						key:   "LoadFavoriteGuide",
-						state: { title: this.title + " - Load - Image wallpaper", guideGroupId: this.guideGroupId + "LoadImage" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-				} else {
-					this.setNextSteps([{
-						key:   "LoadFavoriteGuide",
-						state: { title: this.title + " - Load - Slide wallpaper", guideGroupId: this.guideGroupId + "LoadSlide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-				}
+				this.setTransition("Load");
 				break;
 			case Constant.favoriteProcess[3]:
 				this.state.activeItem   = this.settings.favoriteRandomSet ? Constant.favoriteRandomSet[0] : Constant.favoriteRandomSet[1];
@@ -94,6 +43,27 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 			default:
 				this.prev();
 				break;
+		}
+	}
+
+	private setTransition(key: string): void {
+		if (this.installer.isAutoSet === undefined) {
+			this.setNextSteps([{
+				key:   `SelectFavorite${key}Type`,
+				state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` }
+			}]);
+		} else if (this.installer.isAutoSet === Constant.wallpaperType.Image) {
+			this.setNextSteps([{
+				key:   `${key}FavoriteGuide`,
+				state: { title: `${this.title} - ${key} - Image wallpaper`, guideGroupId: `${this.guideGroupId}${key}Image` },
+				args:  [Constant.wallpaperType.Image]
+			}]);
+		} else {
+			this.setNextSteps([{
+				key:   `${key}FavoriteGuide`,
+				state: { title: `${this.title} - ${key} - Slide wallpaper`, guideGroupId: `${this.guideGroupId}${key}Slide` },
+				args:  [Constant.wallpaperType.Slide]
+			}]);
 		}
 	}
 }
