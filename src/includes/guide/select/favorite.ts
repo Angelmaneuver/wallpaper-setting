@@ -109,26 +109,29 @@ export class SelectFavoriteOperationType extends BaseQuickPickGuide {
 
 	public async after(): Promise<void> {
 		if (this.activeItem) {
-			switch (this.activeItem) {
-				case this.items[0]:
-					this.state.itemId = "favoriteWallpaperImageSet";
-					this.setNextSteps([{
-						key:   `${this.operationType}FavoriteGuide`,
-						state: { title: this.title + " - Image wallpaper", guideGroupId: this.guideGroupId + "Image" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-					break;
-				case this.items[1]:
-					this.state.itemId = "favoriteWallpaperSlideSet";
-					this.setNextSteps([{
-						key:   `${this.operationType}FavoriteGuide`,
-						state: { title: this.title + " - Slide wallpaper", guideGroupId: this.guideGroupId + "Slide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-					break;
-				default:
-					this.prev();
-					break;
+			if (this.activeItem === this.items[2]) {
+				this.prev();
+			} else {
+				let wallpaperType: number;
+				let typeName:      string;
+				let itemId:        string;
+
+				if (this.activeItem === this.items[0]) {
+					wallpaperType = Constant.wallpaperType.Image;
+					typeName      = "Image";
+					itemId        = "favoriteWallpaperImageSet";
+				} else {
+					wallpaperType = Constant.wallpaperType.Slide;
+					typeName      = "Slide";
+					itemId        = "favoriteWallpaperSlideSet";
+				}
+
+				this.state.itemId = itemId;
+				this.setNextSteps([{
+					key:   `${this.operationType}FavoriteGuide`,
+					state: { title: `${this.title} - ${typeName} wallpaper`, guideGroupId: `${this.guideGroupId}${typeName}` },
+					args:  [wallpaperType]
+				}]);
 			}
 		}
 	}
