@@ -172,7 +172,7 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 		}
 	}
 
-	public removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
+	private removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
 		let registered: Favorite = {};
 		let favorite:   Favorite = {};
 
@@ -208,39 +208,42 @@ export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 		await super.after();
 
 		if (this.activeItem !== this.returnItem) {
-			const name = this.activeItemLabel;
-
-			if (this.type === Constant.wallpaperType.Image) {
-				let favorite = this.settings.favoriteImageSet[name];
-
-				if (favorite["filePath"] && favorite["opacity"]) {
-					await this.settings.set(ExtensionSetting.propertyIds.filePath, favorite.filePath);
-					await this.settings.set(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
-				}
-
-				this.installer.install();
-			} else {
-				let favorite = this.settings.favoriteSlideSet[name];
-
-				if (
-					favorite["slideFilePaths"] &&
-					favorite["opacity"] &&
-					favorite["slideInterval"] &&
-					favorite["slideIntervalUnit"]
-				) {
-					await this.settings.set(ExtensionSetting.propertyIds.slideFilePaths,    favorite.slideFilePaths);
-					await this.settings.set(ExtensionSetting.propertyIds.opacity,           favorite.opacity);
-					await this.settings.set(ExtensionSetting.propertyIds.slideInterval,     favorite.slideInterval);
-					await this.settings.set(ExtensionSetting.propertyIds.slideIntervalUnit, favorite.slideIntervalUnit);
-					await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay,   favorite.slideRandomPlay     ? favorite.slideRandomPlay   : false);
-					await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, favorite.slideEffectFadeIn   ? favorite.slideEffectFadeIn : false);
-
-					this.installer.installAsSlide();
-				}
-			}
-
-			this.state.reload = true;
+			await this.loadFavorite(this.activeItemLabel);
 		}
+	}
+
+	private async loadFavorite(favoriteName: string) {
+		if (this.type === Constant.wallpaperType.Image) {
+			let favorite = this.settings.favoriteImageSet[favoriteName];
+
+			if (
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.filePath) &&
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.opacity)
+			) {
+				await this.settings.set(ExtensionSetting.propertyIds.filePath, favorite.filePath);
+				await this.settings.set(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
+				this.installer.install();
+			}
+		} else {
+			let favorite = this.settings.favoriteSlideSet[favoriteName];
+
+			if (
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.slideFilePaths)    &&
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.opacity)           &&
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.slideInterval)     &&
+				Object.getOwnPropertyNames(favorite).includes(ExtensionSetting.propertyIds.slideIntervalUnit)
+			) {
+				await this.settings.set(ExtensionSetting.propertyIds.slideFilePaths,    favorite.slideFilePaths);
+				await this.settings.set(ExtensionSetting.propertyIds.opacity,           favorite.opacity);
+				await this.settings.set(ExtensionSetting.propertyIds.slideInterval,     favorite.slideInterval);
+				await this.settings.set(ExtensionSetting.propertyIds.slideIntervalUnit, favorite.slideIntervalUnit);
+				await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay,   favorite.slideRandomPlay     ? favorite.slideRandomPlay   : false);
+				await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, favorite.slideEffectFadeIn   ? favorite.slideEffectFadeIn : false);
+				this.installer.installAsSlide();
+			}
+		}
+
+		this.state.reload = true;
 	}
 }
 
