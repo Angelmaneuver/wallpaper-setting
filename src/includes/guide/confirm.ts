@@ -27,9 +27,7 @@ export class BaseConfirmGuide extends BaseQuickPickGuide {
 		this.args       = args;
 	}
 
-	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		await super.show(input);
-
+	public async after():Promise<void> {
 		if (this.activeItem === this.items[0] && this.callback) {
 			await this.callback(...this.args);
 		} else {

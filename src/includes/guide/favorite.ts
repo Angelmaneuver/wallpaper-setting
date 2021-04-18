@@ -11,20 +11,27 @@ async function registFavorite(
 	key:        string,
 	state:      State,
 	message:    string,
-	favorite1:  Partial<Favorite>,
-	favorite2?: Partial<Favorite>
+	favorites:  undefined | {
+		favorite: Partial<Favorite>,
+		option?:  Partial<Favorite>
+	}
 ): Promise<void> {
-	let favorites: Partial<Favorite> = {};
+	let registFavorite: Partial<Favorite> = {};
 
-	if (favorite2 && Object.keys(favorite2).length > 0) {
-		let temporary = { ...favorite2, ...favorite1};
+	if (favorites) {
+		if (favorites.option && Object.keys(favorites.option).length > 0) {
+			let temporary = { ...favorites.option, ...favorites.favorite};
+	
+			Object.keys(temporary).sort().map((key) => { registFavorite[key] = temporary[key]; });
+		} else {
+			registFavorite = favorites.favorite;
+		}
 
-		Object.keys(temporary).sort().map((key) => { favorites[key] = temporary[key]; });
+		state.settings.set(key, registFavorite);
 	} else {
-		favorites = favorite1;
+		state.settings.set(key, undefined);
 	}
 
-	state.settings.set(key, favorites);
 	state.message = message;
 }
 
@@ -52,10 +59,10 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 			this.setNextSteps([{
 				key:   "BaseConfirmGuide",
 				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
-				args:  [{ yes: "Overwrite.", no: "Back to previous." }, registFavorite, this.itemId, this.state, message, favorite, registered]
+				args:  [{ yes: "Overwrite.", no: "Back to previous." }, registFavorite, this.itemId, this.state, message, { favorite: favorite, option: registered }]
 			}]);
 		} else {
-			registFavorite(this.itemId, this.state, message, favorite, registered);
+			registFavorite(this.itemId, this.state, message, { favorite: favorite, option: registered });
 		}
 	}
 
@@ -163,7 +170,7 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 					this.itemId,
 					this.state,
 					message,
-					(Object.keys(favorite).length > 0 ? favorite : undefined)
+					(Object.keys(favorite).length > 0 ? { favorite: favorite } : undefined)
 				]
 			}]);
 		}
