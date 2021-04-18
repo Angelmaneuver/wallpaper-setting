@@ -108,9 +108,9 @@ class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
 		this.returnItem = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.returnItem);
 
 		if (this.type === Constant.wallpaperType.Image) {
-			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: BaseRegistedFavoriteOperationGuide.labelling + label }));
+			this.items = this.favorites2Items(this.settings.favoriteImageSet);
 		} else {
-			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: BaseRegistedFavoriteOperationGuide.labelling + label }));
+			this.items = this.favorites2Items(this.settings.favoriteSlideSet);
 		}
 
 		this.items      = this.items.concat([this.returnItem]);
@@ -125,6 +125,10 @@ class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
 	protected get activeItemLabel(): string {
 		return this.activeItem ? this.activeItem.label.replace(BaseRegistedFavoriteOperationGuide.labelling, "") : "";
 	}
+
+	private favorites2Items(favorites: Favorite): QuickPickItem[] {
+		return Object.keys(favorites).map((label) => ({ label: BaseRegistedFavoriteOperationGuide.labelling + label }))
+	}
 }
 
 export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
@@ -138,9 +142,9 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 	}
 
 	public async after(): Promise<void> {
-		super.after();
+		await super.after();
 
-		if (this.activeItem) {
+		if (this.activeItem !== this.returnItem) {
 			const name                 = this.activeItemLabel;
 			const message              = `UnRegistered ${name} from my favorites!`;
 			let   registered: Favorite = {};
@@ -188,9 +192,9 @@ export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 	}
 
 	public async after(): Promise<void> {
-		super.after();
+		await super.after();
 
-		if (this.activeItem) {
+		if (this.activeItem !== this.returnItem) {
 			const name = this.activeItemLabel;
 
 			if (this.type === Constant.wallpaperType.Image) {
