@@ -11,26 +11,32 @@ async function registFavorite(
 	key:        string,
 	state:      State,
 	message:    string,
-	favorites:  undefined | {
+	favorites:  {
 		favorite: Partial<Favorite>,
 		option?:  Partial<Favorite>
 	}
 ): Promise<void> {
 	let registFavorite: Partial<Favorite> = {};
 
-	if (favorites) {
-		if (favorites.option && Object.keys(favorites.option).length > 0) {
-			let temporary = { ...favorites.option, ...favorites.favorite};
-	
-			Object.keys(temporary).sort().map((key) => { registFavorite[key] = temporary[key]; });
-		} else {
-			registFavorite = favorites.favorite;
-		}
+	if (favorites.option && Object.keys(favorites.option).length > 0) {
+		let temporary = { ...favorites.option, ...favorites.favorite};
 
-		state.settings.set(key, registFavorite);
+		Object.keys(temporary).sort().map((key) => { registFavorite[key] = temporary[key]; });
 	} else {
-		state.settings.set(key, undefined);
+		registFavorite = favorites.favorite;
 	}
+
+	state.settings.set(key, registFavorite);
+
+	state.message = message;
+}
+
+async function removeFavorite(
+	key:        string,
+	state:      State,
+	message:    string,
+): Promise<void> {
+	state.settings.remove(key);
 
 	state.message = message;
 }
@@ -145,24 +151,10 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 		await super.after();
 
 		if (this.activeItem !== this.returnItem) {
-			const name                 = this.activeItemLabel;
-			const message              = `UnRegistered ${name} from my favorites!`;
-			let   registered: Favorite = {};
-			let   favorite:   Favorite = {};
+			const name     = this.activeItemLabel;
+			const message  = `UnRegistered ${name} from my favorites!`;
 
-			if (this.type === Constant.wallpaperType.Image) {
-				registered = this.settings.favoriteImageSet;
-			} else {
-				registered = this.settings.favoriteSlideSet;
-			}
-
-			Object.keys(registered).map(
-				(key) => {
-					if (name !== key) {
-						favorite[key] = registered[key];
-					}
-				}
-			);
+			let   favorite = this.removedFavorite(this.type, name);
 
 			this.state.placeholder = "Do you want to unregister it?";
 			this.setNextSteps([{
@@ -170,7 +162,7 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
 				args:  [
 					{ yes: "UnRegister.", no: "Back to previous." },
-					registFavorite,
+					(Object.keys(favorite).length > 0 ? registFavorite : removeFavorite),
 					this.itemId,
 					this.state,
 					message,
@@ -178,6 +170,27 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 				]
 			}]);
 		}
+	}
+
+	public removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
+		let registered: Favorite = {};
+		let favorite:   Favorite = {};
+
+		if (this.type === Constant.wallpaperType.Image) {
+			registered = this.settings.favoriteImageSet;
+		} else {
+			registered = this.settings.favoriteSlideSet;
+		}
+
+		Object.keys(registered).map(
+			(key) => {
+				if (removeFavoriteName !== key) {
+					favorite[key] = registered[key];
+				}
+			}
+		);
+
+		return favorite;
 	}
 }
 
