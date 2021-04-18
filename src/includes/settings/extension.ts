@@ -60,37 +60,28 @@ export class ExtensionSetting extends SettingBase {
 		this._favoriteImageSet  = this.get(ExtensionSetting.propertyIds.favoriteImageSet);
 		this._favoriteSlideSet  = this.get(ExtensionSetting.propertyIds.favoriteSlideSet);
 		this._favoriteRandomSet = this.get(ExtensionSetting.propertyIds.favoriteRandomSet);
-		this._isRegisterd       = this.checkIsRegisterd();
-		this._FavoriteAutoSet   = this.checkFavoriteAutoSet();
+
+		this.setControllParameter();
 	}
 
-	private checkIsRegisterd(): undefined | Registerd {
-		let checkResult: undefined | Registerd = undefined;
-
+	private setControllParameter(): void {
 		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
-			checkResult = {
+			this._isRegisterd = {
 				image: Object.keys(this.favoriteImageSet).length > 0,
 				slide: Object.keys(this.favoriteSlideSet).length > 0,
 			};
-		} else {
-			checkResult = undefined;
-		}
 
-		return checkResult;
-	}
-
-	private checkFavoriteAutoSet(): undefined | FavoriteAutoSet {
-		let checkResult: undefined | FavoriteAutoSet = undefined;
-
-		if (this.isRegisterd) {
-			if (this.isRegisterd.image && !this.isRegisterd.slide) {
-				checkResult = Constant.wallpaperType.Image;
-			} else if (!this.isRegisterd.image && this.isRegisterd.slide) {
-				checkResult = Constant.wallpaperType.Slide;
+			if (this._isRegisterd.image && !this._isRegisterd.slide) {
+				this._FavoriteAutoSet = Constant.wallpaperType.Image;
+			} else if (!this._isRegisterd.image && this._isRegisterd.slide) {
+				this._FavoriteAutoSet = Constant.wallpaperType.Slide;
+			} else {
+				this._FavoriteAutoSet = undefined;
 			}
+		} else {
+			this._isRegisterd     = undefined;
+			this._FavoriteAutoSet = undefined;
 		}
-
-		return checkResult;
 	}
 
 	public setFilePath(value: string | undefined): void {
