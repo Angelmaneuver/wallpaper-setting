@@ -47,7 +47,7 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	}
 
 	private setTransition(key: string): void {
-		if (this.installer.isAutoSet === undefined) {
+		if (this.settings.FavoriteAutoset === undefined) {
 			this.setNextSteps([{
 				key:   `SelectFavorite${key}Type`,
 				state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` }
@@ -55,14 +55,14 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 		} else {
 			let typeName = Object.keys(Constant.wallpaperType).filter(
 				(key) => {
-					return Constant.wallpaperType[key] === this.installer.isAutoSet;
+					return Constant.wallpaperType[key] === this.settings.FavoriteAutoset;
 				}
 			)[0];
 
 			this.setNextSteps([{
 				key:   `${key}FavoriteGuide`,
 				state: { title: `${this.title} - ${key} - ${typeName} wallpaper`, guideGroupId: `${this.guideGroupId}${key}${typeName}` },
-				args:  [this.installer.isAutoSet]
+				args:  [this.settings.FavoriteAutoset]
 			}]);
 		}
 	}

@@ -1,5 +1,6 @@
-import { ConfigurationTarget } from 'vscode';
+import { ConfigurationTarget } from "vscode";
 import { SettingBase }         from "./base";
+import { Constant }            from "../constant";
 
 export interface Favorite {
 	[key: string]: {
@@ -13,10 +14,12 @@ export interface Favorite {
 	}
 }
 
-type Registerd = {
+type Registerd       = {
 	image: boolean,
 	slide: boolean
 };
+
+type FavoriteAutoSet = number;
 
 export class ExtensionSetting extends SettingBase {
 	public static propertyIds = {
@@ -43,6 +46,7 @@ export class ExtensionSetting extends SettingBase {
 	private _favoriteSlideSet:  Favorite;
 	private _favoriteRandomSet: boolean;
 	private _isRegisterd:       undefined | Registerd;
+	private _FavoriteAutoSet:   undefined | FavoriteAutoSet;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -56,15 +60,37 @@ export class ExtensionSetting extends SettingBase {
 		this._favoriteImageSet  = this.get(ExtensionSetting.propertyIds.favoriteImageSet);
 		this._favoriteSlideSet  = this.get(ExtensionSetting.propertyIds.favoriteSlideSet);
 		this._favoriteRandomSet = this.get(ExtensionSetting.propertyIds.favoriteRandomSet);
+		this._isRegisterd       = this.checkIsRegisterd();
+		this._FavoriteAutoSet   = this.checkFavoriteAutoSet();
+	}
+
+	private checkIsRegisterd(): undefined | Registerd {
+		let checkResult: undefined | Registerd = undefined;
 
 		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
-			this._isRegisterd = {
+			checkResult = {
 				image: Object.keys(this.favoriteImageSet).length > 0,
 				slide: Object.keys(this.favoriteSlideSet).length > 0,
 			};
 		} else {
-			this._isRegisterd = undefined;
+			checkResult = undefined;
 		}
+
+		return checkResult;
+	}
+
+	private checkFavoriteAutoSet(): undefined | FavoriteAutoSet {
+		let checkResult: undefined | FavoriteAutoSet = undefined;
+
+		if (this.isRegisterd) {
+			if (this.isRegisterd.image && !this.isRegisterd.slide) {
+				checkResult = Constant.wallpaperType.Image;
+			} else if (!this.isRegisterd.image && this.isRegisterd.slide) {
+				checkResult = Constant.wallpaperType.Slide;
+			}
+		}
+
+		return checkResult;
 	}
 
 	public setFilePath(value: string | undefined): void {
@@ -166,6 +192,10 @@ export class ExtensionSetting extends SettingBase {
 
 	public get isRegisterd(): undefined | Registerd {
 		return this._isRegisterd;
+	}
+
+	public get FavoriteAutoset(): undefined | FavoriteAutoSet {
+		return this._FavoriteAutoSet;
 	}
 
 	public async uninstall(): Promise<void> {
