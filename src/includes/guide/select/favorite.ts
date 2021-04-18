@@ -1,6 +1,7 @@
 import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
 import { BaseQuickPickGuide }        from "../base/pick";
 import { State }                     from "../base/base";
+import { QuickPickItem }             from "vscode";
 import { VSCodePreset }              from "../../utils/base/vscodePreset";
 import { Constant }                  from "../../constant";
 
@@ -25,13 +26,13 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	public async after(): Promise<void> {
 		switch (this.activeItem) {
 			case Constant.favoriteProcess[0]:
-				this.setTransition("Register");
+				this.setTransition(operation.Register);
 				break;
 			case Constant.favoriteProcess[1]:
-				this.setTransition("UnRegister");
+				this.setTransition(operation.UnRegister);
 				break;
 			case Constant.favoriteProcess[2]:
-				this.setTransition("Load");
+				this.setTransition(operation.Load);
 				break;
 			case Constant.favoriteProcess[3]:
 				this.state.activeItem   = this.settings.favoriteRandomSet ? Constant.favoriteRandomSet[0] : Constant.favoriteRandomSet[1];
@@ -49,8 +50,9 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	private setTransition(key: string): void {
 		if (this.settings.FavoriteAutoset === undefined) {
 			this.setNextSteps([{
-				key:   `SelectFavorite${key}Type`,
-				state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` }
+				key:   `SelectFavoriteOperationType`,
+				state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` },
+				args:  [key]
 			}]);
 		} else {
 			let typeName = Object.keys(Constant.wallpaperType).filter(
@@ -68,18 +70,41 @@ export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	}
 }
 
-export class SelectFavoriteRegisterType extends BaseQuickPickGuide {
+const operation = { Register: "Register", UnRegister: "UnRegister", Load: "Load" };
+
+export class SelectFavoriteOperationType extends BaseQuickPickGuide {
+	private operationType: string;
+
 	constructor(
-		state: State,
+		state:     State,
+		operationType: string
 	) {
-		state.placeholder = "Select the type of wallpaper you want to register for favorite.";
-		state.items       = [
-			VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image",  "Register to favorite the current wallpaper image settings."),
-			VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide",  "Register to favorite the current wallpaper slide settings."),
-			VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without saving any changes."),
-		];
+		if (operationType === operation.Register) {
+			state.placeholder = "Select the type of wallpaper you want to register for favorite.";
+			state.items       = SelectFavoriteOperationType.createItems({
+				image:  "Register to favorite the current wallpaper image settings.",
+				slide:  "Register to favorite the current wallpaper slide settings.",
+				return: "Return without saving any changes."
+			});
+		} else if (operationType === operation.UnRegister) {
+			state.placeholder = "Select the type of wallpaper you want to unregister for favorite.";
+			state.items       = SelectFavoriteOperationType.createItems({
+				image:  "UnRegister the wallpaper image setting from favorite.",
+				slide:  "UnRegister the wallpaper slide setting from favorite.",
+				return: "Return without saving any changes."
+			});
+		} else {
+			state.placeholder = "Select the type of wallpaper you want to load.";
+			state.items       = SelectFavoriteOperationType.createItems({
+				image:  "Load wallpaper image settings from favorites.",
+				slide:  "Load wallpaper slide settings from favorites.",
+				return: "Return without loading any changes."
+			});
+		}
 
 		super(state);
+
+		this.operationType = operationType;
 	}
 
 	public async after(): Promise<void> {
@@ -88,7 +113,7 @@ export class SelectFavoriteRegisterType extends BaseQuickPickGuide {
 				case this.items[0]:
 					this.state.itemId = "favoriteWallpaperImageSet";
 					this.setNextSteps([{
-						key:   "RegisterFavoriteGuide",
+						key:   `${this.operationType}FavoriteGuide`,
 						state: { title: this.title + " - Image wallpaper", guideGroupId: this.guideGroupId + "Image" },
 						args:  [Constant.wallpaperType.Image]
 					}]);
@@ -96,7 +121,7 @@ export class SelectFavoriteRegisterType extends BaseQuickPickGuide {
 				case this.items[1]:
 					this.state.itemId = "favoriteWallpaperSlideSet";
 					this.setNextSteps([{
-						key:   "RegisterFavoriteGuide",
+						key:   `${this.operationType}FavoriteGuide`,
 						state: { title: this.title + " - Slide wallpaper", guideGroupId: this.guideGroupId + "Slide" },
 						args:  [Constant.wallpaperType.Slide]
 					}]);
@@ -107,86 +132,12 @@ export class SelectFavoriteRegisterType extends BaseQuickPickGuide {
 			}
 		}
 	}
-}
 
-export class SelectFavoriteUnRegisterType extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		state.placeholder = "Select the type of wallpaper you want to unregister for favorite.";
-		state.items       = [
-			VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image",  "UnRegister the wallpaper image setting from favorite."),
-			VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide",  "UnRegister the wallpaper slide setting from favorite."),
-			VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without saving any changes."),
+	private static createItems(description: { image: string, slide: string, return: string }): QuickPickItem[] {
+		return [
+			VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image",  description.image),
+			VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide",  description.slide),
+			VSCodePreset.create(VSCodePreset.Icons.reply,     "Return", description.return)
 		];
-
-		super(state);
-	}
-
-	public async after(): Promise<void> {
-		if (this.activeItem) {
-			switch (this.activeItem) {
-				case this.items[0]:
-					this.state.itemId = "favoriteWallpaperImageSet";
-					this.setNextSteps([{
-						key:   "UnRegisterFavoriteGuide",
-						state: { title: this.title + " - Image wallpaper", guideGroupId: this.guideGroupId + "Image" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-					break;
-				case this.items[1]:
-					this.state.itemId = "favoriteWallpaperSlideSet";
-					this.setNextSteps([{
-						key:   "UnRegisterFavoriteGuide",
-						state: { title: this.title + " - Slide wallpaper", guideGroupId: this.guideGroupId + "Slide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-					break;
-				default:
-					this.prev();
-					break;
-			}
-		}
-	}
-}
-
-export class SelectFavoriteLoadType extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		state.placeholder = "Select the type of wallpaper you want to load.";
-		state.items       = [
-			VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image",  "Load wallpaper image settings from favorites."),
-			VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide",  "Load wallpaper slide settings from favorites."),
-			VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Return without loading any changes."),
-		];
-
-		super(state);
-	}
-
-	public async after(): Promise<void> {
-		if (this.activeItem) {
-			switch (this.activeItem) {
-				case this.items[0]:
-					this.state.itemId = "favoriteWallpaperImageSet";
-					this.setNextSteps([{
-						key:   "LoadFavoriteGuide",
-						state: { title: this.title + " - Image wallpaper", guideGroupId: this.guideGroupId + "Image" },
-						args:  [Constant.wallpaperType.Image]
-					}]);
-					break;
-				case this.items[1]:
-					this.state.itemId = "favoriteWallpaperSlideSet";
-					this.setNextSteps([{
-						key:   "LoadFavoriteGuide",
-						state: { title: this.title + " - Slide wallpaper", guideGroupId: this.guideGroupId + "Slide" },
-						args:  [Constant.wallpaperType.Slide]
-					}]);
-					break;
-				default:
-					this.prev();
-					break;
-			}
-		}
 	}
 }

@@ -19,7 +19,7 @@ export class Constant {
 		VSCodePreset.create(VSCodePreset.Icons.repoDelete, "UnRegister", "UnRegister favorite settings."),
 		VSCodePreset.create(VSCodePreset.Icons.repoPull,   "Load",       "Load favorite settings."),
 		VSCodePreset.create(VSCodePreset.Icons.merge,      "Start Up",   "Start up settings."),
-		VSCodePreset.create(VSCodePreset.Icons.mailReply,  "Return",     "Return without saving any changes."),
+		VSCodePreset.create(VSCodePreset.Icons.reply,      "Return",     "Return without saving any changes."),
 	];
 	public static favoriteRandomSet    = [
 		VSCodePreset.create(VSCodePreset.Icons.check,      "Yes",        "Random wallpaper at start up."),

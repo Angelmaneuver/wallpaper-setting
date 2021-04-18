@@ -18,9 +18,7 @@ import {
 } from "../select/parameter";
 import {
 	SelectFavoriteProcess,
-	SelectFavoriteRegisterType,
-	SelectFavoriteUnRegisterType,
-	SelectFavoriteLoadType
+	SelectFavoriteOperationType,
 } from "../select/favorite";
 import {
 	RegisterFavoriteGuide,
@@ -68,9 +66,7 @@ export abstract class GuideFactory {
 			SelectSetupType,
 			SelectParameterType,
 			SelectFavoriteProcess,
-			SelectFavoriteRegisterType,
-			SelectFavoriteLoadType,
-			SelectFavoriteUnRegisterType,
+			SelectFavoriteOperationType,
 			RegisterFavoriteGuide,
 			UnRegisterFavoriteGuide,
 			LoadFavoriteGuide,
