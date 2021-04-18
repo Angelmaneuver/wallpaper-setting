@@ -105,10 +105,7 @@ export class MultiStepInput {
 					input.activeItems = [activeItem];
 				}
 
-				input.buttons = [
-					...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-					...(buttons || []),
-				];
+				input.buttons = this.createButtons(buttons);
 
 				disposable.push(
 					input.onDidTriggerButton(
@@ -138,7 +135,7 @@ export class MultiStepInput {
 					this.current.dispose();
 				}
 
-				this.current = input;
+				this.current  = input;
 				this.current.show();
 			});
 		} finally {
@@ -169,10 +166,7 @@ export class MultiStepInput {
 					input.totalSteps = totalSteps;
 					input.value      = value || "";
 					input.prompt     = prompt;
-					input.buttons    = [
-						...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-						...(buttons || []),
-					];
+					input.buttons    = this.createButtons(buttons);
 
 				let validating       = validate("");
 
@@ -234,5 +228,12 @@ export class MultiStepInput {
 		} finally {
 			disposable.forEach((d) => d.dispose());
 		}
+	}
+
+	private createButtons(buttons: QuickInputButton[] | undefined) {
+		return [
+			...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+			...(buttons || []),
+		];
 	}
 }
