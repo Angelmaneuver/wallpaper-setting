@@ -4,6 +4,7 @@ import { State }                     from "./base/base";
 import { ExtensionContext }          from "vscode";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
 import * as Wallpaper                from "./select/wallpaper";
+import * as Slide                    from "./slide";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -46,18 +47,25 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.setNextSteps(this.title + " - Individual Settings", "setting",      0, 0, [{ key: "SelectParameterType" }]);
+				this.setNextSteps([{ key: "SelectParameterType",   state: { title: this.title + " - Individual Settings", guideGroupId: "setting" } }]);
 				break;
 			case items.Favorite:
-				this.setNextSteps(this.title + " - Favorite Settings",   "favorite",     0, 0, [{ key: "SelectFavoriteProcess" }]);
+				this.setNextSteps([{ key: "SelectFavoriteProcess", state: { title: this.title + " - Favorite Settings",   guideGroupId : "favorite" } }]);
 				break;
 			case items.Setup:
-				this.setNextSteps(this.title + " - Image Setup",         "setup",        0, 2, [{ key: "ImageFilePathGuide" }, { key: "OpacityGuide" }]);
+				this.setNextSteps([
+					{ key: "ImageFilePathGuide",  state: { title: this.title + " - Image Setup",  guideGroupId: "setup",       totalSteps: 2 }},
+					{ key: "OpacityGuide" }
+				]);
 				break;
 			case items.SetUpAsSlide:
-				this.setNextSteps(this.title + " - Slide Setup",         "setupAsSlide", 0, 5,
-					[{ key: "SlideFilePathsGuide" }, { key: "OpacityGuide" }, { key: "SlideIntervalUnitGuide" }, { key: "SlideIntervalGuide" }, { key: "SlideRandomPlayGuide" }]
-				);
+				this.setNextSteps([
+					{ key: "SlideFilePathsGuide", state: { title: this.title + " - Slide Setup", guideGroupId: "setupAsSlide", totalSteps: 5 }},
+					{ key: "OpacityGuide" },
+					{ key: "BaseQuickPickGuide",  state: Slide.getStateSlideIntervalUnit() },
+					{ key: "SlideIntervalGuide" },
+					{ key: "SlideRandomPlayGuide" }
+				]);
 				break;
 			case items.Uninstall:
 				this.selectClear();

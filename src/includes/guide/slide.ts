@@ -6,6 +6,22 @@ import { ExtensionSetting }                          from "../settings/extension
 import { Constant }                                  from "../constant";
 import { File }                                      from "../utils/base/file";
 
+export function getStateSlideIntervalUnit(): Partial<State> {
+	return {
+		itemId:      ExtensionSetting.propertyIds.slideIntervalUnit,
+		placeholder: "Select the unit of slide interval to enter next.",
+		items:       Constant.slideIntervalUnit,
+	} as Partial<State>;
+}
+
+export function getStateSlideEffectFadeIn(): Partial<State> {
+	return {
+		itemId:      ExtensionSetting.propertyIds.slideEffectFadeIn,
+		placeholder: "Do you want to fade in effect when the slide image changes?",
+		items:       Constant.slideEffectFadeIn,
+	} as Partial<State>;
+}
+
 export class SlideFilePathsGuide extends InputResourceGuide {
 	constructor(
 		state: State,
@@ -14,18 +30,6 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 		state.prompt = "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
 
 		super(state, Type.Directory);
-	}
-}
-
-export class SlideIntervalUnitGuide extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		state.itemId      = ExtensionSetting.propertyIds.slideIntervalUnit;
-		state.placeholder = "Select the unit of slide interval to enter next.";
-		state.items       = Constant.slideIntervalUnit;
-
-		super(state);
 	}
 }
 
@@ -101,17 +105,5 @@ export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 			this.installer.installAsSlide();
 			this.state.reload = true;
 		}
-	}
-}
-
-export class SlideEffectFadeInGuide extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		state.itemId      = ExtensionSetting.propertyIds.slideEffectFadeIn;
-		state.placeholder = "Do you want to fade in effect when the slide image changes?";
-		state.items       = Constant.slideEffectFadeIn;
-
-		super(state);
 	}
 }

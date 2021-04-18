@@ -15,7 +15,7 @@ export function delegation2Transition(
 		if (setting.favoriteRandomSet) {
 			state.reload = true;
 		} else {
-			guide.setNextSteps(state.title + " - Select Setup Type", "", 0, 0, [{ key: "SelectSetupType" }]);
+			guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);
 		}
 	} else {
 		if (installer.isAutoSet === Constant.wallpaperType.Image) {

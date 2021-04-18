@@ -84,25 +84,20 @@ export abstract class AbstractGuide {
 	}
 
 	public setNextSteps(
-		title:        string,
-		guideGroupId: string,
-		step:         number,
-		totalSteps:   number,
 		guides:       {
-			key:   string,
-			args?: any[]
-		}[]
+			key:    string,
+			state?: Partial<State>,
+			args?:  any[]
+		}[],
 	) {
-		this.state.title                              = title;
-		this.state.guideGroupId                       = guideGroupId;
-		this.state.step                               = step;
-		this.state.totalSteps                         = totalSteps;
-
 		let guideInstances: undefined | AbstractGuide = undefined;
 		let preInstance:    undefined | AbstractGuide = undefined;
 
 		guides.forEach(
 			(guide) => {
+				if (guide.state) {
+					Object.assign(this.state, guide.state);					
+				}
 				let   args          = guide.args ? guide.args : [];
 				const guideInstance = GuideFactory.create(guide.key, this.state, ...args);
 

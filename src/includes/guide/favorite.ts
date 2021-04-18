@@ -7,6 +7,27 @@ import { ExtensionSetting, Favorite } from "../settings/extension";
 import { VSCodePreset }               from "../utils/base/vscodePreset";
 import { Constant }                   from "../constant";
 
+async function registFavorite(
+	key:        string,
+	state:      State,
+	message:    string,
+	favorite1:  Partial<Favorite>,
+	favorite2?: Partial<Favorite>
+): Promise<void> {
+	let favorites: Partial<Favorite> = {};
+
+	if (favorite2 && Object.keys(favorite2).length > 0) {
+		let temporary = { ...favorite2, ...favorite1};
+
+		Object.keys(temporary).sort().map((key) => { favorites[key] = temporary[key]; });
+	} else {
+		favorites = favorite1;
+	}
+
+	state.settings.set(key, favorites);
+	state.message = message;
+}
+
 export class RegisterFavoriteGuide extends BaseInputGuide {
 	private type: number;
 
@@ -23,15 +44,31 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 	}
 
 	public async after(): Promise<void> {
-		let favorite: Partial<Favorite>           = {};
-		let registeredFavorite: Partial<Favorite> = {};
+		const [favorite, registered] = this.createRegistFavorite();
+		const message                = `Registered ${this.inputResult} to my favorites!`;
+
+		if (Object.keys(registered).includes(this.inputResult)) {
+			this.state.placeholder = "There is a favorite setting with the same name, do you want to overwrite it?";
+			this.setNextSteps([{
+				key:   "BaseConfirmGuide",
+				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
+				args:  [{ yes: "Overwrite.", no: "Back to previous." }, registFavorite, this.itemId, this.state, message, favorite, registered]
+			}]);
+		} else {
+			registFavorite(this.itemId, this.state, message, favorite, registered);
+		}
+	}
+
+	private createRegistFavorite(): Partial<Favorite>[] {
+		let favorite:   Partial<Favorite> = {};
+		let registered: Partial<Favorite> = {};
 
 		if (this.type === Constant.wallpaperType.Image) {
 			favorite[this.inputResult] = {
 				filePath: this.settings.filePath,
 				opacity:  this.settings.opacity
 			}
-			registeredFavorite         = this.settings.favoriteImageSet;
+			registered                 = this.settings.favoriteImageSet;
 		} else {
 			favorite[this.inputResult] = {
 				slideFilePaths:    this.settings.slideFilePaths,
@@ -41,89 +78,64 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 				slideRandomPlay:   this.settings.slideRandomPlay,
 				slideEffectFadeIn: this.settings.slideEffectFadeIn
 			}
-			registeredFavorite         = this.settings.favoriteSlideSet;
+			registered                 = this.settings.favoriteSlideSet;
 		}
 
-		if (Object.keys(registeredFavorite).includes(this.inputResult)) {
-			this.state.placeholder = "There is a favorite setting with the same name, do you want to overwrite it?";
-			this.setNextSteps(
-				this.title + " - Confirm",
-				this.guideGroupId,
-				0,
-				0,
-				[{
-					key:  "BaseConfirmGuide",
-					args: [
-						{ yes: "Overwrite", no: "Back to previous."},
-						this.registerFavorite,
-						this.itemId,
-						this.inputResult,
-						favorite,
-						registeredFavorite
-					]
-				}],
-			);
-		} else {
-			this.registerFavorite(this.itemId, this.inputResult, favorite, registeredFavorite);
-		}
-	}
-
-	public async registerFavorite(
-		key:                string,
-		name:               string,
-		favorite:           Partial<Favorite>,
-		registeredFavorite: Partial<Favorite>
-	): Promise<void> {
-		let favorites: Partial<Favorite> = {};
-
-		if (Object.keys(registeredFavorite).length > 0) {
-			let temp = { ...registeredFavorite, ...favorite};
-
-			Object.keys(temp).sort().map(
-				(key) => {
-					favorites[key] = temp[key];
-				}
-			);
-		} else {
-			favorites = favorite;
-		}
-
-		this.settings.set(key, favorites);
-
-		this.state.message = `Registered ${name} to my favorites!`;
+		return [favorite, registered];
 	}
 }
 
-export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
-	private static labelling: string = "$(file-media) ";
-	private type:             number;
-	private returnItem:       QuickPickItem;
+class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
+	protected static labelling: string = "$(file-media) ";
+	protected type:             number;
+	protected returnItem:       QuickPickItem;
 
+	constructor(
+		state:       State,
+		type:        number,
+		description: { returnItem: string }
+	) {
+		super(state);
+
+		this.type       = type;
+		this.returnItem = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.returnItem);
+
+		if (this.type === Constant.wallpaperType.Image) {
+			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: BaseRegistedFavoriteOperationGuide.labelling + label }));
+		} else {
+			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: BaseRegistedFavoriteOperationGuide.labelling + label }));
+		}
+
+		this.items      = this.items.concat([this.returnItem]);
+	}
+
+	public async after(): Promise<void> {
+		if (this.activeItem === this.returnItem) {
+			this.prev();
+		}
+	}
+
+	protected get activeItemLabel(): string {
+		return this.activeItem ? this.activeItem.label.replace(BaseRegistedFavoriteOperationGuide.labelling, "") : "";
+	}
+}
+
+export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 	constructor(
 		state: State,
 		type:  number
 	) {
 		state.placeholder = "Select the favorite settings to unregister.";
 
-		super(state);
-
-		this.type         = type;
-		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", "Return without unregister.");
-
-		if (this.type === Constant.wallpaperType.Image) {
-			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
-		} else {
-			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: UnRegisterFavoriteGuide.labelling + label }));
-		}
-
-		this.items        = this.items.concat([this.returnItem]);
+		super(state, type, { returnItem: "Return without unregister." });
 	}
 
 	public async after(): Promise<void> {
-		if (this.activeItem === this.returnItem) {
-			this.prev();
-		} else if (this.activeItem) {
-			const name                 = this.activeItem.label.replace(UnRegisterFavoriteGuide.labelling, "");
+		super.after();
+
+		if (this.activeItem) {
+			const name                 = this.activeItemLabel;
+			const message              = `UnRegistered ${name} from my favorites!`;
 			let   registered: Favorite = {};
 			let   favorite:   Favorite = {};
 
@@ -141,67 +153,38 @@ export class UnRegisterFavoriteGuide extends BaseQuickPickGuide {
 				}
 			);
 
-			this.state.placeholder     = "Do you want to unregister it?";
-			this.setNextSteps(
-				this.title + " - Confirm",
-				this.guideGroupId,
-				0,
-				0,
-				[{
-					key:  "BaseConfirmGuide",
-					args: [
-						{ yes: "UnRegister", no: "Back to previous."},
-						this.registerFavorite,
-						this.itemId,
-						name,
-						Object.keys(favorite).length > 0 ? favorite : undefined
-					]
-				}],
-			);
+			this.state.placeholder = "Do you want to unregister it?";
+			this.setNextSteps([{
+				key:   "BaseConfirmGuide",
+				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
+				args:  [
+					{ yes: "UnRegister.", no: "Back to previous." },
+					registFavorite,
+					this.itemId,
+					this.state,
+					message,
+					(Object.keys(favorite).length > 0 ? favorite : undefined)
+				]
+			}]);
 		}
-	}
-
-	public async registerFavorite(
-		key:                string,
-		name:               string,
-		favorite:           Partial<Favorite> | undefined
-	): Promise<void> {
-		this.settings.set(key, favorite);
-
-		this.state.message = `UnRegistered ${name} from my favorites!`;
 	}
 }
 
-export class LoadFavoriteGuide extends BaseQuickPickGuide {
-	private static labelling: string = "$(file-media) ";
-	private type:             number;
-	private returnItem:       QuickPickItem;
-
+export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 	constructor(
 		state: State,
 		type:  number
 	) {
 		state.placeholder = "Select the favorite settings to load.";
 
-		super(state);
-
-		this.type         = type;
-		this.returnItem   = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", "Return without loading any changes.");
-
-		if (this.type === Constant.wallpaperType.Image) {
-			this.items = Object.keys(this.settings.favoriteImageSet).map((label) => ({ label: LoadFavoriteGuide.labelling + label }));
-		} else {
-			this.items = Object.keys(this.settings.favoriteSlideSet).map((label) => ({ label: LoadFavoriteGuide.labelling + label }));
-		}
-
-		this.items        = this.items.concat([this.returnItem]);
+		super(state, type, { returnItem: "Return without loading any changes." });
 	}
 
 	public async after(): Promise<void> {
-		if (this.activeItem === this.returnItem) {
-			this.prev();
-		} else if (this.activeItem) {
-			const name = this.activeItem.label.replace(LoadFavoriteGuide.labelling, "");
+		super.after();
+
+		if (this.activeItem) {
+			const name = this.activeItemLabel;
 
 			if (this.type === Constant.wallpaperType.Image) {
 				let favorite = this.settings.favoriteImageSet[name];

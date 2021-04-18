@@ -1,15 +1,14 @@
 import { AbstractGuide }      from "../base/abc";
 import { StartMenuGuide }     from "../begin";
 import { BaseInputGuide }     from "../base/input";
+import { BaseQuickPickGuide } from "../base/pick";
 import { BaseConfirmGuide }   from "../confirm";
 import { ImageFilePathGuide } from "../image";
 import { OpacityGuide }       from "../opacity";
 import {
 	SlideFilePathsGuide,
-	SlideIntervalUnitGuide,
 	SlideIntervalGuide,
 	SlideRandomPlayGuide,
-	SlideEffectFadeInGuide
  } from "../slide";
 import {
 	SelectSetupType
@@ -59,14 +58,13 @@ export abstract class GuideFactory {
 		this.guides.push(
 			StartMenuGuide,
 			BaseInputGuide,
+			BaseQuickPickGuide,
 			BaseConfirmGuide,
 			ImageFilePathGuide,
 			OpacityGuide,
 			SlideFilePathsGuide,
-			SlideIntervalUnitGuide,
 			SlideIntervalGuide,
 			SlideRandomPlayGuide,
-			SlideEffectFadeInGuide,
 			SelectSetupType,
 			SelectParameterType,
 			SelectFavoriteProcess,
