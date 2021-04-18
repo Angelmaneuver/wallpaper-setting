@@ -123,70 +123,92 @@ export class SelectParameterType extends BaseQuickPickGuide {
 
 	private async save(): Promise<void> {
 		if (this.state.resultSet) {
-			if (this.state.resultSet[this.imageId]) {
-				await this.settings.set(ExtensionSetting.propertyIds.filePath, this.state.resultSet[this.imageId]);
-			}
-
-			if (this.state.resultSet[this.slideId]) {
-				await this.settings.set(
-					ExtensionSetting.propertyIds.slideFilePaths,
-					File.getChldrens(
-						this.state.resultSet[this.slideId],
-						{
-							filters:   Constant.applyImageFile,
-							fullPath:  true,
-							recursive: false,
-						}
-					)
-				);
-			}
-
-			if (typeof(this.state.resultSet[this.opacityId]) === "string") {
-				if (this.state.resultSet[this.opacityId].length > 0) {
-					await this.settings.set(
-						ExtensionSetting.propertyIds.opacity,
-						Number(this.state.resultSet[this.opacityId])
-					);
-				} else {
-					await this.settings.remove(ExtensionSetting.propertyIds.opacity);
-				}
-			}
-
-			if (this.state.resultSet[this.slideIntervalUnitId]) {
-				await this.settings.set(
-					ExtensionSetting.propertyIds.slideIntervalUnit,
-					this.state.resultSet[this.slideIntervalUnitId].label
-				);
-			}
-
-			if (typeof(this.state.resultSet[this.slideIntervalId]) === "string") {
-				if (this.state.resultSet[this.slideIntervalId].length > 0) {
-					await this.settings.set(
-						ExtensionSetting.propertyIds.slideInterval,
-						Number(this.state.resultSet[this.slideIntervalId])
-					);
-				} else {
-					await this.settings.remove(ExtensionSetting.propertyIds.slideInterval);
-				}
-			}
-
-			if (this.state.resultSet[this.slideRandomPlayId]) {
-				if (this.state.resultSet[this.slideRandomPlayId] === Constant.slideRandomPlay[0]) {
-					await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay, true);
-				} else {
-					await this.settings.remove(ExtensionSetting.propertyIds.slideRandomPlay);
-				}
-			}
-
-			if (this.state.resultSet[this.slideEffectFadeInId]) {
-				if (this.state.resultSet[this.slideEffectFadeInId] === Constant.slideEffectFadeIn[0]) {
-					await this.settings.remove(ExtensionSetting.propertyIds.slideEffectFadeIn);
-				} else {
-					await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, false);
-				}
-			}
+			await this.registImageFilePath();
+			await this.registSlideFilePaths();
+			await this.registOpacity();
+			await this.registSlideIntervalUnit();
+			await this.registSlideInterval();
+			await this.registSlideRandomPlay();
+			await this.registSlideEffectFadeIn();
 		}
 
 		Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state);
+	}
+
+	private async registImageFilePath(): Promise<void> {
+		if (this.state.resultSet[this.imageId]) {
+			await this.settings.set(ExtensionSetting.propertyIds.filePath, this.state.resultSet[this.imageId]);
+		}
+	}
+
+	private async registSlideFilePaths(): Promise<void> {
+		if (this.state.resultSet[this.slideId]) {
+			await this.settings.set(
+				ExtensionSetting.propertyIds.slideFilePaths,
+				File.getChldrens(
+					this.state.resultSet[this.slideId],
+					{
+						filters:   Constant.applyImageFile,
+						fullPath:  true,
+						recursive: false,
+					}
+				)
+			);
+		}
+	}
+
+	private async registOpacity(): Promise<void> {
+		if (typeof(this.state.resultSet[this.opacityId]) === "string") {
+			if (this.state.resultSet[this.opacityId].length > 0) {
+				await this.settings.set(
+					ExtensionSetting.propertyIds.opacity,
+					Number(this.state.resultSet[this.opacityId])
+				);
+			} else {
+				await this.settings.remove(ExtensionSetting.propertyIds.opacity);
+			}
+		}
+	}
+
+	private async registSlideIntervalUnit(): Promise<void> {
+		if (this.state.resultSet[this.slideIntervalUnitId]) {
+			await this.settings.set(
+				ExtensionSetting.propertyIds.slideIntervalUnit,
+				this.state.resultSet[this.slideIntervalUnitId].label
+			);
+		}
+	}
+
+	private async registSlideInterval(): Promise<void> {
+		if (typeof(this.state.resultSet[this.slideIntervalId]) === "string") {
+			if (this.state.resultSet[this.slideIntervalId].length > 0) {
+				await this.settings.set(
+					ExtensionSetting.propertyIds.slideInterval,
+					Number(this.state.resultSet[this.slideIntervalId])
+				);
+			} else {
+				await this.settings.remove(ExtensionSetting.propertyIds.slideInterval);
+			}
+		}
+	}
+
+	private async registSlideRandomPlay(): Promise<void> {
+		if (this.state.resultSet[this.slideRandomPlayId]) {
+			if (this.state.resultSet[this.slideRandomPlayId] === Constant.slideRandomPlay[0]) {
+				await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay, true);
+			} else {
+				await this.settings.remove(ExtensionSetting.propertyIds.slideRandomPlay);
+			}
+		}
+	}
+
+	private async registSlideEffectFadeIn(): Promise<void> {
+		if (this.state.resultSet[this.slideEffectFadeInId]) {
+			if (this.state.resultSet[this.slideEffectFadeInId] === Constant.slideEffectFadeIn[0]) {
+				await this.settings.remove(ExtensionSetting.propertyIds.slideEffectFadeIn);
+			} else {
+				await this.settings.set(ExtensionSetting.propertyIds.slideEffectFadeIn, false);
+			}
+		}
 	}
 }
