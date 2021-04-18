@@ -2,6 +2,7 @@ import { InputStep, MultiStepInput } from "../utils/multiStepInput";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { State }                     from "./base/base";
 import { ExtensionContext }          from "vscode";
+import { ExtensionSetting }          from "../settings/extension";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
 import * as Wallpaper                from "./select/wallpaper";
 import * as Slide                    from "./slide";
@@ -62,7 +63,7 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.setNextSteps([
 					{ key: "SlideFilePathsGuide", state: { title: this.title + " - Slide Setup", guideGroupId: "setupAsSlide", totalSteps: 5 }},
 					{ key: "OpacityGuide" },
-					{ key: "BaseQuickPickGuide",  state: Slide.getStateSlideIntervalUnit() },
+					{ key: "BaseQuickPickGuide",  state: Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit) },
 					{ key: "SlideIntervalGuide" },
 					{ key: "SlideRandomPlayGuide" }
 				]);

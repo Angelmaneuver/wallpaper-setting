@@ -6,20 +6,23 @@ import { ExtensionSetting }                          from "../settings/extension
 import { Constant }                                  from "../constant";
 import { File }                                      from "../utils/base/file";
 
-export function getStateSlideIntervalUnit(): Partial<State> {
-	return {
-		itemId:      ExtensionSetting.propertyIds.slideIntervalUnit,
-		placeholder: "Select the unit of slide interval to enter next.",
-		items:       Constant.slideIntervalUnit,
-	} as Partial<State>;
-}
+export function getDefaultState(itemId: string): Partial<State> {
+	let state: Partial<State> = {};
 
-export function getStateSlideEffectFadeIn(): Partial<State> {
-	return {
-		itemId:      ExtensionSetting.propertyIds.slideEffectFadeIn,
-		placeholder: "Do you want to fade in effect when the slide image changes?",
-		items:       Constant.slideEffectFadeIn,
-	} as Partial<State>;
+	state.itemId              = itemId;
+
+	switch (itemId) {
+		case ExtensionSetting.propertyIds.slideIntervalUnit:
+			state.placeholder = "Select the unit of slide interval to enter next.";
+			state.items       = Constant.slideIntervalUnit;
+			break;
+		case ExtensionSetting.propertyIds.slideEffectFadeIn:
+			state.placeholder = "Do you want to fade in effect when the slide image changes?";
+			state.items       = Constant.slideEffectFadeIn
+			break;
+	}
+
+	return state;
 }
 
 export class SlideFilePathsGuide extends InputResourceGuide {

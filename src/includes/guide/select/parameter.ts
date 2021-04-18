@@ -99,7 +99,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 								return item.label === this.settings.slideIntervalUnit;
 							}
 						);
-				this.setNextSteps([{ key: "BaseQuickPickGuide",     state: Object.assign({ title: this.title + " - Slide Interval Unit",   guideGroupId: this.guideGroupId }, Slide.getStateSlideIntervalUnit())}]);
+				this.setNextSteps([{ key: "BaseQuickPickGuide",     state: Object.assign({ title: this.title + " - Slide Interval Unit",   guideGroupId: this.guideGroupId }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit)) }]);
 				break;
 			case this.templateItems[5]:
 				this.state.activeItem  =
@@ -113,7 +113,7 @@ export class SelectParameterType extends BaseQuickPickGuide {
 					this.state.resultSet[this.slideEffectFadeInId]
 						? this.state.resultSet[this.slideEffectFadeInId]
 						: (this.settings.slideEffectFadeIn ? Constant.slideEffectFadeIn[0] : Constant.slideEffectFadeIn[1]);
-				this.setNextSteps([{ key: "BaseQuickPickGuide",     state: Object.assign({ title: this.title + " - Slide Effect Fade In",  guideGroupId: this.guideGroupId }, Slide.getStateSlideEffectFadeIn())}]);
+				this.setNextSteps([{ key: "BaseQuickPickGuide",     state: Object.assign({ title: this.title + " - Slide Effect Fade In",  guideGroupId: this.guideGroupId }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn)) }]);
 				break;
 			case this.templateItems[7]:
 				await this.save();
