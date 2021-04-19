@@ -85,19 +85,4 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		this.installer.uninstall();
 		this.state.reload = true;
 	}
-
-	private createState(
-		additionalTitle: string,
-		guideGroupId:    string,
-		totalStep:       number,
-		itemId?:         string
-	): Partial<State> {
-		let state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
-
-		if (itemId) {
-			state.itemId = itemId;
-		}
-
-		return state;
-	}
 }

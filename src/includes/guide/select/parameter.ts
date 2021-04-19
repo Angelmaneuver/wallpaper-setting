@@ -49,57 +49,37 @@ export class SelectParameterType extends BaseQuickPickGuide {
 	}
 
 	public async after(): Promise<void> {
+		let state: Partial<State>;
+
 		switch (this.activeItem) {
 			case this.templateItems[0]:
-				this.setNextSteps([{
-					key: "ImageFilePathGuide", state: {
-						title: this.title + " - Image Path", guideGroupId: this.guideGroupId, itemId: this.settingItemId.filePath, initailValue: this.settings.filePath.value
-					}
-				}]);
+				state = this.createState(" - Image Path",            this.guideGroupId, 0, this.settingItemId.filePath);
+				this.setNextSteps([{key: "ImageFilePathGuide", state: Object.assign(state,  { initailValue: this.settings.filePath.value })}]);
 				break;
 			case this.templateItems[1]:
-				this.setNextSteps([{
-					key: "SlideFilePathsGuide", state: Object.assign({
-						title: this.title + " - Image Files Path", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideFilePaths
-					}, Slide.getDefaultState(this.settingItemId.slideFilePaths))
-				}]);
+				state = this.createState(" - Image Files Path",      this.guideGroupId, 0, this.settingItemId.slideFilePaths);
+				this.setNextSteps([{key: "SlideFilePathsGuide", state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths))}]);
 				break;
 			case this.templateItems[2]:
-				this.setNextSteps([{
-					key: "OpacityGuide", state: {
-						title: this.title + " - Opacity", guideGroupId: this.guideGroupId, itemId: this.settingItemId.opacity, initailValue: this.settings.opacity.value
-					}
-				}]);
+				state = this.createState(" - Opacity",               this.guideGroupId, 0, this.settingItemId.opacity);
+				this.setNextSteps([{key: "OpacityGuide",        state: Object.assign(state, { initailValue: this.settings.opacity.value })}]);
 				break;
 			case this.templateItems[3]:
-				this.setNextSteps([{
-					key: "SlideIntervalGuide", state: Object.assign({
-						title: this.title + " - Slide Interval", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideInterval, initailValue: this.settings.slideInterval.value
-					}, Slide.getDefaultState(this.settingItemId.slideInterval))
-				}]);
+				state = this.createState(" - Slide Interval",        this.guideGroupId, 0, this.settingItemId.slideInterval);
+				this.setNextSteps([{key: "SlideIntervalGuide",  state: Object.assign(state, { initailValue: this.settings.slideInterval.value}, Slide.getDefaultState(this.settingItemId.slideInterval))}]);
 				break;
 			case this.templateItems[4]:
-				this.setNextSteps([{
-					key: "BaseQuickPickGuide", state: Object.assign(
-						{ title: this.title + " - Slide Interval Unit", guideGroupId: this.guideGroupId, initailValue: this.settings.slideIntervalUnit.validValue },
-						Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit))
-					}
-				]);
+				state = this.createState(" - Slide Interval Unit",   this.guideGroupId, 0, this.settingItemId.slideIntervalUnit);
+				this.setNextSteps([{key: "BaseQuickPickGuide",  state: Object.assign(state, { initailValue: this.settings.slideIntervalUnit.validValue }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit))}]);
 				break;
 			case this.templateItems[5]:
-				this.setNextSteps([{
-					key: "SlideRandomPlayGuide", state: Object.assign({
-						title: this.title + " - Slide Random Playback", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideRandomPlay, initailValue: this.settings.slideRandomPlay.value
-					}, Slide.getDefaultState(this.settingItemId.slideRandomPlay))
-				}]);
+				state = this.createState(" - Slide Random Playback", this.guideGroupId, 0, this.settingItemId.slideRandomPlay);
+				this.setNextSteps([{key: "SlideRandomPlayGuide", state: Object.assign(state, { initailValue: this.settings.slideRandomPlay.value }, Slide.getDefaultState(this.settingItemId.slideRandomPlay))}]);
 				break;
 			case this.templateItems[6]:
+				state = this.createState(" - Slide Effect Fade In",  this.guideGroupId, 0, this.settingItemId.slideEffectFadeIn);
 				this.setNextSteps([{
-					key: "BaseQuickPickGuide", state: Object.assign(
-						{ title: this.title + " - Slide Effect Fade In",  guideGroupId: this.guideGroupId, initailValue: this.settings.slideEffectFadeIn.value },
-						Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn))
-					}
-				]);
+					key: "BaseQuickPickGuide", state: Object.assign(state, { initailValue: this.settings.slideEffectFadeIn.value }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn))}]);
 				break;
 			case this.templateItems[7]:
 				await this.save();

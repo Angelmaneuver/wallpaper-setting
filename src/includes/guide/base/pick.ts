@@ -1,6 +1,6 @@
 import { QuickPickItem }             from "vscode";
 import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
-import { BaseGuide }                 from "./base";
+import { BaseGuide, State }          from "./base";
 
 const match = /^\$\(.+\) /;
 
@@ -34,5 +34,20 @@ export class BaseQuickPickGuide extends BaseGuide {
 		} else {
 			return this.activeItem;
 		}
+	}
+
+	protected createState(
+		additionalTitle: string,
+		guideGroupId:    string,
+		totalStep:       number,
+		itemId?:         string
+	): Partial<State> {
+		let state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
+
+		if (itemId) {
+			state.itemId = itemId;
+		}
+
+		return state;
 	}
 }
