@@ -59,9 +59,9 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				break;
 			case this.templateItems[1]:
 				this.setNextSteps([{
-					key: "SlideFilePathsGuide", state: {
+					key: "SlideFilePathsGuide", state: Object.assign({
 						title: this.title + " - Image Files Path", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideFilePaths
-					}
+					}, Slide.getDefaultState(this.settingItemId.slideFilePaths))
 				}]);
 				break;
 			case this.templateItems[2]:
@@ -73,9 +73,9 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				break;
 			case this.templateItems[3]:
 				this.setNextSteps([{
-					key: "SlideIntervalGuide", state: {
+					key: "SlideIntervalGuide", state: Object.assign({
 						title: this.title + " - Slide Interval", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideInterval, initailValue: this.settings.slideInterval.value
-					}
+					}, Slide.getDefaultState(this.settingItemId.slideInterval))
 				}]);
 				break;
 			case this.templateItems[4]:
@@ -88,9 +88,9 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				break;
 			case this.templateItems[5]:
 				this.setNextSteps([{
-					key: "SlideRandomPlayGuide", state: {
+					key: "SlideRandomPlayGuide", state: Object.assign({
 						title: this.title + " - Slide Random Playback", guideGroupId: this.guideGroupId, itemId: this.settingItemId.slideRandomPlay, initailValue: this.settings.slideRandomPlay.value
-					}
+					}, Slide.getDefaultState(this.settingItemId.slideRandomPlay))
 				}]);
 				break;
 			case this.templateItems[6]:

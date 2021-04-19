@@ -12,10 +12,20 @@ export function getDefaultState(itemId: string): Partial<State> {
 	state.itemId              = itemId;
 
 	switch (itemId) {
+		case ExtensionSetting.propertyIds.slideFilePaths:
+			state.prompt = "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
+			break;
+		case ExtensionSetting.propertyIds.slideInterval:
+			state.validate = SlideIntervalGuide.validateSlideInterval;
+			break;
 		case ExtensionSetting.propertyIds.slideIntervalUnit:
 			state.placeholder = "Select the unit of slide interval to enter next.";
 			state.items       = Constant.slideIntervalUnit;
 			break;
+		case ExtensionSetting.propertyIds.slideRandomPlay:
+			state.placeholder = "Do you want to randomize the sliding order of images?";
+			state.items       = Constant.slideRandomPlay;
+				break;
 		case ExtensionSetting.propertyIds.slideEffectFadeIn:
 			state.placeholder = "Do you want to fade in effect when the slide image changes?";
 			state.items       = Constant.slideEffectFadeIn
@@ -30,22 +40,10 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 		state: State,
 	) {
 		super(state, Type.Directory);
-
-		this.itemId = this.settingItemId.slideFilePaths;
-		this.prompt = "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
 	}
 }
 
 export class SlideIntervalGuide extends BaseInputGuide {
-	constructor(
-		state: State,
-	) {
-		super(state);
-
-		this.itemId    = this.settingItemId.slideInterval;
-		this.validate = SlideIntervalGuide.validateSlideInterval;
-	}
-
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
 		this.prompt    =
 		"Enter a number between "
@@ -73,16 +71,6 @@ export class SlideIntervalGuide extends BaseInputGuide {
 }
 
 export class SlideRandomPlayGuide extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		super(state);
-
-		this.itemId      = this.settingItemId.slideRandomPlay;
-		this.placeholder = "Do you want to randomize the sliding order of images?";
-		this.items       = Constant.slideRandomPlay;
-	}
-
 	public async after(): Promise<void> {
 		await super.after();
 		
