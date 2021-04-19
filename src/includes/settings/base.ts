@@ -13,15 +13,6 @@ export class SettingBase {
 
 	public async set(key: string, value: any): Promise<void> {
 		await this.config.update(key, value, this.target);
-
-		const method = Reflect.get(
-			this,
-			"set" + key.replace(/^./, (match) => { return match.toUpperCase(); })
-		);
-
-		if (method) {
-			Reflect.apply(method, this, [value]);
-		}
 	}
 
 	public get(key: string): any {

@@ -1,6 +1,6 @@
 import * as path            from "path";
 import { ExtensionSetting } from "./settings/extension";
-import { Constant }         from "./constant";
+import * as Constant        from "./constant";
 import { formatByArray }    from "./utils/base/string";
 import { File }             from "./utils/base/file";
 
@@ -31,10 +31,7 @@ export class Wallpaper {
 	) {
 		this.installLocation = locationPath;
 		this.installFilaName = fileName,
-		this.installPath     = path.join(
-			this.installLocation,
-			this.installFilaName
-		);
+		this.installPath     = path.join(this.installLocation, this.installFilaName);
 		this.settings        = settings;
 		this.extensionKey    = extensionKey;
 		this._isInstall      = this.checkIsInstall();
@@ -51,12 +48,12 @@ export class Wallpaper {
 	private checkIsReady(): undefined | Ready {
 		let checkResult: undefined | Ready;
 
-		if (!(this.settings.filePath.length > 0) && !(this.settings.slideFilePaths.length > 0)) {
+		if (!(this.settings.filePath.value.length > 0) && !(this.settings.slideFilePaths.value.length > 0)) {
 			checkResult = undefined;
 		} else {
 			checkResult =  {
-				"image": this.settings.filePath.length > 0       ? true : false,
-				"slide": this.settings.slideFilePaths.length > 0 ? true : false
+				"image": this.settings.filePath.value.length > 0       ? true : false,
+				"slide": this.settings.slideFilePaths.value.length > 0 ? true : false
 			};
 		}
 
@@ -94,7 +91,7 @@ export class Wallpaper {
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.content) +
-			this.getWallpaperScript(this.settings.filePath, this.settings.opacity);
+			this.getWallpaperScript(this.settings.filePath.value, this.settings.opacity.validValue);
 
 		editFile.write({ encoding: "utf-8" });
 	}
@@ -105,11 +102,11 @@ export class Wallpaper {
 		editFile.content =
 			this.clearWallpaperScript(editFile.content) +
 			this.getSlideScript(
-				this.settings.slideFilePaths,
-				this.settings.opacity,
+				this.settings.slideFilePaths.value,
+				this.settings.opacity.validValue,
 				this.settings.slideIntervalUnit2Millisecond,
-				this.settings.slideRandomPlay,
-				this.settings.slideEffectFadeIn
+				this.settings.slideRandomPlay.validValue,
+				this.settings.slideEffectFadeIn.validValue
 			);
 
 		editFile.write({ encoding: "utf-8" });

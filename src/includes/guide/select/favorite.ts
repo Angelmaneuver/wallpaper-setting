@@ -3,15 +3,15 @@ import { BaseQuickPickGuide }        from "../base/pick";
 import { State }                     from "../base/base";
 import { QuickPickItem }             from "vscode";
 import { VSCodePreset }              from "../../utils/base/vscodePreset";
-import { Constant }                  from "../../constant";
+import * as Constant                 from "../../constant";
 
 export class SelectFavoriteProcess extends BaseQuickPickGuide {
 	constructor(
 		state: State,
 	) {
-		state.placeholder = "Select the process you want to perform.";
-
 		super(state);
+
+		this.placeholder = "Select the process you want to perform.";
 	}
 
 	public async show(input: MultiStepInput): Promise<void | InputStep> {

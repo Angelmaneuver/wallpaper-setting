@@ -4,15 +4,16 @@ import { State }              from "../base/base";
 import { Wallpaper }          from "../../wallpaper";
 import { ExtensionSetting }   from "../../settings/extension";
 import { VSCodePreset }       from "../../utils/base/vscodePreset";
-import { Constant }           from "../../constant";
+import * as Constant          from "../../constant";
 
 export function delegation2Transition(
 	guide:     AbstractGuide,
 	installer: Wallpaper,
 	setting:   ExtensionSetting,
-	state:     Partial<State>) {
+	state:     Partial<State>
+) {
 	if (installer.isAutoSet === undefined) {
-		if (setting.favoriteRandomSet) {
+		if (setting.favoriteRandomSet.validValue) {
 			state.reload = true;
 		} else {
 			guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);

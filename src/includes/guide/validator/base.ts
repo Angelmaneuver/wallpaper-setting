@@ -1,5 +1,5 @@
-import { File }     from "../../utils/base/file";
-import { Constant } from "../../constant";
+import { File }      from "../../utils/base/file";
+import * as Constant from "../../constant";
 
 export class BaseValidator {
 	public static async validateFileExist(filePath: string): Promise<string | undefined> {

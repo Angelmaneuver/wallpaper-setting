@@ -18,6 +18,7 @@ export async function guidance(context: ExtensionContext) {
 		await MultiStepInput.run((input: MultiStepInput) => menu.start(input));
 	} catch (e) {
 		window.showWarningMessage(e.message);
+		console.debug(e);
 	}
 
 	if (state.message && state.message.length > 0) {

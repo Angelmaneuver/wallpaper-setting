@@ -1,6 +1,8 @@
 import { AbstractState, AbstractGuide } from "./abc";
 import { ExtensionContext }             from "vscode";
 import { ExtensionSetting }             from "../../settings/extension";
+import * as Constant                    from "../../constant";
+import { File }                         from "../../utils/base/file";
 import { Wallpaper }                    from "../../wallpaper";
 import * as Installer                   from "../../installer";
 
@@ -48,18 +50,20 @@ export abstract class BaseGuide extends AbstractGuide {
 		return this.state.settings;
 	}
 
-	protected async checkEnteredAndSetDefaultWhenNotEntered(itemId: string): Promise<boolean> {
-		if (this.state.resultSet[this.getId(itemId)] && this.state.resultSet[this.getId(itemId)].length > 0) {
-			return true;
-		} else {
-			await this.settings.remove(itemId);
-			return false;
-		}
+	public get settingItemId(): { [key: string]: string } {
+		return ExtensionSetting.propertyIds;
 	}
 
-	protected async inputResult2SettingByNumber(itemId: string): Promise<void> {
-		if (await this.checkEnteredAndSetDefaultWhenNotEntered(itemId)) {
-			this.settings.set(itemId, Number(this.state.resultSet[this.getId(itemId)]));
+	protected async registSetting(): Promise<void> {
+		for (let key of Object.keys(this.guideGroupResultSet)) {
+			if (key === this.settingItemId.slideFilePaths) {
+				this.guideGroupResultSet[this.settingItemId.slideFilePaths] = File.getChldrens(
+					this.guideGroupResultSet[this.settingItemId.slideFilePaths],
+					{ filters: Constant.applyImageFile, fullPath: true, recursive: false }
+				)	
+			}
+
+			await this.settings.setItemValue(key, this.guideGroupResultSet[key]);
 		}
 	}
 }

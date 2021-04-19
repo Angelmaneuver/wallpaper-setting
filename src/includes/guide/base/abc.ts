@@ -17,6 +17,7 @@ export interface AbstractState{
 	activeItem?:   QuickPickItem,
 	validate?:     any,
 	shouldResume?: any, 
+	initailValue?: any,
 	resultSet:     {
 		[key: string]: any,
 	},
@@ -37,6 +38,7 @@ export abstract class AbstractGuide {
 	protected activeItem:   QuickPickItem   | undefined;
 	protected validate:     any;
 	protected shouldResume: any;
+	protected initailValue: any;
 	protected nextStep:     any;
 
 	constructor(
@@ -54,8 +56,9 @@ export abstract class AbstractGuide {
 		this.inputResult  = state.inputResult  ? state.inputResult  : "";
 		this.items        = state.items        ? state.items        : [];
 		this.activeItem   = state.activeItem;
-		this.validate     = state.validate     ?  state.validate    : () => undefined;
+		this.validate     = state.validate     ? state.validate     : () => undefined;
 		this.shouldResume = state.shouldResume ? state.shouldResume : () => new Promise<boolean>((resolve, reject) => {});
+		this.initailValue = state.initailValue;
 
 		if (this.totalSteps > 0) {
 			this.step        += 1;
@@ -71,6 +74,7 @@ export abstract class AbstractGuide {
 		this.state.activeItem   = undefined;
 		this.state.validate     = undefined;
 		this.state.shouldResume = undefined;
+		this.state.initailValue = undefined;
 	}
 
 	public get state(): State {
@@ -132,29 +136,16 @@ export abstract class AbstractGuide {
 		}
 	}
 
-	protected get id(): string {
-		return this.guideGroupId.length > 0 || this.itemId.length > 0
-			? this.getId(this.itemId)
-			: "";
+	protected get inputValue(): any {
+		return this.guideGroupResultSet[this.itemId] ? this.guideGroupResultSet[this.itemId] : this.initailValue;
 	}
 
-	protected getId(itemId: string | undefined): string {
-		let result =
-			this.guideGroupId && this.guideGroupId.length > 0
-				? this.guideGroupId
-				: "";
+	protected get guideGroupResultSet(): { [key: string]: any } {
+		if (!this.state.resultSet[this.guideGroupId]) {
+			this.state.resultSet[this.guideGroupId] = {};
+		}
 
-		result     +=
-			result.length > 0 && itemId && itemId.length > 0
-				? "."
-				: "";
-
-		result     +=
-			itemId && itemId.length > 0
-				? itemId
-				: "";
-
-		return result;
+		return this.state.resultSet[this.guideGroupId];
 	}
 
 	protected prev(): void {

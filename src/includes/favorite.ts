@@ -1,5 +1,6 @@
 import * as Installer       from "./installer";
 import { ExtensionSetting } from "./settings/extension";
+import * as Constant        from "./constant";
 
 const type           = { Image: 0, Slide: 1 };
 const choice         = (min: number, max: number) => {
@@ -17,31 +18,31 @@ const favorite2array = (
 )
 
 export async function randomSet() {
-	if (setting.isRegisterd && setting.favoriteRandomSet) {
+	if (setting.isRegisterd && setting.favoriteRandomSet.validValue) {
 		let favorites: {
 			name: string,
 			type: number
 		}[]           = new Array()
-							.concat(favorite2array(type.Image, setting.favoriteImageSet))
-							.concat(favorite2array(type.Slide, setting.favoriteSlideSet));
+							.concat(favorite2array(type.Image, setting.favoriteImageSet.value))
+							.concat(favorite2array(type.Slide, setting.favoriteSlideSet.value));
 		let selection = favorites[choice(0, favorites.length -1)];
 
 		if (selection.type === type.Image) {
-			let favorite = setting.favoriteImageSet[selection.name];
+			let favorite = setting.favoriteImageSet.value[selection.name];
 
-			setting.setFilePath (favorite.filePath);
-			setting.setOpacity  (favorite.opacity);
+			setting.setItemValue(ExtensionSetting.propertyIds.filePath, favorite.filePath);
+			setting.setItemValue(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
 
 			installer.install();
 		} else {
-			let favorite = setting.favoriteSlideSet[selection.name];
+			let favorite = setting.favoriteSlideSet.value[selection.name];
 
-			setting.setSlideFilePaths    (favorite.slideFilePaths);
-			setting.setOpacity           (favorite.opacity);
-			setting.setSlideInterval     (favorite.slideInterval);
-			setting.setSlideIntervalUnit (favorite.slideIntervalUnit);
-			setting.setSlideRandomPlay   (favorite.slideRandomPlay);
-			setting.setSlideEffectFadeIn (favorite.slideEffectFadeIn);
+			setting.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,     favorite.slideFilePaths);
+			setting.setItemValue(ExtensionSetting.propertyIds.opacity,            favorite.opacity);
+			setting.setItemValue(ExtensionSetting.propertyIds.slideInterval,      favorite.slideInterval);
+			setting.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit,  favorite.slideIntervalUnit);
+			setting.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,    favorite.slideRandomPlay   ? Constant.slideRandomPlay[0]   : Constant.slideRandomPlay[1]);
+			setting.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn,  favorite.slideEffectFadeIn ? Constant.slideEffectFadeIn[0] : Constant.slideEffectFadeIn[1]);
 
 			installer.installAsSlide();
 		}

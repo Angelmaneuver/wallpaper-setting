@@ -2,7 +2,6 @@ import { InputStep, MultiStepInput } from "../utils/multiStepInput";
 import { BaseQuickPickGuide }        from "./base/pick";
 import { State }                     from "./base/base";
 import { ExtensionContext }          from "vscode";
-import { ExtensionSetting }          from "../settings/extension";
 import { VSCodePreset }              from "../utils/base/vscodePreset";
 import * as Wallpaper                from "./select/wallpaper";
 import * as Slide                    from "./slide";
@@ -48,29 +47,29 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.setNextSteps([{ key: "SelectParameterType",   state: { title: this.title + " - Individual Settings", guideGroupId: "setting" } }]);
+				this.setNextSteps([{ key: "SelectParameterType",   state: { title: this.title + " - Individual Settings", guideGroupId: "setting",  step: 0, totalSteps: 0 } }]);
 				break;
 			case items.Favorite:
-				this.setNextSteps([{ key: "SelectFavoriteProcess", state: { title: this.title + " - Favorite Settings",   guideGroupId : "favorite" } }]);
+				this.setNextSteps([{ key: "SelectFavoriteProcess", state: { title: this.title + " - Favorite Settings",   guideGroupId : "favorite", step: 0, totalSteps: 0 } }]);
 				break;
 			case items.Setup:
 				this.setNextSteps([
-					{ key: "ImageFilePathGuide",  state: { title: this.title + " - Image Setup",  guideGroupId: "setup",       totalSteps: 2 }},
+					{ key: "ImageFilePathGuide", state: { title:  this.title + " - Image Setup", guideGroupId: "setup",        itemId: this.settingItemId.filePath,       step: 0, totalSteps: 2 }},
 					{ key: "OpacityGuide" }
 				]);
 				break;
 			case items.SetUpAsSlide:
 				this.setNextSteps([
-					{ key: "SlideFilePathsGuide", state: { title: this.title + " - Slide Setup", guideGroupId: "setupAsSlide", totalSteps: 5 }},
+					{ key: "SlideFilePathsGuide", state: { title: this.title + " - Slide Setup", guideGroupId: "setupAsSlide", itemId: this.settingItemId.slideFilePaths, step: 0, totalSteps: 5 }},
 					{ key: "OpacityGuide" },
-					{ key: "BaseQuickPickGuide",  state: Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit) },
+					{ key: "BaseQuickPickGuide",  state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
 					{ key: "SlideIntervalGuide" },
 					{ key: "SlideRandomPlayGuide" }
 				]);
 				break;
 			case items.Uninstall:
 				this.selectClear();
-				this.installer.uninstall();
+				await this.settings.uninstall();
 				break;
 			default:
 				break;

@@ -3,35 +3,29 @@ import { State, BaseGuide }          from "./base";
 import { QuickInputButton, Uri }     from "vscode";
 import { BaseValidator }             from "../validator/base";
 import { Selecter }                  from "../../utils/selecter";
-import { Constant }                  from "../../constant";
+import * as Constant                 from "../../constant";
 
 export class BaseInputGuide extends BaseGuide {
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		if (this.state.resultSet[this.id]) {
-			this.inputResult = this.state.resultSet[this.id];
-		}
-
 		this.inputResult = await input.showInputBox(
 			{
 				title:        this.title,
 				step:         this.step,
 				totalSteps:   this.totalSteps,
 				buttons:      this.buttons,
-				value:        this.inputResult,
+				value:        this.inputValue,
 				prompt:       this.prompt,
 				validate:     this.validate,
 				shouldResume: this.shouldResume,
 			}
 		);
 
-		if (typeof (this.inputResult) === "string") {
-			this.setResultSet(this.inputResult);
-		}
+		this.setResultSet(this.inputResult);
 	}
 
 	protected setResultSet(value: any): void {
-		if (this.id.length > 0) {
-			this.state.resultSet[this.id] = value;
+		if (this.itemId.length > 0 && typeof(value) === "string") {
+			this.guideGroupResultSet[this.itemId] = value;
 		}
 	}
 }

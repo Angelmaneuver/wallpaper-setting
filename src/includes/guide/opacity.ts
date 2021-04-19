@@ -2,42 +2,31 @@ import { BaseInputGuide }            from "./base/input";
 import { State }                     from "./base/base";
 import { BaseValidator }             from "./validator/base";
 import { ExtensionSetting }          from "../settings/extension";
-import { Constant }                  from "../constant";
+import * as Constant                 from "../constant";
 
 export class OpacityGuide extends BaseInputGuide {
 	constructor(
 		state: State,
 	) {
-		state.itemId   = ExtensionSetting.propertyIds.opacity;
-		state.prompt   =
+		super(state);
+
+		this.itemId   = this.settingItemId.opacity;
+		this.prompt   =
 			"Enter a number between "
 				+ Constant.maximumOpacity
 				+ " and "
 				+ Constant.minimumOpacity
 				+ " for opacity."
 				+ " (Default: 0.75)";
-		state.validate = OpacityGuide.validateOpacity;
-
-		super(state);
+		this.validate = OpacityGuide.validateOpacity;
 	}
 
 	public async after():Promise<void> {
 		await super.after();
 
 		if (this.totalSteps === 2) {
-			await this.settings.set(
-				ExtensionSetting.propertyIds.filePath,
-				this.state.resultSet[this.getId(ExtensionSetting.propertyIds.filePath)]
-			);
-
-			if (this.inputResult.length > 0) {
-				await this.settings.set(this.itemId,  Number(this.inputResult));
-			} else {
-				await this.settings.remove(this.itemId);
-			}
-
+			await this.registSetting();
 			this.installer.install();
-
 			this.state.reload = true;
 		}
 	}

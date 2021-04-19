@@ -1,6 +1,8 @@
 import { ConfigurationTarget } from "vscode";
 import { SettingBase }         from "./base";
-import { Constant }            from "../constant";
+import { AbstractSettingItem } from "./item/abc";
+import { SettingItemFactory }  from "./item/factory/base";
+import * as Constant           from "../constant";
 
 export interface Favorite {
 	[key: string]: {
@@ -22,7 +24,7 @@ type Registerd       = {
 type FavoriteAutoSet = number;
 
 export class ExtensionSetting extends SettingBase {
-	public static propertyIds = {
+	public static propertyIds: { [key: string]: string }     = {
 		filePath:          "filePath",
 		slideFilePaths:    "slideFilePaths",
 		opacity:           "opacity",
@@ -35,40 +37,31 @@ export class ExtensionSetting extends SettingBase {
 		favoriteRandomSet: "favoriteWallpaperRandomSet"
 	};
 
-	private _filePath:          string;
-	private _slideFilePaths:    Array<string>;
-	private _opacity:           number;
-	private _slideInterval:     number;
-	private _slideIntervalUnit: string;
-	private _slideRandomPlay:   boolean;
-	private _slideEffectFadeIn: boolean;
-	private _favoriteImageSet:  Favorite;
-	private _favoriteSlideSet:  Favorite;
-	private _favoriteRandomSet: boolean;
+	private _items:             AbstractSettingItem[]        = new Array();
 	private _isRegisterd:       undefined | Registerd;
 	private _FavoriteAutoSet:   undefined | FavoriteAutoSet;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
-		this._filePath          = this.get(ExtensionSetting.propertyIds.filePath);
-		this._slideFilePaths    = this.get(ExtensionSetting.propertyIds.slideFilePaths);
-		this._opacity           = this.get(ExtensionSetting.propertyIds.opacity);
-		this._slideInterval     = this.get(ExtensionSetting.propertyIds.slideInterval);
-		this._slideIntervalUnit = this.get(ExtensionSetting.propertyIds.slideIntervalUnit);
-		this._slideRandomPlay   = this.get(ExtensionSetting.propertyIds.slideRandomPlay);
-		this._slideEffectFadeIn = this.get(ExtensionSetting.propertyIds.slideEffectFadeIn);
-		this._favoriteImageSet  = this.get(ExtensionSetting.propertyIds.favoriteImageSet);
-		this._favoriteSlideSet  = this.get(ExtensionSetting.propertyIds.favoriteSlideSet);
-		this._favoriteRandomSet = this.get(ExtensionSetting.propertyIds.favoriteRandomSet);
 
+		this.createItemInstances();
 		this.setControllParameter();
+	}
+
+	private createItemInstances(): void {
+		Object.keys(ExtensionSetting.propertyIds).forEach(
+			(key) => {
+				const id = ExtensionSetting.propertyIds[key];
+				this._items.push(SettingItemFactory.create(id, this.get(id)));
+			}
+		)
 	}
 
 	private setControllParameter(): void {
 		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
 			this._isRegisterd = {
-				image: Object.keys(this.favoriteImageSet).length > 0,
-				slide: Object.keys(this.favoriteSlideSet).length > 0,
+				image: Object.keys(this.favoriteImageSet.value).length > 0,
+				slide: Object.keys(this.favoriteSlideSet.value).length > 0,
 			};
 
 			if (this._isRegisterd.image && !this._isRegisterd.slide) {
@@ -84,90 +77,80 @@ export class ExtensionSetting extends SettingBase {
 		}
 	}
 
-	public setFilePath(value: string | undefined): void {
-		this._filePath = value === undefined ? "" : value;
+	public async setItemValue(itemId: string, value: any) {
+		const item = this.getItem(itemId);
+
+		if (item) {
+			item.value = value;
+			await super.set(itemId, item.convert4Registration);
+		}
 	}
 
-	public get filePath(): string {
-		return this._filePath;
+	public getItem(itemId: string): AbstractSettingItem {
+		const item = this._items.find((item) => { return item.itemId === itemId; });
+
+		if (item) {
+			return item;
+		} else {
+			throw new ReferenceError("Requested " + itemId + "'s class not found...");
+		}
 	}
 
-	public setSlideFilePaths(value: string[] | undefined): void {
-		this._slideFilePaths = value === undefined ? [] : value;
+	public getItemValue(itemId: string): any {
+		const item = this.getItem(itemId);
+		return item?.value;
 	}
 
-	public get slideFilePaths(): string[] {
-		return this._slideFilePaths;
+	public async uninstall(): Promise<void> {
+		for (let key of Object.keys(ExtensionSetting.propertyIds)) {
+			await this.remove(ExtensionSetting.propertyIds[key]);
+		}
 	}
 
-	public setOpacity(value: number | undefined): void {
-		this._opacity = value === undefined ? 0.75 : value;
+	public get filePath(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.filePath);
 	}
 
-	public get opacity(): number {
-		return this._opacity;
+	public get slideFilePaths(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideFilePaths);
 	}
 
-	public setSlideInterval(value: number | undefined): void {
-		this._slideInterval = value === undefined ? 25 : value;
+	public get opacity(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.opacity);
 	}
 
-	public get slideInterval(): number {
-		return this._slideInterval;
+	public get slideInterval(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideInterval);
 	}
 
-	public setSlideIntervalUnit(value: string | undefined): void {
-		this._slideIntervalUnit = value === undefined ? "Minute" : value;
+	public get slideIntervalUnit(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideIntervalUnit);
 	}
 
-	public get slideIntervalUnit(): string {
-		return this._slideIntervalUnit;
+	public get slideRandomPlay(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideRandomPlay);
 	}
 
-	public setSlideRandomPlay(value: boolean | undefined): void {
-		this._slideRandomPlay = value === undefined ? false : value;
+	public get slideEffectFadeIn(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideEffectFadeIn);
 	}
 
-	public get slideRandomPlay(): boolean {
-		return this._slideRandomPlay;
+	public get favoriteImageSet(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.favoriteImageSet);
 	}
 
-	public setSlideEffectFadeIn(value: boolean | undefined): void {
-		this._slideEffectFadeIn = value === undefined ? true : value;
+	public get favoriteSlideSet(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.favoriteSlideSet);
 	}
 
-	public get slideEffectFadeIn(): boolean {
-		return this._slideEffectFadeIn;
-	}
-
-	public setFavoriteImageSet(value: Favorite | undefined): void {
-		this._favoriteImageSet = value === undefined ? {} : value;
-	}
-
-	public get favoriteImageSet(): Favorite {
-		return this._favoriteImageSet;
-	}
-
-	public setFavoriteSlideSet(value: Favorite | undefined): void {
-		this._favoriteSlideSet = value === undefined ? {} : value;
-	}
-
-	public get favoriteSlideSet(): Favorite {
-		return this._favoriteSlideSet;
-	}
-
-	public setFavoriteRandomSet(value: boolean | undefined): void {
-		this._favoriteRandomSet = value === undefined ? false : value;
-	}
-
-	public get favoriteRandomSet(): boolean {
-		return this._favoriteRandomSet;
+	public get favoriteRandomSet(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSet);
 	}
 
 	public get slideIntervalUnit2Millisecond(): number {
 		let baseTime: number = 1;
 
-		switch (this.slideIntervalUnit) {
+		switch (this.slideIntervalUnit.value) {
 			case "Hour":
 				baseTime *= 60;
 			case "Minute":
@@ -178,7 +161,7 @@ export class ExtensionSetting extends SettingBase {
 				baseTime *= 1;
 		}
 
-		return this.slideInterval * baseTime;
+		return this.slideInterval.validValue * baseTime;
 	}
 
 	public get isRegisterd(): undefined | Registerd {
@@ -187,18 +170,5 @@ export class ExtensionSetting extends SettingBase {
 
 	public get FavoriteAutoset(): undefined | FavoriteAutoSet {
 		return this._FavoriteAutoSet;
-	}
-
-	public async uninstall(): Promise<void> {
-		await this.remove(ExtensionSetting.propertyIds.filePath);
-		await this.remove(ExtensionSetting.propertyIds.slideFilePaths);
-		await this.remove(ExtensionSetting.propertyIds.opacity);
-		await this.remove(ExtensionSetting.propertyIds.slideInterval);
-		await this.remove(ExtensionSetting.propertyIds.slideIntervalUnit);
-		await this.remove(ExtensionSetting.propertyIds.slideRandomPlay);
-		await this.remove(ExtensionSetting.propertyIds.slideEffectFadeIn);
-		await this.remove(ExtensionSetting.propertyIds.favoriteImageSet);
-		await this.remove(ExtensionSetting.propertyIds.favoriteSlideSet);
-		await this.remove(ExtensionSetting.propertyIds.favoriteRandomSet);
 	}
 }

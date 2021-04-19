@@ -1,10 +1,10 @@
+import { InputStep, MultiStepInput }                 from "../utils/multiStepInput";
 import { BaseInputGuide, InputResourceGuide, Type }  from "./base/input";
 import { BaseQuickPickGuide }                        from "./base/pick";
 import { State }                                     from "./base/base";
 import { BaseValidator }                             from "./validator/base";
 import { ExtensionSetting }                          from "../settings/extension";
-import { Constant }                                  from "../constant";
-import { File }                                      from "../utils/base/file";
+import * as Constant                                 from "../constant";
 
 export function getDefaultState(itemId: string): Partial<State> {
 	let state: Partial<State> = {};
@@ -29,10 +29,10 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 	constructor(
 		state: State,
 	) {
-		state.itemId = ExtensionSetting.propertyIds.slideFilePaths;
-		state.prompt = "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
-
 		super(state, Type.Directory);
+
+		this.itemId = this.settingItemId.slideFilePaths;
+		this.prompt = "Enter the path of the folder that contains the image files you want to use for the slides, or select it from the dialog box that appears when you click the button in the upper right corner.";
 	}
 }
 
@@ -40,21 +40,25 @@ export class SlideIntervalGuide extends BaseInputGuide {
 	constructor(
 		state: State,
 	) {
-		state.itemId   = ExtensionSetting.propertyIds.slideInterval;
-		state.validate = SlideIntervalGuide.validateSlideInterval;
-
 		super(state);
 
+		this.itemId    = this.settingItemId.slideInterval;
+		this.validate = SlideIntervalGuide.validateSlideInterval;
+	}
+
+	public async show(input: MultiStepInput): Promise<void | InputStep> {
 		this.prompt    =
-			"Enter a number between "
-				+ Constant.minimumSlideInterval
-				+ " and 65555 in "
-				+ (
-					state.resultSet[this.getId(ExtensionSetting.propertyIds.slideIntervalUnit)]
-						? state.resultSet[this.getId(ExtensionSetting.propertyIds.slideIntervalUnit)].label
-						: this.settings.slideIntervalUnit
-				)
-				+ ". (Default: 25)";
+		"Enter a number between "
+			+ Constant.minimumSlideInterval
+			+ " and 65555 in "
+			+ (
+				this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
+					? this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
+					: this.settings.slideIntervalUnit.value
+			)
+			+ ". (Default: 25)";
+
+		await super.show(input);
 	}
 
 	public static async validateSlideInterval(slideInterval: string): Promise<string | undefined> {
@@ -72,39 +76,18 @@ export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 	constructor(
 		state: State,
 	) {
-		state.itemId      = ExtensionSetting.propertyIds.slideRandomPlay;
-		state.placeholder = "Do you want to randomize the sliding order of images?";
-		state.items       = Constant.slideRandomPlay;
-
 		super(state);
+
+		this.itemId      = this.settingItemId.slideRandomPlay;
+		this.placeholder = "Do you want to randomize the sliding order of images?";
+		this.items       = Constant.slideRandomPlay;
 	}
 
 	public async after(): Promise<void> {
 		await super.after();
 		
 		if (this.totalSteps === 5) {
-			await this.settings.set(
-				ExtensionSetting.propertyIds.slideFilePaths,
-				File.getChldrens(
-					this.state.resultSet[this.getId(ExtensionSetting.propertyIds.slideFilePaths)],
-					{
-						filters:   Constant.applyImageFile,
-						fullPath:  true,
-						recursive: false,
-					}
-				)
-			);
-
-			await this.inputResult2SettingByNumber(ExtensionSetting.propertyIds.opacity);
-
-			await this.inputResult2SettingByNumber(ExtensionSetting.propertyIds.slideInterval);
-
-			if (this.activeItem === this.items[0]) {
-				await this.settings.set(ExtensionSetting.propertyIds.slideRandomPlay, true);
-			} else {
-				await this.settings.remove(ExtensionSetting.propertyIds.slideRandomPlay);
-			}
-
+			await this.registSetting();
 			this.installer.installAsSlide();
 			this.state.reload = true;
 		}
