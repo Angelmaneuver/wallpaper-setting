@@ -53,33 +53,39 @@ export class SelectParameterType extends BaseQuickPickGuide {
 
 		switch (this.activeItem) {
 			case this.templateItems[0]:
-				state = this.createState(" - Image Path",            this.guideGroupId, 0, this.settingItemId.filePath);
-				this.setNextSteps([{key: "ImageFilePathGuide", state: Object.assign(state,  { initailValue: this.settings.filePath.value })}]);
+				this.createNextStep(this.settingItemId.filePath,          "ImageFilePathGuide",  " - Image Path",
+					{ initialValue: this.settings.filePath.value }
+				);
 				break;
 			case this.templateItems[1]:
-				state = this.createState(" - Image Files Path",      this.guideGroupId, 0, this.settingItemId.slideFilePaths);
-				this.setNextSteps([{key: "SlideFilePathsGuide", state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths))}]);
+				this.createNextStep(this.settingItemId.slideFilePaths,    "SlideFilePathsGuide", " - Image Files Path",
+					{ subState: Slide.getDefaultState(this.settingItemId.slideFilePaths) }
+				);
 				break;
 			case this.templateItems[2]:
-				state = this.createState(" - Opacity",               this.guideGroupId, 0, this.settingItemId.opacity);
-				this.setNextSteps([{key: "OpacityGuide",        state: Object.assign(state, { initailValue: this.settings.opacity.value })}]);
+				this.createNextStep(this.settingItemId.opacity,           "OpacityGuide",        " - Opacity",
+					{ initialValue: this.settings.opacity.value }
+				);
 				break;
 			case this.templateItems[3]:
-				state = this.createState(" - Slide Interval",        this.guideGroupId, 0, this.settingItemId.slideInterval);
-				this.setNextSteps([{key: "SlideIntervalGuide",  state: Object.assign(state, { initailValue: this.settings.slideInterval.value}, Slide.getDefaultState(this.settingItemId.slideInterval))}]);
+				this.createNextStep(this.settingItemId.slideInterval,     "SlideIntervalGuide",  " - Slide Interval",
+					{ subState: Slide.getDefaultState(this.settingItemId.slideInterval),               initialValue: this.settings.slideInterval.value }
+				);
 				break;
 			case this.templateItems[4]:
-				state = this.createState(" - Slide Interval Unit",   this.guideGroupId, 0, this.settingItemId.slideIntervalUnit);
-				this.setNextSteps([{key: "BaseQuickPickGuide",  state: Object.assign(state, { initailValue: this.settings.slideIntervalUnit.validValue }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit))}]);
+				this.createNextStep(this.settingItemId.slideIntervalUnit, "BaseQuickPickGuide",  " - Slide Interval Unit",
+					{ subState: Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit), initialValue: this.settings.slideIntervalUnit.validValue }
+				);
 				break;
 			case this.templateItems[5]:
-				state = this.createState(" - Slide Random Playback", this.guideGroupId, 0, this.settingItemId.slideRandomPlay);
-				this.setNextSteps([{key: "SlideRandomPlayGuide", state: Object.assign(state, { initailValue: this.settings.slideRandomPlay.value }, Slide.getDefaultState(this.settingItemId.slideRandomPlay))}]);
+				this.createNextStep(this.settingItemId.slideRandomPlay, "SlideRandomPlayGuide",  " - Slide Random Playback",
+					{ subState: Slide.getDefaultState(this.settingItemId.slideRandomPlay),             initialValue: this.settings.slideRandomPlay.value }
+				);
 				break;
 			case this.templateItems[6]:
-				state = this.createState(" - Slide Effect Fade In",  this.guideGroupId, 0, this.settingItemId.slideEffectFadeIn);
-				this.setNextSteps([{
-					key: "BaseQuickPickGuide", state: Object.assign(state, { initailValue: this.settings.slideEffectFadeIn.value }, Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn))}]);
+				this.createNextStep(this.settingItemId.slideEffectFadeIn, "BaseQuickPickGuide",  " - Slide Effect Fade In",
+					{ subState: Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn), initialValue: this.settings.slideEffectFadeIn.value }
+				);
 				break;
 			case this.templateItems[7]:
 				await this.save();
@@ -88,6 +94,30 @@ export class SelectParameterType extends BaseQuickPickGuide {
 				this.prev();
 				break;
 		}
+	}
+
+	protected createNextStep(
+		itemId:          string,
+		className:       string,
+		additionalTitle: string,
+		optionState?:    {
+			subState?:  Partial<State>,
+			initialValue?: any,
+		}
+	): void {
+		let state = this.createState(additionalTitle, this.guideGroupId, 0, itemId);
+
+		if (optionState) {
+			if (optionState.subState) {
+				Object.assign(state, optionState.subState);
+			}
+
+			if (optionState.initialValue) {
+				state["initailValue"] = optionState.initialValue;
+			}
+		}
+
+		this.setNextSteps([{ key: className, state: state }]);
 	}
 
 	private async save(): Promise<void> {
