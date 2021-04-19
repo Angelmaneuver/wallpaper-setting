@@ -38,6 +38,8 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	public async show(input: MultiStepInput): Promise<void |  InputStep> {
 		await super.show(input);
 
+		let state: Partial<State>;
+
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
@@ -47,20 +49,21 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				this.setNextSteps([{ key: "SelectParameterType",   state: { title: this.title + " - Individual Settings", guideGroupId: "setting",  step: 0, totalSteps: 0 } }]);
+				state = this.createState(" - Individual Settings", "setting", 0);
+				this.setNextSteps([{ key: "SelectParameterType",   state: state }]);
 				break;
 			case items.Favorite:
-				this.setNextSteps([{ key: "SelectFavoriteProcess", state: { title: this.title + " - Favorite Settings",   guideGroupId : "favorite", step: 0, totalSteps: 0 } }]);
+				state = this.createState(" - Favorite Settings", "favorite", 0);
+				this.setNextSteps([{ key: "SelectFavoriteProcess", state: state }]);
 				break;
 			case items.Setup:
-				this.setNextSteps([
-					{ key: "ImageFilePathGuide", state: { title:  this.title + " - Image Setup", guideGroupId: "setup",        itemId: this.settingItemId.filePath,       step: 0, totalSteps: 2 }},
-					{ key: "OpacityGuide" }
-				]);
+				state = this.createState(" - Image Setup", "setup", 2, this.settingItemId.filePath);
+				this.setNextSteps([{ key: "ImageFilePathGuide", state: state }, { key: "OpacityGuide" }]);
 				break;
 			case items.SetUpAsSlide:
+				state = this.createState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
 				this.setNextSteps([
-					{ key: "SlideFilePathsGuide", state: { title: this.title + " - Slide Setup", guideGroupId: "setupAsSlide", itemId: this.settingItemId.slideFilePaths, step: 0, totalSteps: 5 }},
+					{ key: "SlideFilePathsGuide", state: state },
 					{ key: "OpacityGuide" },
 					{ key: "BaseQuickPickGuide",  state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
 					{ key: "SlideIntervalGuide" },
@@ -81,5 +84,20 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	private selectClear(): void {
 		this.installer.uninstall();
 		this.state.reload = true;
+	}
+
+	private createState(
+		additionalTitle: string,
+		guideGroupId:    string,
+		totalStep:       number,
+		itemId?:         string
+	): Partial<State> {
+		let state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
+
+		if (itemId) {
+			state.itemId = itemId;
+		}
+
+		return state;
 	}
 }
