@@ -21,14 +21,11 @@ export class OpacityGuide extends BaseInputGuide {
 		this.validate = OpacityGuide.validateOpacity;
 	}
 
-	public async after():Promise<void> {
-		await super.after();
+	public async final(): Promise<void> {
+		await super.final();
 
-		if (this.totalSteps === 2) {
-			await this.registSetting();
-			this.installer.install();
-			this.state.reload = true;
-		}
+		this.installer.install();
+		this.state.reload = true;
 	}
 
 	public static async validateOpacity(opacity: string): Promise<string | undefined> {

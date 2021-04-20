@@ -71,13 +71,10 @@ export class SlideIntervalGuide extends BaseInputGuide {
 }
 
 export class SlideRandomPlayGuide extends BaseQuickPickGuide {
-	public async after(): Promise<void> {
-		await super.after();
-		
-		if (this.totalSteps === 5) {
-			await this.registSetting();
-			this.installer.installAsSlide();
-			this.state.reload = true;
-		}
+	public async final(): Promise<void> {
+		super.final();
+
+		this.installer.installAsSlide();
+		this.state.reload = true;	
 	}
 }

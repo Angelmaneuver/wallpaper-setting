@@ -26,6 +26,10 @@ export abstract class BaseGuide extends AbstractGuide {
 		}
 	}
 
+	public async final(): Promise<void> {
+		await this.registSetting();
+	}
+
 	public get context(): ExtensionContext {
 		if (this.state.context) {
 			return this.state.context;

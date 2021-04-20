@@ -53,8 +53,15 @@ export abstract class AbstractGuide {
 		this.buttons      = state.buttons      ? state.buttons      : [];
 		this.placeholder  = state.placeholder  ? state.placeholder  : "";
 		this.prompt       = state.prompt       ? state.prompt       : "";
-		this.inputResult  = state.inputResult  ? state.inputResult  : "";
 		this.items        = state.items        ? state.items        : [];
+
+		this.arguments2Field(state);
+
+		this.stateClear();
+	}
+
+	private arguments2Field(state: State): void {
+		this.inputResult  = state.inputResult  ? state.inputResult  : "";
 		this.activeItem   = state.activeItem;
 		this.validate     = state.validate     ? state.validate     : () => undefined;
 		this.shouldResume = state.shouldResume ? state.shouldResume : () => new Promise<boolean>((resolve, reject) => {});
@@ -64,7 +71,9 @@ export abstract class AbstractGuide {
 			this.step        += 1;
 			this._state.step = this.step;
 		}
+	}
 
+	private stateClear(): void {
 		this.state.itemId       = undefined;
 		this.state.buttons      = undefined;
 		this.state.placeholder  = undefined;
@@ -133,8 +142,12 @@ export abstract class AbstractGuide {
 	public async after(): Promise<void> {
 		if (this.totalSteps === 0) {
 			this.prev();
+		} else if (this.step === this.totalSteps) {
+			await this.final();
 		}
 	}
+
+	abstract final(): Promise<void>;
 
 	protected get inputValue(): any {
 		return this.guideGroupResultSet[this.itemId] ? this.guideGroupResultSet[this.itemId] : this.initailValue;
