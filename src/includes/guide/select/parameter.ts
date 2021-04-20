@@ -7,6 +7,8 @@ import { VSCodePreset }              from "../../utils/base/vscodePreset";
 import * as Wallpaper                from "../select/wallpaper";
 import * as Slide                    from "../slide";
 
+type optionState = { subState?: Partial<State>, initialValue?: any };
+
 export class SelectParameterType extends BaseQuickPickGuide {
 	private static templateItems: QuickPickItem[]                = [
 		VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image Path",            "Set the image to be used as the wallpaper."),
@@ -69,24 +71,40 @@ export class SelectParameterType extends BaseQuickPickGuide {
 
 	private initial(): void {
 		SelectParameterType.item2GuideParameter = {
-			0: [this.settingItemId.filePath,          "ImageFilePathGuide",   " - Image Path",            {                                                                                  initialValue: this.settings.filePath.value }],
-			1: [this.settingItemId.slideFilePaths,    "SlideFilePathsGuide",  " - Image Files Path",      { subState: Slide.getDefaultState(this.settingItemId.slideFilePaths) }],
-			2: [this.settingItemId.opacity,           "OpacityGuide",         " - Opacity",               {                                                                                  initialValue: this.settings.opacity.value }],
-			3: [this.settingItemId.slideInterval,     "SlideIntervalGuide",   " - Slide Interval",        { subState: Slide.getDefaultState(this.settingItemId.slideInterval),               initialValue: this.settings.slideInterval.value }],
-			4: [this.settingItemId.slideIntervalUnit, "BaseQuickPickGuide",   " - Slide Interval Unit",   { subState: Slide.getDefaultState(ExtensionSetting.propertyIds.slideIntervalUnit), initialValue: this.settings.slideIntervalUnit.validValue }],
-			5: [this.settingItemId.slideRandomPlay,   "SlideRandomPlayGuide", " - Slide Random Playback", { subState: Slide.getDefaultState(this.settingItemId.slideRandomPlay),             initialValue: this.settings.slideRandomPlay.value }],
-			6: [this.settingItemId.slideEffectFadeIn, "BaseQuickPickGuide",   " - Slide Effect Fade In",  { subState: Slide.getDefaultState(ExtensionSetting.propertyIds.slideEffectFadeIn), initialValue: this.settings.slideEffectFadeIn.value }]
+			0: [this.settingItemId.filePath,          "ImageFilePathGuide",   " - Image Path",            this.createOptionState(this.settingItemId.filePath)],
+			1: [this.settingItemId.slideFilePaths,    "SlideFilePathsGuide",  " - Image Files Path",      this.createOptionState(this.settingItemId.slideFilePaths)],
+			2: [this.settingItemId.opacity,           "OpacityGuide",         " - Opacity",               this.createOptionState(this.settingItemId.opacity)],
+			3: [this.settingItemId.slideInterval,     "SlideIntervalGuide",   " - Slide Interval",        this.createOptionState(this.settingItemId.slideInterval)],
+			4: [this.settingItemId.slideIntervalUnit, "BaseQuickPickGuide",   " - Slide Interval Unit",   this.createOptionState(this.settingItemId.slideIntervalUnit)],
+			5: [this.settingItemId.slideRandomPlay,   "SlideRandomPlayGuide", " - Slide Random Playback", this.createOptionState(this.settingItemId.slideRandomPlay)],
+			6: [this.settingItemId.slideEffectFadeIn, "BaseQuickPickGuide",   " - Slide Effect Fade In",  this.createOptionState(this.settingItemId.slideEffectFadeIn)]
 		};
 	}
 
-	protected createNextStep(
+	private createOptionState(itemId: string): optionState {
+		let result: optionState = {};
+
+		switch(itemId) {
+			case this.settingItemId.slideFilePaths:
+			case this.settingItemId.slideInterval:
+			case this.settingItemId.slideIntervalUnit:
+			case this.settingItemId.slideRandomPlay:
+			case this.settingItemId.slideEffectFadeIn:
+				result["subState"] = Slide.getDefaultState(itemId);
+		}
+
+		if (itemId !== this.settingItemId.slideFilePaths) {
+			result["initialValue"] = this.settings.getItem(itemId).validValue;
+		}
+
+		return result;
+	}
+
+	private createNextStep(
 		itemId:          string,
 		className:       string,
 		additionalTitle: string,
-		optionState?:    {
-			subState?:  Partial<State>,
-			initialValue?: any,
-		}
+		optionState?:    optionState
 	): void {
 		let state = this.createState(additionalTitle, this.guideGroupId, 0, itemId);
 
