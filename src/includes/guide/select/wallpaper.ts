@@ -10,10 +10,11 @@ export function delegation2Transition(
 	guide:     AbstractGuide,
 	installer: Wallpaper,
 	setting:   ExtensionSetting,
-	state:     Partial<State>
+	state:     Partial<State>,
+	random?:   boolean,
 ) {
 	if (installer.isAutoSet === undefined) {
-		if (setting.favoriteRandomSet.validValue) {
+		if (random && setting.favoriteRandomSet.validValue) {
 			state.reload = true;
 		} else {
 			guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);

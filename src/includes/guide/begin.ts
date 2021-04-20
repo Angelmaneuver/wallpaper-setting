@@ -43,7 +43,7 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
-				Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state);
+				Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state, true);
 				break;
 			case items.Crear:
 				this.selectClear();
