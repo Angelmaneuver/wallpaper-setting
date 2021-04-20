@@ -2,7 +2,6 @@ import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
 import { BaseQuickPickGuide }        from "../base/pick";
 import { QuickPickItem }             from "vscode";
 import { State }                     from "../base/base";
-import { ExtensionSetting }          from "../../settings/extension";
 import { VSCodePreset }              from "../../utils/base/vscodePreset";
 import * as Wallpaper                from "../select/wallpaper";
 import * as Slide                    from "../slide";
