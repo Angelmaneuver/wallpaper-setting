@@ -77,13 +77,15 @@ export class ExtensionSetting extends SettingBase {
 		}
 	}
 
-	public async setItemValue(itemId: string, value: any) {
+	public setItemValueNotRegist(itemId: string, value: any): AbstractSettingItem {
 		const item = this.getItem(itemId);
+		item.value = value;
 
-		if (item) {
-			item.value = value;
-			await super.set(itemId, item.convert4Registration);
-		}
+		return item;
+	}
+
+	public async setItemValue(itemId: string, value: any) {
+		await super.set(itemId, this.setItemValueNotRegist(itemId, value).convert4Registration);
 	}
 
 	public getItem(itemId: string): AbstractSettingItem {

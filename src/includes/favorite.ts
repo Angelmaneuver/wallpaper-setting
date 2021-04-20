@@ -16,6 +16,13 @@ const favorite2array = (
 		return temporary;
 	}
 )
+const favoriteSetter = (
+	(favorite: { [key:string]: any }) => {
+		Object.keys(favorite).forEach(
+			(key) => { setting.setItemValueNotRegist(key, favorite[key]); }
+		);
+	}
+);
 
 export async function randomSet() {
 	if (setting.isRegisterd && setting.favoriteRandomSet.validValue) {
@@ -28,22 +35,10 @@ export async function randomSet() {
 		let selection = favorites[choice(0, favorites.length -1)];
 
 		if (selection.type === type.Image) {
-			let favorite = setting.favoriteImageSet.value[selection.name];
-
-			setting.setItemValue(ExtensionSetting.propertyIds.filePath, favorite.filePath);
-			setting.setItemValue(ExtensionSetting.propertyIds.opacity,  favorite.opacity);
-
+			favoriteSetter(setting.favoriteImageSet.value[selection.name]);
 			installer.install();
 		} else {
-			let favorite = setting.favoriteSlideSet.value[selection.name];
-
-			setting.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,     favorite.slideFilePaths);
-			setting.setItemValue(ExtensionSetting.propertyIds.opacity,            favorite.opacity);
-			setting.setItemValue(ExtensionSetting.propertyIds.slideInterval,      favorite.slideInterval);
-			setting.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit,  favorite.slideIntervalUnit);
-			setting.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,    favorite.slideRandomPlay   ? Constant.slideRandomPlay[0]   : Constant.slideRandomPlay[1]);
-			setting.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn,  favorite.slideEffectFadeIn ? Constant.slideEffectFadeIn[0] : Constant.slideEffectFadeIn[1]);
-
+			favoriteSetter(setting.favoriteSlideSet.value[selection.name]);
 			installer.installAsSlide();
 		}
 	}
