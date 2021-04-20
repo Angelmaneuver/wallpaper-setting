@@ -2,7 +2,6 @@ import * as Installer       from "./installer";
 import { ExtensionSetting } from "./settings/extension";
 import * as Constant        from "./constant";
 
-const type           = { Image: 0, Slide: 1 };
 const choice         = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) +min;
 };
@@ -30,11 +29,11 @@ export async function randomSet() {
 			name: string,
 			type: number
 		}[]           = new Array()
-							.concat(favorite2array(type.Image, setting.favoriteImageSet.value))
-							.concat(favorite2array(type.Slide, setting.favoriteSlideSet.value));
+							.concat(favorite2array(Constant.wallpaperType.Image, setting.favoriteImageSet.value))
+							.concat(favorite2array(Constant.wallpaperType.Slide, setting.favoriteSlideSet.value));
 		let selection = favorites[choice(0, favorites.length -1)];
 
-		if (selection.type === type.Image) {
+		if (selection.type === Constant.wallpaperType.Image) {
 			favoriteSetter(setting.favoriteImageSet.value[selection.name]);
 			installer.install();
 		} else {
