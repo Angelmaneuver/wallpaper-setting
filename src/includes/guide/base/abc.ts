@@ -150,7 +150,7 @@ export abstract class AbstractGuide {
 	abstract final(): Promise<void>;
 
 	protected get inputValue(): any {
-		return this.guideGroupResultSet[this.itemId] ? this.guideGroupResultSet[this.itemId] : this.initailValue;
+		return this.guideGroupResultSet[this.itemId] !== undefined ? this.guideGroupResultSet[this.itemId] : this.initailValue;
 	}
 
 	protected get guideGroupResultSet(): { [key: string]: any } {
