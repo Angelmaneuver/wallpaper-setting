@@ -72,7 +72,7 @@ export class SlideIntervalGuide extends BaseInputGuide {
 
 export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 	public async final(): Promise<void> {
-		super.final();
+		await super.final();
 
 		this.installer.installAsSlide();
 		this.state.reload = true;	
