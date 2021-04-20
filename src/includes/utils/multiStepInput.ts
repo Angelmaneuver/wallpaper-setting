@@ -52,8 +52,7 @@ export class MultiStepInput {
 			this.steps.push(step);
 
 			if (this.current) {
-				this.current.enabled = false;
-				this.current.busy    = true;
+				this.inputActivation(this.current, false);
 			}
 
 			try {
@@ -183,15 +182,13 @@ export class MultiStepInput {
 					input.onDidAccept(
 						async () => {
 							const value   = input.value;
-							input.enabled = false;
-							input.busy    = true;
+							this.inputActivation(input, false);
 
 							if (!(await validate(value))) {
 								resolve(value);
 							}
 
-							input.enabled = true;
-							input.busy    = false;
+							this.inputActivation(input, true);
 						}
 					),
 					input.onDidChangeValue(
@@ -228,6 +225,11 @@ export class MultiStepInput {
 		} finally {
 			disposable.forEach((d) => d.dispose());
 		}
+	}
+
+	private inputActivation(input: QuickInput, valid: boolean): void {
+		input.enabled = valid;
+		input.busy    = !valid;
 	}
 
 	private createButtons(buttons: QuickInputButton[] | undefined) {
