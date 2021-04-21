@@ -1,15 +1,17 @@
+type Nullable<T> = T | null | undefined;
+
 export class Optional<T> {
-	constructor(private value: T | undefined) {}
+	private value: Nullable<T>;
+
+	constructor(value: Nullable<T>) {
+		this.value = value;
+	}
 
 	public static empty<T>(): Optional<T> {
-		return new Optional<T>(undefined);
+		return new Optional<T>(null);
 	}
 
-	public static of<T>(value: T): Optional<T> {
-		return new Optional<T>(value);
-	}
-
-	public static ofNullable<T>(value: T): Optional<T> {
+	public static ofNullable<T>(value: Nullable<T>): Optional<T> {
 		return new Optional<T>(value);
 	}
 

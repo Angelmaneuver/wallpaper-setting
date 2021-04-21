@@ -64,15 +64,15 @@ export abstract class AbstractGuide {
 	) {
 		this._state       = state;
 
-		this.arguments2Field(state);
+		this.init(state);
 
 		this.stateClear();
 	}
 
-	private arguments2Field(state: State): void {
+	private init(state: State): void {
 		initailFields.forEach(
 			(key) => {
-				Reflect.set(this, key, Optional.of(Reflect.get(this.state, key)).orElseNonNullable(Reflect.get(this, key)));
+				Reflect.set(this, key, Optional.ofNullable(Reflect.get(this.state, key)).orElseNonNullable(Reflect.get(this, key)));
 			}
 		);
 
