@@ -62,9 +62,7 @@ export class MultiStepInput {
 			}
 		}
 
-		if (this.current) {
-			this.current.dispose();
-		}
+		this.dispose();
 	}
 
 	async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>(
@@ -112,10 +110,7 @@ export class MultiStepInput {
 					})
 				);
 
-				if (this.current) {
-					this.current.dispose();
-				}
-
+				this.dispose();
 				this.current  = input;
 				this.current.show();
 			});
@@ -186,10 +181,7 @@ export class MultiStepInput {
 					)
 				);
 
-				if (this.current) {
-					this.current.dispose();
-				}
-
+				this.dispose();
 				this.current = input;
 				this.current.show();
 			});
@@ -214,6 +206,12 @@ export class MultiStepInput {
 	private inputActivation(input: QuickInput, valid: boolean): void {
 		input.enabled = valid;
 		input.busy    = !valid;
+	}
+
+	private dispose(): void {
+		if (this.current) {
+			this.current.dispose();
+		}
 	}
 
 	private createButtons(buttons: QuickInputButton[] | undefined) {
