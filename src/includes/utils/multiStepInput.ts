@@ -58,16 +58,7 @@ export class MultiStepInput {
 			try {
 				step = await step(this);
 			} catch (error) {
-				if (error === InputFlowAction.back) {
-					this.steps.pop();
-					step = this.steps.pop();
-				} else if (error === InputFlowAction.resume) {
-					step = this.steps.pop();
-				} else if (error === InputFlowAction.cancel) {
-					step = undefined;
-				} else {
-					throw error;
-				}
+				step = this.errorHandle(error);
 			}
 		}
 
@@ -204,6 +195,19 @@ export class MultiStepInput {
 			});
 		} finally {
 			disposable.forEach((d) => d.dispose());
+		}
+	}
+
+	private errorHandle(error: Error) {
+		if (error === InputFlowAction.back) {
+			this.steps.pop();
+			return this.steps.pop();
+		} else if (error === InputFlowAction.resume) {
+			return this.steps.pop();
+		} else if (error === InputFlowAction.cancel) {
+			return undefined;
+		} else {
+			throw error;
 		}
 	}
 
