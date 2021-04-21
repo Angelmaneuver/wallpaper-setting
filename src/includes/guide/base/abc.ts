@@ -25,35 +25,26 @@ export interface AbstractState{
 
 export abstract class AbstractGuide {
 	protected _state:       State;
-	protected guideGroupId: string;
-	protected itemId:       string;
-	protected title:        string;
-	protected step:         number;
-	protected totalSteps:   number;
-	protected buttons:      any[];
-	protected placeholder:  string;
-	protected prompt:       string;
-	protected inputResult:  any;
-	protected items:        QuickPickItem[];
-	protected activeItem:   QuickPickItem   | undefined;
-	protected validate:     any;
-	protected shouldResume: any;
-	protected initailValue: any;
-	protected nextStep:     any;
+	protected guideGroupId: string                      = "";
+	protected itemId:       string                      = "";
+	protected title:        string                      = "";
+	protected step:         number                      = 0;
+	protected totalSteps:   number                      = 0;
+	protected buttons:      any[]                       = [];
+	protected placeholder:  string                      = "";
+	protected prompt:       string                      = "";
+	protected inputResult:  any                         = undefined;
+	protected items:        QuickPickItem[]             = [];
+	protected activeItem:   QuickPickItem   | undefined = undefined;
+	protected validate:     any                         = () => undefined;
+	protected shouldResume: any                         = () => new Promise<boolean>((resolve, reject) => {});
+	protected initailValue: any                         = undefined;
+	protected nextStep:     any                         = undefined;
 
 	constructor(
 		state: State
 	) {
 		this._state       = state;
-		this.guideGroupId = state.guideGroupId ? state.guideGroupId : "";
-		this.itemId       = state.itemId       ? state.itemId       : "";
-		this.title        = state.title;
-		this.step         = state.step         ? state.step         : 0;
-		this.totalSteps   = state.totalSteps   ? state.totalSteps   : 0;
-		this.buttons      = state.buttons      ? state.buttons      : [];
-		this.placeholder  = state.placeholder  ? state.placeholder  : "";
-		this.prompt       = state.prompt       ? state.prompt       : "";
-		this.items        = state.items        ? state.items        : [];
 
 		this.arguments2Field(state);
 
@@ -61,11 +52,20 @@ export abstract class AbstractGuide {
 	}
 
 	private arguments2Field(state: State): void {
-		this.inputResult  = state.inputResult  ? state.inputResult  : "";
-		this.activeItem   = state.activeItem;
-		this.validate     = state.validate     ? state.validate     : () => undefined;
-		this.shouldResume = state.shouldResume ? state.shouldResume : () => new Promise<boolean>((resolve, reject) => {});
-		this.initailValue = state.initailValue;
+		this.guideGroupId = state.guideGroupId ? state.guideGroupId : this.guideGroupId;
+		this.itemId       = state.itemId       ? state.itemId       : this.itemId;
+		this.title        = state.title        ? state.title        : this.title;
+		this.step         = state.step         ? state.step         : this.step;
+		this.totalSteps   = state.totalSteps   ? state.totalSteps   : this.totalSteps;
+		this.buttons      = state.buttons      ? state.buttons      : this.buttons;
+		this.placeholder  = state.placeholder  ? state.placeholder  : this.placeholder;
+		this.prompt       = state.prompt       ? state.prompt       : this.prompt;
+		this.inputResult  = state.inputResult  ? state.inputResult  : this.inputResult;
+		this.items        = state.items        ? state.items        : this.items;
+		this.activeItem   = state.activeItem   ? state.activeItem   : this.activeItem;
+		this.validate     = state.validate     ? state.validate     : this.validate;
+		this.shouldResume = state.shouldResume ? state.shouldResume : this.shouldResume;
+		this.initailValue = state.initailValue ? state.initailValue : this.initailValue;
 
 		if (this.totalSteps > 0) {
 			this.step        += 1;
