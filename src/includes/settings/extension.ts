@@ -44,20 +44,17 @@ export class ExtensionSetting extends SettingBase {
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
 
-		this.createItemInstances();
-		this.setControllParameter();
+		this.init();
 	}
 
-	private createItemInstances(): void {
+	private init(): void {
 		Object.keys(ExtensionSetting.propertyIds).forEach(
 			(key) => {
 				const id = ExtensionSetting.propertyIds[key];
 				this._items.push(SettingItemFactory.create(id, this.get(id)));
 			}
 		)
-	}
 
-	private setControllParameter(): void {
 		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
 			this._isRegisterd = {
 				image: Object.keys(this.favoriteImageSet.value).length > 0,
