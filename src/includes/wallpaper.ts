@@ -47,11 +47,13 @@ export class Wallpaper {
 
 	private checkIsReady(): undefined | Ready {
 		let checkResult: undefined | Ready = undefined;
+		let image: boolean                 = this.settings.filePath.value.length > 0;
+		let slide: boolean                 = this.settings.slideFilePaths.value.length > 0;
 
-		if (this.settings.filePath.value.length > 0 || this.settings.slideFilePaths.value.length > 0) {
+		if (image || slide) {
 			checkResult =  {
-				"image": this.settings.filePath.value.length > 0       ? true : false,
-				"slide": this.settings.slideFilePaths.value.length > 0 ? true : false
+				"image": image,
+				"slide": slide
 			};
 		}
 
