@@ -4,7 +4,10 @@ import * as Constant        from "./constant";
 import { formatByArray }    from "./utils/base/string";
 import { File }             from "./utils/base/file";
 
-const packageInfo = require("./../../package.json");
+const packageInfo       = require("./../../package.json");
+const imageChangeScript = `const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`;
+const feedInScript1     = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
+const feedInScript2     = `await feedin({0},0.01,50);`;
 
 type Ready = {
 	image: boolean,
@@ -147,25 +150,17 @@ export class Wallpaper {
 		let result: string = "";
 
 		if (filePaths.length > 0 && opacity && interval) {
-			const script1     =
-				feedin
-					? `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;`
-					: ``;
-			const script2     = feedin ? `await feedin(${opacity},0.01,50);` : ``;
+			const script1     = feedin ? formatByArray(feedInScript1, opacity) : ``;
+			const script2     = feedin ? formatByArray(feedInScript2, opacity) : ``;
+
 			let temp: string  = `let images=new Array();`;
 
 			filePaths.forEach((filePath) => {
 				let image = new File(filePath);
-				temp += `images.push('url("data:image/${
-					image.extension
-				};base64,${image.toBase64()}")');`;
+				temp      += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
 			});
 
-			temp += formatByArray(
-				`const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`,
-				script1,
-				script2
-			);
+			temp += formatByArray(imageChangeScript, script1, script2);
 
 			if (random) {
 				temp += `let played=new Array();let i=0;`;
