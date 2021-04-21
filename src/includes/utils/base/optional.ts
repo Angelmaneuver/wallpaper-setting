@@ -1,24 +1,19 @@
-export class Optional {
-	private _value: any;
+export class Optional<T> {
+	constructor(private value: T | undefined) {}
 
-	constructor(value?: any) {
-		this._value = value;
+	public static empty<T>(): Optional<T> {
+		return new Optional<T>(undefined);
 	}
 
-	public set value(value: any) {
-		this._value = value;
+	public static of<T>(value: T): Optional<T> {
+		return new Optional<T>(value);
 	}
 
-	public get value(): any {
-		return this._value;
+	public static ofNullable<T>(value: T): Optional<T> {
+		return new Optional<T>(value);
 	}
 
-	public set(value: any): Optional {
-		this._value = value;
-		return this;
-	}
-
-	public orElse(value: any): any {
-		return this._value ? this._value : value;
+	public orElseNonNullable(other: NonNullable<T>): NonNullable<T> {
+		return (this.value !== null && this.value !== undefined ? this.value : other) as NonNullable<T>;
 	}
 }

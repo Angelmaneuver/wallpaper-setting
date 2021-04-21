@@ -2,6 +2,7 @@ import { InputStep, MultiStepInput, InputFlowAction } from "../../utils/multiSte
 import { QuickPickItem }                              from "vscode";
 import { State }                                      from "./base";
 import { GuideFactory }                               from "../factory/base";
+import { Optional }                                   from "../../utils/base/optional";
 
 export interface AbstractState{
 	guideGroupId?: string,
@@ -22,6 +23,23 @@ export interface AbstractState{
 		[key: string]: any,
 	},
 };
+
+const initailFields = [
+	"guideGroupId",
+	"itemId",
+	"title",
+	"step",
+	"totalSteps",
+	"buttons",
+	"placeholder",
+	"prompt",
+	"inputResult",
+	"items",
+	"activeItem",
+	"validate",
+	"shouldResume",
+	"initailValue"
+];
 
 export abstract class AbstractGuide {
 	protected _state:       State;
@@ -52,20 +70,11 @@ export abstract class AbstractGuide {
 	}
 
 	private arguments2Field(state: State): void {
-		this.guideGroupId = state.guideGroupId ? state.guideGroupId : this.guideGroupId;
-		this.itemId       = state.itemId       ? state.itemId       : this.itemId;
-		this.title        = state.title        ? state.title        : this.title;
-		this.step         = state.step         ? state.step         : this.step;
-		this.totalSteps   = state.totalSteps   ? state.totalSteps   : this.totalSteps;
-		this.buttons      = state.buttons      ? state.buttons      : this.buttons;
-		this.placeholder  = state.placeholder  ? state.placeholder  : this.placeholder;
-		this.prompt       = state.prompt       ? state.prompt       : this.prompt;
-		this.inputResult  = state.inputResult  ? state.inputResult  : this.inputResult;
-		this.items        = state.items        ? state.items        : this.items;
-		this.activeItem   = state.activeItem   ? state.activeItem   : this.activeItem;
-		this.validate     = state.validate     ? state.validate     : this.validate;
-		this.shouldResume = state.shouldResume ? state.shouldResume : this.shouldResume;
-		this.initailValue = state.initailValue ? state.initailValue : this.initailValue;
+		initailFields.forEach(
+			(key) => {
+				Reflect.set(this, key, Optional.of(Reflect.get(this.state, key)).orElseNonNullable(Reflect.get(this, key)));
+			}
+		);
 
 		if (this.totalSteps > 0) {
 			this.step        += 1;
