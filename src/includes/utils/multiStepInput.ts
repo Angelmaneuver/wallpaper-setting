@@ -77,16 +77,7 @@ export class MultiStepInput {
 	}
 
 	async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>(
-		{
-			title,
-			step,
-			totalSteps,
-			items,
-			activeItem,
-			placeholder,
-			buttons,
-			shouldResume,
-		}: P
+		{ title, step, totalSteps, items, activeItem, placeholder, buttons, shouldResume }: P
 	) {
 		const disposable: Disposable[] = [];
 
@@ -143,16 +134,7 @@ export class MultiStepInput {
 	}
 
 	async showInputBox<P extends InputBoxParameters>(
-		{
-			title,
-			step,
-			totalSteps,
-			value,
-			prompt,
-			validate,
-			buttons,
-			shouldResume,
-		}: P
+		{ title, step, totalSteps, value, prompt, validate, buttons, shouldResume }: P
 	) {
 		const disposable: Disposable[] = [];
 
@@ -203,15 +185,13 @@ export class MultiStepInput {
 						}
 					),
 					input.onDidHide(
-						() => {
-							(async () => {
-								reject(
-									shouldResume && (await shouldResume())
-										? InputFlowAction.resume
-										: InputFlowAction.cancel
-								);
-							})().catch(reject);
-						}
+						() => { (async () => {
+							reject(
+								shouldResume && (await shouldResume())
+									? InputFlowAction.resume
+									: InputFlowAction.cancel
+							);
+						})().catch(reject);}
 					)
 				);
 
