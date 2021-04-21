@@ -3,6 +3,7 @@ import { SettingBase }         from "./base";
 import { AbstractSettingItem } from "./item/abc";
 import { SettingItemFactory }  from "./item/factory/base";
 import * as Constant           from "../constant";
+import { CONNREFUSED } from "node:dns";
 
 export interface Favorite {
 	[key: string]: {
@@ -37,9 +38,9 @@ export class ExtensionSetting extends SettingBase {
 		favoriteRandomSet: "favoriteWallpaperRandomSet"
 	};
 
-	private _items:             AbstractSettingItem[]        = new Array();
-	private _isRegisterd:       undefined | Registerd;
-	private _FavoriteAutoSet:   undefined | FavoriteAutoSet;
+	private _items:             AbstractSettingItem[]       = new Array();
+	private _isRegisterd:       undefined | Registerd       = undefined;
+	private _FavoriteAutoSet:   undefined | FavoriteAutoSet = undefined;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -55,22 +56,15 @@ export class ExtensionSetting extends SettingBase {
 			}
 		)
 
-		if (Object.keys(this.favoriteImageSet).length > 0 || Object.keys(this.favoriteSlideSet).length > 0) {
-			this._isRegisterd = {
-				image: Object.keys(this.favoriteImageSet.value).length > 0,
-				slide: Object.keys(this.favoriteSlideSet.value).length > 0,
-			};
+		let image: boolean = Object.keys(this.favoriteImageSet).length > 0;
+		let slide: boolean = Object.keys(this.favoriteSlideSet).length > 0;
 
-			if (this._isRegisterd.image && !this._isRegisterd.slide) {
-				this._FavoriteAutoSet = Constant.wallpaperType.Image;
-			} else if (!this._isRegisterd.image && this._isRegisterd.slide) {
-				this._FavoriteAutoSet = Constant.wallpaperType.Slide;
-			} else {
-				this._FavoriteAutoSet = undefined;
-			}
-		} else {
-			this._isRegisterd     = undefined;
-			this._FavoriteAutoSet = undefined;
+		this._isRegisterd = image || slide ? { image: image, slide: slide } : undefined;
+
+		if (image && !slide) {
+			this._FavoriteAutoSet = Constant.wallpaperType.Image;
+		} else if (!image && slide) {
+			this._FavoriteAutoSet = Constant.wallpaperType.Slide;
 		}
 	}
 
