@@ -161,20 +161,7 @@ export class Wallpaper {
 			});
 
 			temp += formatByArray(imageChangeScript, script1, script2);
-
-			if (random) {
-				temp += `let played=new Array();let i=0;`;
-				temp += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;
-				temp += `const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};`;
-				temp += `i=choice(0,images.length-1);`;
-				temp += `document.body.style.backgroundImage=images[i];after(i);`;
-			} else {
-				temp += `let i=0;`;
-				temp += `const choice=(min,max)=>{i++; return i===max?min:i;};`
-				temp += `const after=(index)=>{return;};`;
-				temp += `document.body.style.backgroundImage=images[i];`;
-			}
-
+			temp += this.getRandomOrNormalScript(random);
 			temp += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
 
 			result = formatByArray(this.getScriptTemplate(opacity), temp);
@@ -208,5 +195,23 @@ window.onload=()=>{`;
 			"\\/\\*" + this.extensionKey + "-start\\*\\/[\\s\\S]*?\\/\\*" + this.extensionKey + "-end\\*\\/",
 			"g"
 		);
+	}
+
+	private getRandomOrNormalScript(random: boolean): string {
+		let result: string = "";
+		if (random) {
+			result += `let played=new Array();let i=0;`;
+			result += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;
+			result += `const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};`;
+			result += `i=choice(0,images.length-1);`;
+			result += `document.body.style.backgroundImage=images[i];after(i);`;
+		} else {
+			result += `let i=0;`;
+			result += `const choice=(min,max)=>{i++; return i===max?min:i;};`
+			result += `const after=(index)=>{return;};`;
+			result += `document.body.style.backgroundImage=images[i];`;
+		}
+
+		return result;
 	}
 }
