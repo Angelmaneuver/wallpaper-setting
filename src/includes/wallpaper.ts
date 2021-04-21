@@ -46,11 +46,9 @@ export class Wallpaper {
 	}
 
 	private checkIsReady(): undefined | Ready {
-		let checkResult: undefined | Ready;
+		let checkResult: undefined | Ready = undefined;
 
-		if (!(this.settings.filePath.value.length > 0) && !(this.settings.slideFilePaths.value.length > 0)) {
-			checkResult = undefined;
-		} else {
+		if (this.settings.filePath.value.length > 0 || this.settings.slideFilePaths.value.length > 0) {
 			checkResult =  {
 				"image": this.settings.filePath.value.length > 0       ? true : false,
 				"slide": this.settings.slideFilePaths.value.length > 0 ? true : false
