@@ -74,16 +74,11 @@ export class File {
 		let result: boolean = false;
 
 		try {
-			let fsStat = fs.statSync(targetPath);
-
-			if (fsStat.isFile()) {
-				if (matchExtensions) {
-					if (matchExtensions.includes(File.getExtension(targetPath))) {
-						result = true;
-					}
-				} else {
-					result = true;
-				}
+			if (fs.statSync(targetPath).isFile()) {
+				result =
+					(!matchExtensions || matchExtensions.includes(File.getExtension(targetPath)))
+						? true
+						: false
 			}
 		} catch (e) {}
 
