@@ -125,40 +125,45 @@ export class File {
 		}
 	): Array<string> {
 		let result:    Array<string> = new Array();
-		let files:     Array<string> = new Array();
-		let filters:   Array<string> = new Array();
-		let filtering: boolean       = false;
-		let fullPath:  boolean       = false;
-		let recursive: boolean       = false;
-
-		if (options) {
-			filters   = options.filters   ? options.filters   : new Array();
-			filtering = options.filters   ? true              : false;
-			fullPath  = options.fullPath  ? options.fullPath  : false;
-			recursive = options.recursive ? options.recursive : false;
-		}
+		let filters:   Array<string> = options?.filters   ? options.filters   : new Array();
+		let filtering: boolean       = options?.filters   ? true              : false;
+		let fullPath:  boolean       = options?.fullPath  ? options.fullPath  : false;
+		let recursive: boolean       = options?.recursive ? options.recursive : false;
 
 		let dirents = fs.readdirSync(targetPath, { withFileTypes: true });
-		files       = dirents
-			.filter(
-				(dirent) =>
-					dirent.isFile() &&
-					(filters.includes(File.getExtension(dirent.name)) || !filtering)
-			)
-			.map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
-
-		result      = result.concat(files);
+		result      = result.concat(this.getFiles(targetPath, dirents, filters, filtering, fullPath));
 
 		if (recursive) {
-			let directories = dirents
-				.filter((dirent) => dirent.isDirectory())
-				.map(({ name }) => path.join(targetPath, name));
-
-			directories.forEach((value) => {
+			this.getDirectories(targetPath, dirents).forEach((value) => {
 				result = result.concat(File.getChildren(value, options));
 			});
 		}
 
 		return result;
+	}
+
+	private static getFiles(
+		targetPath: string,
+		dirents:    fs.Dirent[],
+		filters:    Array<any>,
+		filtering:  boolean,
+		fullPath:   boolean
+	): string[] {
+		return dirents.filter(
+			(dirent) => {
+				return dirent.isFile() && (filters.includes(File.getExtension(dirent.name)) || !filtering);
+			}
+		).map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
+	}
+
+	private static getDirectories(
+		targetPath: string,
+		dirents:    fs.Dirent[]
+	): string[] {
+		return dirents.filter(
+			(dirent) => {
+				return dirent.isDirectory();
+			}
+		).map(({ name }) => path.join(targetPath, name));
 	}
 }
