@@ -79,41 +79,36 @@ export class MultiStepInput {
 					input.totalSteps  = totalSteps;
 					input.placeholder = placeholder;
 					input.items       = items;
+					
+					if (activeItem) {
+						input.activeItems = [activeItem];
+					}
 
-				if (activeItem) {
-					input.activeItems = [activeItem];
-				}
+					input.buttons     = this.createButtons(buttons);
 
-				input.buttons = this.createButtons(buttons);
-
-				disposable.push(
-					input.onDidTriggerButton(
-						(item) => {
+					disposable.push(
+						input.onDidTriggerButton((item) => {
 							if (item === QuickInputButtons.Back) {
 								reject(InputFlowAction.back);
 							} else {
 								resolve(<any>item);
 							}
-						}
-					),
-					input.onDidChangeSelection(
-						(items) => resolve(items[0])
-					),
-					input.onDidHide(() => {
-						(async () => {
+						}),
+						input.onDidChangeSelection((items) => resolve(items[0])),
+						input.onDidHide(() => {(async () => {
 							reject(
 								shouldResume && (await shouldResume())
 									? InputFlowAction.resume
 									: InputFlowAction.cancel
 							);
-						})().catch(reject);
-					})
-				);
+						})().catch(reject);})
+					);
 
-				this.dispose();
-				this.current  = input;
-				this.current.show();
-			});
+					this.dispose();
+					this.current      = input;
+					this.current.show();
+				}
+			);
 		} finally {
 			disposable.forEach((d) => d.dispose());
 		}
@@ -135,56 +130,55 @@ export class MultiStepInput {
 					input.prompt     = prompt;
 					input.buttons    = this.createButtons(buttons);
 
-				let validating       = validate("");
+					let validating   = validate("");
 
-				disposable.push(
-					input.onDidTriggerButton(
-						(item) => {
+					disposable.push(
+						input.onDidTriggerButton((item) => {
 							if (item === QuickInputButtons.Back) {
 								reject(InputFlowAction.back);
 							} else {
 								resolve(<any>item);
 							}
-						}
-					),
-					input.onDidAccept(
-						async () => {
-							const value   = input.value;
-							this.inputActivation(input, false);
-
-							if (!(await validate(value))) {
-								resolve(value);
+						}),
+						input.onDidAccept(
+							async () => {
+								const value = input.value;
+								this.inputActivation(input, false);
+								
+								if (!(await validate(value))) {
+									resolve(value);
+								}
+								
+								this.inputActivation(input, true);
 							}
+						),
+						input.onDidChangeValue(
+							async (text) => {
+								const current           = validate(text);
+								validating              = current;
+								const validationMessage = await current;
 
-							this.inputActivation(input, true);
-						}
-					),
-					input.onDidChangeValue(
-						async (text) => {
-							const current = validate(text);
-							validating    = current;
-							const validationMessage = await current;
-
-							if (current === validating) {
-								input.validationMessage = validationMessage;
+								if (current === validating) {
+									input.validationMessage = validationMessage;
+								}
 							}
-						}
-					),
-					input.onDidHide(
-						() => { (async () => {
-							reject(
-								shouldResume && (await shouldResume())
-									? InputFlowAction.resume
-									: InputFlowAction.cancel
-							);
-						})().catch(reject);}
-					)
-				);
+						),
+						input.onDidHide(
+							() => { (async () => {
+								reject(
+									shouldResume && (await shouldResume())
+										? InputFlowAction.resume
+										: InputFlowAction.cancel
+								);
+							})().catch(reject);}
+						)
+					);
 
-				this.dispose();
-				this.current = input;
-				this.current.show();
-			});
+					this.dispose();
+					this.current = input;
+					this.current.show();
+				}
+			);
 		} finally {
 			disposable.forEach((d) => d.dispose());
 		}
