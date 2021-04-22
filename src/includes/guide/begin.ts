@@ -38,8 +38,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	public async show(input: MultiStepInput): Promise<void |  InputStep> {
 		await super.show(input);
 
-		let state: Partial<State>;
-
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
@@ -55,18 +53,10 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.setNextSteps([{ key: "SelectFavoriteProcess", state: this.createState(" - Favorite Settings", "favorite", 0) }]);
 				break;
 			case items.Setup:
-				state = this.createState(" - Image Setup", "setup", 2, this.settingItemId.filePath);
-				this.setNextSteps([{ key: "ImageFilePathGuide", state: state }, { key: "OpacityGuide" }]);
+				this.selectSetup();
 				break;
 			case items.SetUpAsSlide:
-				state = this.createState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
-				this.setNextSteps([
-					{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
-					{ key: "OpacityGuide" },
-					{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
-					{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.settingItemId.slideInterval) },
-					{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.settingItemId.slideRandomPlay) }
-				]);
+				this.selectSetupAsSlide();
 				break;
 			case items.Uninstall:
 				this.selectClear();
@@ -82,5 +72,25 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 	private selectClear(): void {
 		this.installer.uninstall();
 		this.state.reload = true;
+	}
+
+	private selectSetup(): void {
+		this.setNextSteps(
+			[
+				{ key: "ImageFilePathGuide", state: this.createState(" - Image Setup", "setup", 2, this.settingItemId.filePath)},
+				{ key: "OpacityGuide" }
+			]
+		);
+	}
+
+	private selectSetupAsSlide(): void {
+		let state: Partial<State> = this.createState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
+		this.setNextSteps([
+			{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
+			{ key: "OpacityGuide" },
+			{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
+			{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.settingItemId.slideInterval) },
+			{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.settingItemId.slideRandomPlay) }
+		]);
 	}
 }
