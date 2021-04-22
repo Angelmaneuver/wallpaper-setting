@@ -49,12 +49,10 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				this.selectClear();
 				break;
 			case items.Setting:
-				state = this.createState(" - Individual Settings", "setting", 0);
-				this.setNextSteps([{ key: "SelectParameterType",   state: state }]);
+				this.setNextSteps([{ key: "SelectParameterType",   state: this.createState(" - Individual Settings", "setting", 0) }]);
 				break;
 			case items.Favorite:
-				state = this.createState(" - Favorite Settings", "favorite", 0);
-				this.setNextSteps([{ key: "SelectFavoriteProcess", state: state }]);
+				this.setNextSteps([{ key: "SelectFavoriteProcess", state: this.createState(" - Favorite Settings", "favorite", 0) }]);
 				break;
 			case items.Setup:
 				state = this.createState(" - Image Setup", "setup", 2, this.settingItemId.filePath);
