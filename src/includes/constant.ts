@@ -1,6 +1,6 @@
 import { VSCodePreset } from "./utils/base/vscodePreset";
 
-const confirmItemsCreat = (description: { yes: string, no: string, return?: string }) => {
+export const confirmItemsCreat = (description: { yes: string, no: string, return?: string }) => {
 	return [
 		VSCodePreset.create(VSCodePreset.Icons.check, "Yes", description.yes),
 		VSCodePreset.create(VSCodePreset.Icons.x,     "No",  description.no)

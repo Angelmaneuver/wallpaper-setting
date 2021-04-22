@@ -1,7 +1,7 @@
-import { InputStep, MultiStepInput } from "../utils/multiStepInput";
-import { State }                     from "./base/base";
-import { BaseQuickPickGuide }        from "./base/pick";
-import { VSCodePreset }              from "../utils/base/vscodePreset";
+import { State }              from "./base/base";
+import { BaseQuickPickGuide } from "./base/pick";
+import { VSCodePreset }       from "../utils/base/vscodePreset";
+import * as Constant          from "../constant";
 
 export class BaseConfirmGuide extends BaseQuickPickGuide {
 	private callback: any;
@@ -18,10 +18,7 @@ export class BaseConfirmGuide extends BaseQuickPickGuide {
 	) {
 		super(state);
 
-		this.items      = [
-			VSCodePreset.create(VSCodePreset.Icons.check, "Yes", description.yes),
-			VSCodePreset.create(VSCodePreset.Icons.x,     "No",  description.no),
-		];
+		this.items      = Constant.confirmItemsCreat({ yes: description.yes, no: description.no });
 		this.activeItem = this.items[1];
 		this.callback   = callback;
 		this.args       = args;
