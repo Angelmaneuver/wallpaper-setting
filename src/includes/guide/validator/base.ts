@@ -54,7 +54,7 @@ export class BaseValidator {
 		) {
 			return new Promise<string>(
 				(resolve, reject) => {
-					resolve(`Enter a number between ${minimum}  and ${maximum} for ${name}.`);
+					resolve(`Enter a number between ${minimum} and ${maximum} for ${name}.`);
 				}
 			);
 
