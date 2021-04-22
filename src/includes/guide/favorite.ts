@@ -241,7 +241,7 @@ export class FavoriteRandomSetGuide extends BaseQuickPickGuide {
 	) {
 		super(state);
 
-		this.itemId      = this.settingItemId.slideEffectFadeIn;
+		this.itemId      = this.settingItemId.favoriteRandomSet;
 		this.placeholder = "Do you want to set a random wallpaper from your favorite settings at start up?";
 		this.items       = Constant.favoriteRandomSet;
 	}
@@ -249,13 +249,11 @@ export class FavoriteRandomSetGuide extends BaseQuickPickGuide {
 	public async after(): Promise<void> {
 		if (this.activeItem === this.items[2]) {
 			this.prev();
-		} else {
-			if (this.activeItem) {
-				await this.settings.setItemValue(this.settingItemId.favoriteRandomSet, this.activeItem.label);
-
-				if (this.activeItem === this.items[0]) {
-					this.state.reload = true;
-				}	
+		} else if (this.activeItem) {
+			await this.registSetting();
+			
+			if (this.activeItem === this.items[0]) {
+				this.state.reload = true;	
 			}
 		}
 	}
