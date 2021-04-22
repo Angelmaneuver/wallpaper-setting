@@ -35,9 +35,7 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 								.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
 	}
 
-	public async show(input: MultiStepInput): Promise<void |  InputStep> {
-		await super.show(input);
-
+	public async after(): Promise<void> {
 		switch (this.activeItem) {
 			case items.Set:
 			case items.Reset:
@@ -66,8 +64,6 @@ export class StartMenuGuide extends BaseQuickPickGuide {
 				break;
 		};
 	}
-
-	public async after(): Promise<void> {}
 
 	private selectClear(): void {
 		this.installer.uninstall();
