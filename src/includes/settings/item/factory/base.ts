@@ -1,12 +1,6 @@
-import { AbstractSettingItem } from "../abc";
-import {
-	StringSettingItem,
-	NumberSettingItem,
-	BooleanSettingItem,
-	ArraySettingItem,
-	ObjectSettingItem
-} from "../base";
-import * as Constant           from "../../../constant";
+import { AbstractSettingItem }                                    from "../abc";
+import { BaseSettingItem, NumberSettingItem, BooleanSettingItem } from "../base";
+import * as Constant                                              from "../../../constant";
 
 interface Constructable<T> extends Function {
 	new (...args: any[]): T;
@@ -43,24 +37,18 @@ export abstract class SettingItemFactory {
 
 	private static init(): void {
 		this.items = {
-			filePath:                   { className: StringSettingItem.name,  args: { default: "" } },
+			filePath:                   { className: BaseSettingItem.name,    args: { default: "" } },
 			opacity:                    { className: NumberSettingItem.name,  args: { default: 0.75 } },
-			slideFilePaths:             { className: ArraySettingItem.name,   args: { default: [] } },
+			slideFilePaths:             { className: BaseSettingItem.name,    args: { default: [] } },
 			slideInterval:              { className: NumberSettingItem.name,  args: { default: 25 } },
-			slideIntervalUnit:          { className: StringSettingItem.name,  args: { default: "Minute" } },
+			slideIntervalUnit:          { className: BaseSettingItem.name,    args: { default: "Minute" } },
 			slideRandomPlay:            { className: BooleanSettingItem.name, args: { default: true,  trueValue: Constant.slideRandomPlay[0].label,   falseValue: Constant.slideRandomPlay[1].label } },
 			slideEffectFadeIn:          { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.slideEffectFadeIn[0].label, falseValue: Constant.slideEffectFadeIn[1].label } },
-			favoriteWallpaperImageSet:  { className: ObjectSettingItem.name,  args: { default: {} } },
-			favoriteWallpaperSlideSet:  { className: ObjectSettingItem.name,  args: { default: {} } },
+			favoriteWallpaperImageSet:  { className: BaseSettingItem.name,    args: { default: {} } },
+			favoriteWallpaperSlideSet:  { className: BaseSettingItem.name,    args: { default: {} } },
 			favoriteWallpaperRandomSet: { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.favoriteRandomSet[0].label, falseValue: Constant.favoriteRandomSet[1].label } }
 		};
 
-		this.classes.push(
-			StringSettingItem,
-			NumberSettingItem,
-			BooleanSettingItem,
-			ArraySettingItem,
-			ObjectSettingItem
-		);
+		this.classes.push(BaseSettingItem, NumberSettingItem, BooleanSettingItem);
 	}
 }

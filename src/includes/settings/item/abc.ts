@@ -1,17 +1,14 @@
 export abstract class AbstractSettingItem {
 	protected _itemId:       string = "";
-	protected attribute:     string = "";
-	private   _value:        string | undefined = undefined;
-	protected _defaultValue: string | undefined = undefined;
+	private   _value:        any = undefined;
+	protected _defaultValue: any = undefined;
 
 	constructor(
 		itemId:       string,
-		attribute:    string,
 		value:        any,
 		defaultValue: any
 	) {
 		this._itemId       = itemId;
-		this.attribute     = attribute;
 		this._value        = value;
 		this._defaultValue = defaultValue;
 	}
