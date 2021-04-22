@@ -1,7 +1,7 @@
 export abstract class AbstractSettingItem {
 	protected _itemId:       string = "";
-	private   _value:        any = undefined;
-	protected _defaultValue: any = undefined;
+	private   _value:        any    = undefined;
+	protected _defaultValue: any    = undefined;
 
 	constructor(
 		itemId:       string,
