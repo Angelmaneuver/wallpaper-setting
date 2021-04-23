@@ -1,6 +1,5 @@
 import { State }              from "./base/base";
 import { BaseQuickPickGuide } from "./base/pick";
-import { VSCodePreset }       from "../utils/base/vscodePreset";
 import * as Constant          from "../constant";
 
 export class BaseConfirmGuide extends BaseQuickPickGuide {
