@@ -7,7 +7,7 @@ export function delegation2Transition(guide: AbstractGuide, state: State, random
 	if (state.installer.isAutoSet === undefined) {
 		autoSetByFavorite(guide, state, random);
 	} else {
-		autoSetByInstaller(state);
+		installByType(state, state.installer.isAutoSet);
 	}
 }
 
@@ -19,8 +19,8 @@ export function autoSetByFavorite(guide: AbstractGuide, state: State, random?: b
 	}
 }
 
-export function autoSetByInstaller(state: State) {
-	if (state.installer.isAutoSet === Constant.wallpaperType.Image) {
+export function installByType(state: State, type: number) {
+	if (type === Constant.wallpaperType.Image) {
 		state.installer.install();
 	} else {
 		state.installer.installAsSlide();
@@ -44,9 +44,11 @@ export class SelectSetupType extends AbstractQuickPickGuide {
 	public getExecute(): () => Promise<void> {
 		switch (this.activeItem) {
 			case this.items[0]:
-				return async () => { this.installer.install(); this.state.reload = true; }
 			case this.items[1]:
-				return async () => { this.installer.installAsSlide(); this.state.reload = true; }
+				return async () => { installByType(
+					this.state,
+					this.activeItem === this.items[0] ? Constant.wallpaperType.Image : Constant.wallpaperType.Slide);
+				}
 			default:
 				return async () => { this.prev(); }
 		}
