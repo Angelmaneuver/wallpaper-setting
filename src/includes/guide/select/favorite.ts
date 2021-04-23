@@ -34,7 +34,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 			return async() => {
 				this.setNextSteps([{
 					key:   `SelectFavoriteOperationType`,
-					state: { title: `${this.title} - ${key}`, guideGroupId: `${this.guideGroupId}${key}` },
+					state: this.createBaseState(` - ${key}`, `${this.guideGroupId}${key}`),
 					args:  [key]
 				}]);
 			};
@@ -48,7 +48,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 			return async () => {
 				this.setNextSteps([{
 					key:   `${key}FavoriteGuide`,
-					state: { title: `${this.title} - ${key} - ${typeName} wallpaper`, guideGroupId: `${this.guideGroupId}${key}${typeName}` },
+					state: this.createBaseState(`${this.title} - ${key} - ${typeName} wallpaper`, `${this.guideGroupId}${key}${typeName}`),
 					args:  [this.settings.FavoriteAutoset]
 				}]);
 			};
@@ -90,8 +90,8 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 				this.operationType === operation.Register ? "register" : "unregister"
 			);
 			this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
-				item1:  formatByArray("{0} to favorite the current wallpaper image settings.",      this.operationType),
-				item2:  formatByArray("Register to favorite the current wallpaper slide settings.", this.operationType),
+				item1:  formatByArray("{0} to favorite the current wallpaper image settings.", this.operationType),
+				item2:  formatByArray("{0} to favorite the current wallpaper slide settings.", this.operationType),
 				return: "Return without saving any changes."
 			});
 		} else {
@@ -116,7 +116,7 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 		return async () => {
 			this.setNextSteps([{
 				key:   `${this.operationType}FavoriteGuide`,
-				state: { title: `${this.title} - ${typeName} wallpaper`, guideGroupId: `${this.guideGroupId}${typeName}` },
+				state: this.createBaseState(` - ${typeName} wallpaper`, `${this.guideGroupId}${typeName}`),
 				args:  [wallpaperType]
 			}]);
 		};
