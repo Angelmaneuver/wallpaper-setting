@@ -1,8 +1,7 @@
-import { AbstractGuide }      from "../base/abc";
-import { BaseQuickPickGuide } from "../base/pick";
-import { State }              from "../base/base";
-import { VSCodePreset }       from "../../utils/base/vscodePreset";
-import * as Constant          from "../../constant";
+import { AbstractGuide }          from "../base/abc";
+import { AbstractQuickPickGuide } from "../base/pick";
+import { State }                  from "../base/base";
+import * as Constant              from "../../constant";
 
 export function delegation2Transition(guide: AbstractGuide, state: State, random?: boolean,) {
 	if (state.installer.isAutoSet === undefined) {
@@ -30,35 +29,26 @@ export function autoSetByInstaller(state: State) {
 	state.reload = true;
 }
 
-export class SelectSetupType extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		state.placeholder = "Select the type of wallpaper you want to set.";
-		state.items       = [
-			VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image",  "Set an image to wallpaper."),
-			VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide",  "Set an image slide to wallpaper."),
-			VSCodePreset.create(VSCodePreset.Icons.mailReply, "Return", "Back to previous."),
-		];
+export class SelectSetupType extends AbstractQuickPickGuide {
+	public init(): void {
+		super.init();
 
-		super(state);
+		this.placeholder = "Select the type of wallpaper you want to set.";
+		this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
+			item1:  "Set an image to wallpaper.",
+			item2:  "Set an image slide to wallpaper.",
+			return: "Back to previous."
+		});
 	}
 
-	public async after(): Promise<void> {
-		if (this.activeItem) {
-			switch (this.activeItem) {
-				case this.items[0]:
-					this.installer.install();
-					this.state.reload = true;
-					break;
-				case this.items[1]:
-					this.installer.installAsSlide();
-					this.state.reload = true;
-					break;
-				default:
-					this.prev();
-					break;
-			}
+	public getExecute(): () => Promise<void> {
+		switch (this.activeItem) {
+			case this.items[0]:
+				return async () => { this.installer.install(); this.state.reload = true; }
+			case this.items[1]:
+				return async () => { this.installer.installAsSlide(); this.state.reload = true; }
+			default:
+				return async () => { this.prev(); }
 		}
 	}
 }
