@@ -1,11 +1,11 @@
-import { BaseInputGuide }             from "./base/input";
-import { BaseQuickPickGuide }         from "./base/pick";
-import { State }                      from "./base/base";
-import { QuickPickItem }              from "vscode";
-import { BaseValidator }              from "./validator/base";
-import { ExtensionSetting, Favorite } from "../settings/extension";
-import { VSCodePreset }               from "../utils/base/vscodePreset";
-import * as Constant                  from "../constant";
+import { BaseInputGuide }         from "./base/input";
+import { AbstractQuickPickGuide } from "./base/pick";
+import { State }                  from "./base/base";
+import { QuickPickItem }          from "vscode";
+import { BaseValidator }          from "./validator/base";
+import { Favorite }               from "../settings/extension";
+import { VSCodePreset }           from "../utils/base/vscodePreset";
+import * as Constant              from "../constant";
 
 async function registFavorite(
 	key:        string,
@@ -50,10 +50,15 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 	) {
 		super(state);
 
-		this.type      = type;
-		this.itemId    = this.type === Constant.wallpaperType.Image ? this.settingItemId.favoriteImageSet : this.settingItemId.favoriteSlideSet;
-		this.prompt    = "Enter the name of the favorite setting to be registered.";
-		this.validate  = BaseValidator.validateRequired;
+		this.type = type;
+	}
+
+	public init(): void {
+		super.init();
+
+		this.itemId   = this.type === Constant.wallpaperType.Image ? this.settingItemId.favoriteImageSet : this.settingItemId.favoriteSlideSet;
+		this.prompt   = "Enter the name of the favorite setting to be registered.";
+		this.validate = BaseValidator.validateRequired;
 	}
 
 	public async after(): Promise<void> {
@@ -72,7 +77,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		}
 	}
 
-	private createRegistFavorite(): Partial<Favorite>[] {
+	private createRegistFavorite(): Array<Partial<Favorite>> {
 		let favorite:   Partial<Favorite> = {};
 		let registered: Partial<Favorite> = {};
 
@@ -98,7 +103,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 	}
 }
 
-class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
+class BaseRegistedFavoriteOperationGuide extends AbstractQuickPickGuide {
 	protected static labelling: string = "$(file-media) ";
 	protected type:             number;
 	protected returnItem:       QuickPickItem;
@@ -112,6 +117,10 @@ class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
 
 		this.type       = type;
 		this.returnItem = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.returnItem);
+	}
+
+	public init(): void {
+		super.init();
 
 		if (this.type === Constant.wallpaperType.Image) {
 			this.items = this.favorites2Items(this.settings.favoriteImageSet.value);
@@ -119,7 +128,7 @@ class BaseRegistedFavoriteOperationGuide extends BaseQuickPickGuide {
 			this.items = this.favorites2Items(this.settings.favoriteSlideSet.value);
 		}
 
-		this.items      = this.items.concat([this.returnItem]);
+		this.items = this.items.concat([this.returnItem]);
 	}
 
 	public async after(): Promise<void> {
@@ -143,6 +152,10 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 		type:  number
 	) {
 		super(state, type, { returnItem: "Return without unregister." });
+	}
+
+	public init(): void {
+		super.init();
 
 		this.placeholder = "Select the favorite settings to unregister.";
 	}
@@ -200,6 +213,10 @@ export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 		type:  number
 	) {
 		super(state, type, { returnItem: "Return without loading any changes." });
+	}
+
+	public init(): void {
+		super.init();
 
 		this.placeholder = "Select the favorite settings to load.";
 	}
@@ -235,26 +252,23 @@ export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 	}
 }
 
-export class FavoriteRandomSetGuide extends BaseQuickPickGuide {
-	constructor(
-		state: State,
-	) {
-		super(state);
+export class FavoriteRandomSetGuide extends AbstractQuickPickGuide {
+	public init(): void {
+		super.init();
 
 		this.itemId      = this.settingItemId.favoriteRandomSet;
 		this.placeholder = "Do you want to set a random wallpaper from your favorite settings at start up?";
 		this.items       = Constant.favoriteRandomSet;
 	}
 
-	public async after(): Promise<void> {
-		if (this.activeItem === this.items[2]) {
-			this.prev();
-		} else if (this.activeItem) {
-			await this.registSetting();
-			
-			if (this.activeItem === this.items[0]) {
-				this.state.reload = true;	
-			}
+	public getExecute(label: string): () => Promise<void> {
+		switch (label) {
+			case this.items[0].label:
+				this.state.reload = true;
+			case this.items[1].label:
+				return async () => { this.registSetting(); };
+			default:
+				return async () => { this.prev(); }
 		}
 	}
 }
