@@ -33,7 +33,7 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 		switch (label) {
 			case items.Set.label:
 			case items.Reset.label:
-				return async () => { Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state, true); };
+				return async () => { Wallpaper.delegation2Transition(this, this.state, true); };
 			case items.Crear.label:
 				return this.clear();
 			case items.Setting.label:

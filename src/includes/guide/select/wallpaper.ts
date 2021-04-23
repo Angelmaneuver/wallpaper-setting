@@ -1,29 +1,25 @@
 import { AbstractGuide }      from "../base/abc";
 import { BaseQuickPickGuide } from "../base/pick";
 import { State }              from "../base/base";
-import { Wallpaper }          from "../../wallpaper";
-import { ExtensionSetting }   from "../../settings/extension";
 import { VSCodePreset }       from "../../utils/base/vscodePreset";
 import * as Constant          from "../../constant";
 
 export function delegation2Transition(
 	guide:     AbstractGuide,
-	installer: Wallpaper,
-	setting:   ExtensionSetting,
-	state:     Partial<State>,
+	state:     State,
 	random?:   boolean,
 ) {
-	if (installer.isAutoSet === undefined) {
-		if (random && setting.favoriteRandomSet.validValue) {
+	if (state.installer.isAutoSet === undefined) {
+		if (random && state.settings.favoriteRandomSet.validValue) {
 			state.reload = true;
 		} else {
 			guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);
 		}
 	} else {
-		if (installer.isAutoSet === Constant.wallpaperType.Image) {
-			installer.install();
+		if (state.installer.isAutoSet === Constant.wallpaperType.Image) {
+			state.installer.install();
 		} else {
-			installer.installAsSlide();
+			state.installer.installAsSlide();
 		}
 
 		state.reload = true;

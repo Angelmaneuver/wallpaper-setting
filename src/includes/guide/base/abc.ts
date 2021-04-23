@@ -10,11 +10,11 @@ export interface AbstractState{
 	title:         string,
 	step?:         number,
 	totalSteps?:   number,
-	buttons?:      any[],
+	buttons?:      Array<any>,
 	placeholder?:  string,
 	prompt?:       string,
 	inputResult?:  any,
-	items?:        QuickPickItem[],
+	items?:        Array<QuickPickItem>,
 	activeItem?:   QuickPickItem,
 	validate?:     any,
 	shouldResume?: any, 
@@ -24,7 +24,7 @@ export interface AbstractState{
 	},
 };
 
-const initailFields = [
+const initialFields = [
 	"guideGroupId",
 	"itemId",
 	"title",
@@ -42,22 +42,23 @@ const initailFields = [
 ];
 
 export abstract class AbstractGuide {
-	protected _state:       State;
-	protected guideGroupId: string                      = "";
-	protected itemId:       string                      = "";
-	protected title:        string                      = "";
-	protected step:         number                      = 0;
-	protected totalSteps:   number                      = 0;
-	protected buttons:      any[]                       = [];
-	protected placeholder:  string                      = "";
-	protected prompt:       string                      = "";
-	protected inputResult:  any                         = undefined;
-	protected items:        QuickPickItem[]             = [];
-	protected activeItem:   QuickPickItem   | undefined = undefined;
-	protected validate:     any                         = () => undefined;
-	protected shouldResume: any                         = () => new Promise<boolean>((resolve, reject) => {});
-	protected initailValue: any                         = undefined;
-	protected nextStep:     any                         = undefined;
+	protected _state:        State;
+	protected initialFields: Array<string>               = initialFields;
+	protected guideGroupId:  string                      = "";
+	protected itemId:        string                      = "";
+	protected title:         string                      = "";
+	protected step:          number                      = 0;
+	protected totalSteps:    number                      = 0;
+	protected buttons:       Array<any>                  = [];
+	protected placeholder:   string                      = "";
+	protected prompt:        string                      = "";
+	protected inputResult:   any                         = undefined;
+	protected items:         Array<QuickPickItem>        = [];
+	protected activeItem:    QuickPickItem   | undefined = undefined;
+	protected validate:      any                         = () => undefined;
+	protected shouldResume:  any                         = () => new Promise<boolean>((resolve, reject) => {});
+	protected initailValue:  any                         = undefined;
+	protected nextStep:      any                         = undefined;
 
 	constructor(
 		state: State
@@ -66,7 +67,7 @@ export abstract class AbstractGuide {
 	}
 
 	public init(): void {
-		initailFields.forEach(
+		this.initialFields.forEach(
 			(key) => {
 				Reflect.set(this, key, Optional.ofNullable(Reflect.get(this.state, key)).orElseNonNullable(Reflect.get(this, key)));
 			}

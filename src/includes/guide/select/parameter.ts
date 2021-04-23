@@ -122,6 +122,6 @@ export class SelectParameterType extends BaseQuickPickGuide {
 
 	private async save(): Promise<void> {
 		await this.registSetting();
-		Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state);
+		Wallpaper.delegation2Transition(this, this.state);
 	}
 }
