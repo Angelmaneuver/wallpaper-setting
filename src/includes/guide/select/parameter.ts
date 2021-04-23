@@ -83,7 +83,9 @@ export class SelectParameterType extends AbstractQuickPickGuide {
 				result["subState"] = Slide.getDefaultState(itemId);
 		}
 
-		if (itemId !== this.settingItemId.slideFilePaths) {
+		if (itemId === this.settingItemId.slideRandomPlay || itemId === this.settingItemId.slideEffectFadeIn) {
+			result["initialValue"] = this.settings.getItem(itemId).value;
+		} else if (itemId !== this.settingItemId.slideFilePaths) {
 			result["initialValue"] = this.settings.getItem(itemId).validValue;
 		}
 
