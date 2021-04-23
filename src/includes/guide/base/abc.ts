@@ -43,6 +43,7 @@ const initialFields = [
 
 export abstract class AbstractGuide {
 	protected _state:        State;
+	protected _initialize:   boolean                     = false;
 	protected initialFields: Array<string>               = initialFields;
 	protected guideGroupId:  string                      = "";
 	protected itemId:        string                      = "";
@@ -79,6 +80,8 @@ export abstract class AbstractGuide {
 		}
 
 		this.stateClear();
+
+		this._initialize = true;
 	}
 
 	private stateClear(): void {
@@ -137,7 +140,10 @@ export abstract class AbstractGuide {
 	}
 
 	public async start(input: MultiStepInput): Promise<void | InputStep> {
-		this.init();
+		if (!this._initialize) {
+			this.init();
+		}
+
 		await this.show(input);
 		await this.after();
 

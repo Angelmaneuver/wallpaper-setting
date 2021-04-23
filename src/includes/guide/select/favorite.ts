@@ -1,6 +1,7 @@
 import { AbstractQuickPickGuide } from "../base/pick";
 import { State }                  from "../base/base";
 import * as Constant              from "../../constant";
+import { formatByArray }          from "../../utils/base/string";
 
 export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 	public init(): void {
@@ -83,18 +84,14 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 	public init(): void {
 		super.init();
 
-		if (this.operationType === operation.Register) {
-			this.placeholder = "Select the type of wallpaper you want to register for favorite.";
+		if (this.operationType === operation.Register || this.operationType === operation.UnRegister) {
+			this.placeholder = formatByArray(
+				"Select the type of wallpaper you want to {0} for favorite.",
+				this.operationType === operation.Register ? "register" : "unregister"
+			);
 			this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
-				item1:  "Register to favorite the current wallpaper image settings.",
-				item2:  "Register to favorite the current wallpaper slide settings.",
-				return: "Return without saving any changes."
-			});
-		} else if (this.operationType === operation.UnRegister) {
-			this.placeholder = "Select the type of wallpaper you want to unregister for favorite.";
-			this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
-				item1:  "UnRegister the wallpaper image setting from favorite.",
-				item2:  "UnRegister the wallpaper slide setting from favorite.",
+				item1:  formatByArray("{0} to favorite the current wallpaper image settings.",      this.operationType),
+				item2:  formatByArray("Register to favorite the current wallpaper slide settings.", this.operationType),
 				return: "Return without saving any changes."
 			});
 		} else {
