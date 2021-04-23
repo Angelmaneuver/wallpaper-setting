@@ -18,7 +18,7 @@ export class BaseConfirmGuide extends BaseQuickPickGuide {
 	) {
 		super(state);
 
-		this.items      = Constant.confirmItemsCreat({ yes: description.yes, no: description.no });
+		this.items      = Constant.itemsCreat(Constant.ItemType.Confirm, { item1: description.yes, item2: description.no });
 		this.activeItem = this.items[1];
 		this.callback   = callback;
 		this.args       = args;

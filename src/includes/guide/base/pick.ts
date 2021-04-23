@@ -48,6 +48,10 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 		}
 	}
 
+	protected getItemByLabel(items: Array<QuickPickItem>, label: string) {
+		return items.find((item) => { return item.label === label; });
+	}
+
 	protected createBaseState(additionalTitle: string, guideGroupId: string, totalStep: number, itemId?: string): Partial<State> {
 		let state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
 
