@@ -1,10 +1,8 @@
-import { InputStep, MultiStepInput } from "../utils/multiStepInput";
-import { BaseQuickPickGuide }        from "./base/pick";
-import { State }                     from "./base/base";
-import { ExtensionContext }          from "vscode";
-import { VSCodePreset }              from "../utils/base/vscodePreset";
-import * as Wallpaper                from "./select/wallpaper";
-import * as Slide                    from "./slide";
+import { AbstractQuickPickGuide } from "./base/pick";
+import { State }                  from "./base/base";
+import { VSCodePreset }           from "../utils/base/vscodePreset";
+import * as Wallpaper             from "./select/wallpaper";
+import * as Slide                 from "./slide";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -18,75 +16,68 @@ const items = {
 	Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
 };
 
-export class StartMenuGuide extends BaseQuickPickGuide {
-	constructor(
-		state:   State,
-		context: ExtensionContext
-	) {
-		state.placeholder = "Select the item you want to do.";
+export class StartMenuGuide extends AbstractQuickPickGuide {
+	public init(): void {
+		super.init();
 
-		super(state, context);
-
-		this.items        = new Array()
-								.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
-								.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
-								.concat(this.installer.isReady                              ? [items.Setting]            : [])
-								.concat(this.settings.isRegisterd                           ? [items.Favorite]           : [])
-								.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
+		this.placeholder   = "Select the item you want to do.";
+		this.items         = new Array()
+							.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
+							.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
+							.concat(this.installer.isReady                              ? [items.Setting]            : [])
+							.concat(this.settings.isRegisterd                           ? [items.Favorite]           : [])
+							.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
 	}
 
-	public async after(): Promise<void> {
-		switch (this.activeItem) {
-			case items.Set:
-			case items.Reset:
-				Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state, true);
-				break;
-			case items.Crear:
-				this.selectClear();
-				break;
-			case items.Setting:
-				this.setNextSteps([{ key: "SelectParameterType",   state: this.createState(" - Individual Settings", "setting", 0) }]);
-				break;
-			case items.Favorite:
-				this.setNextSteps([{ key: "SelectFavoriteProcess", state: this.createState(" - Favorite Settings", "favorite", 0) }]);
-				break;
-			case items.Setup:
-				this.selectSetup();
-				break;
-			case items.SetUpAsSlide:
-				this.selectSetupAsSlide();
-				break;
-			case items.Uninstall:
-				this.selectClear();
-				await this.settings.uninstall();
-				break;
+	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
+		switch (label) {
+			case items.Set.label:
+			case items.Reset.label:
+				return async () => { Wallpaper.delegation2Transition(this, this.installer, this.settings, this.state, true); };
+			case items.Crear.label:
+				return this.clear();
+			case items.Setting.label:
+				return async () => { this.setNextSteps([{ key: "SelectParameterType",   state: this.createBaseState(" - Individual Settings", "setting",  0) }]); };
+			case items.Favorite.label:
+				return async () => { this.setNextSteps([{ key: "SelectFavoriteProcess", state: this.createBaseState(" - Favorite Settings",   "favorite", 0) }]); };
+			case items.Setup.label:
+				return this.setup();
+			case items.SetUpAsSlide.label:
+				return this.setupAsSlide();
+			case items.Uninstall.label:
+				return async () => { this.clear(); await this.settings.uninstall(); }
 			default:
-				break;
-		};
+				return undefined;
+		}
 	}
 
-	private selectClear(): void {
-		this.installer.uninstall();
-		this.state.reload = true;
+	private clear(): () => Promise<void> {
+		return async () => {
+			this.installer.uninstall();
+			this.state.reload = true;	
+		}
 	}
 
-	private selectSetup(): void {
-		this.setNextSteps(
-			[
-				{ key: "ImageFilePathGuide", state: this.createState(" - Image Setup", "setup", 2, this.settingItemId.filePath)},
+	private setup(): () => Promise<void> {
+		return async () => {
+			this.setNextSteps([
+				{ key: "ImageFilePathGuide", state: this.createBaseState(" - Image Setup", "setup", 2, this.settingItemId.filePath)},
 				{ key: "OpacityGuide" }
-			]
-		);
+			]);
+		}
 	}
 
-	private selectSetupAsSlide(): void {
-		let state: Partial<State> = this.createState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
-		this.setNextSteps([
-			{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
-			{ key: "OpacityGuide" },
-			{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
-			{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.settingItemId.slideInterval) },
-			{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.settingItemId.slideRandomPlay) }
-		]);
+	private setupAsSlide(): () => Promise<void> {
+		let state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
+
+		return async () => {
+			this.setNextSteps([
+				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
+				{ key: "OpacityGuide" },
+				{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
+				{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.settingItemId.slideInterval) },
+				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.settingItemId.slideRandomPlay) }
+			]);
+		}
 	}
 }

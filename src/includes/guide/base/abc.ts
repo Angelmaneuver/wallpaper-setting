@@ -62,14 +62,10 @@ export abstract class AbstractGuide {
 	constructor(
 		state: State
 	) {
-		this._state       = state;
-
-		this.init(state);
-
-		this.stateClear();
+		this._state = state;
 	}
 
-	private init(state: State): void {
+	public init(): void {
 		initailFields.forEach(
 			(key) => {
 				Reflect.set(this, key, Optional.ofNullable(Reflect.get(this.state, key)).orElseNonNullable(Reflect.get(this, key)));
@@ -78,8 +74,10 @@ export abstract class AbstractGuide {
 
 		if (this.totalSteps > 0) {
 			this.step        += 1;
-			this._state.step = this.step;
+			this.state.step = this.step;
 		}
+
+		this.stateClear();
 	}
 
 	private stateClear(): void {
@@ -138,6 +136,7 @@ export abstract class AbstractGuide {
 	}
 
 	public async start(input: MultiStepInput): Promise<void | InputStep> {
+		this.init();
 		await this.show(input);
 		await this.after();
 
