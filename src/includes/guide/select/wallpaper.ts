@@ -4,26 +4,30 @@ import { State }              from "../base/base";
 import { VSCodePreset }       from "../../utils/base/vscodePreset";
 import * as Constant          from "../../constant";
 
-export function delegation2Transition(
-	guide:     AbstractGuide,
-	state:     State,
-	random?:   boolean,
-) {
+export function delegation2Transition(guide: AbstractGuide, state: State, random?: boolean,) {
 	if (state.installer.isAutoSet === undefined) {
-		if (random && state.settings.favoriteRandomSet.validValue) {
-			state.reload = true;
-		} else {
-			guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);
-		}
+		autoSetByFavorite(guide, state, random);
 	} else {
-		if (state.installer.isAutoSet === Constant.wallpaperType.Image) {
-			state.installer.install();
-		} else {
-			state.installer.installAsSlide();
-		}
-
-		state.reload = true;
+		autoSetByInstaller(state);
 	}
+}
+
+export function autoSetByFavorite(guide: AbstractGuide, state: State, random?: boolean,) {
+	if (random && state.settings.favoriteRandomSet.validValue) {
+		state.reload = true;
+	} else {
+		guide.setNextSteps([{ key: "SelectSetupType", state: { title: state.title + " - Select Setup Type" } }]);
+	}
+}
+
+export function autoSetByInstaller(state: State) {
+	if (state.installer.isAutoSet === Constant.wallpaperType.Image) {
+		state.installer.install();
+	} else {
+		state.installer.installAsSlide();
+	}
+
+	state.reload = true;
 }
 
 export class SelectSetupType extends BaseQuickPickGuide {
