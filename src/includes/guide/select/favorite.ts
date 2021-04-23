@@ -105,20 +105,11 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
-		let wallpaperType: number;
-		let typeName:      string;
-		let itemId:        string;
-
-		switch (label) {
-			case this.items[0].label:
-			case this.items[1].label:
-				wallpaperType = label === this.items[0].label ? Constant.wallpaperType.Image : Constant.wallpaperType.Slide;
-				typeName      = label === this.items[0].label ? "Image"                      : "Slide";
-				itemId        = label === this.items[0].label ? "favoriteWallpaperImageSet"  : "favoriteWallpaperSlideSet";
-				break;
-			default:
-				return async () => { this.prev(); };
+		if (label === undefined || label === this.items[2].label) {
+			return async () => { this.prev(); };
 		}
+
+		let [wallpaperType, typeName, itemId] = this.getParameter(label);
 
 		this.state.itemId = itemId;
 
@@ -129,5 +120,13 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 				args:  [wallpaperType]
 			}]);
 		};
+	}
+
+	private getParameter(label: string): [number, string, string] {
+		if (label === this.items[0].label) {
+			return [Constant.wallpaperType.Image, "Image", "favoriteWallpaperImageSet"];
+		} else {
+			return [Constant.wallpaperType.Slide, "Slide", "favoriteWallpaperSlideSet"];
+		}
 	}
 }
