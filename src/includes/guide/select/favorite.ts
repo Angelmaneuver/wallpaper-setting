@@ -111,14 +111,10 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 
 		switch (label) {
 			case this.items[0].label:
-				wallpaperType = Constant.wallpaperType.Image;
-				typeName      = "Image";
-				itemId        = "favoriteWallpaperImageSet";
-				break;
 			case this.items[1].label:
-				wallpaperType = Constant.wallpaperType.Slide;
-				typeName      = "Slide";
-				itemId        = "favoriteWallpaperSlideSet";
+				wallpaperType = label === this.items[0].label ? Constant.wallpaperType.Image : Constant.wallpaperType.Slide;
+				typeName      = label === this.items[0].label ? "Image"                      : "Slide";
+				itemId        = label === this.items[0].label ? "favoriteWallpaperImageSet"  : "favoriteWallpaperSlideSet";
 				break;
 			default:
 				return async () => { this.prev(); };
