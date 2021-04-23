@@ -125,6 +125,8 @@ export abstract class AbstractGuide {
 				let   args          = guide.args ? guide.args : [];
 				const guideInstance = GuideFactory.create(guide.key, this.state, ...args);
 
+				guideInstance.init();
+
 				if (guideInstances === undefined && preInstance === undefined) {
 					guideInstances = guideInstance;
 					preInstance    = guideInstance;

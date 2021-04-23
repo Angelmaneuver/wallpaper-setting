@@ -1,10 +1,11 @@
 import { InputStep, MultiStepInput }                 from "../utils/multiStepInput";
 import { BaseInputGuide, InputResourceGuide, Type }  from "./base/input";
-import { BaseQuickPickGuide }                        from "./base/pick";
+import { AbstractQuickPickGuide }                    from "./base/pick";
 import { State }                                     from "./base/base";
 import { BaseValidator }                             from "./validator/base";
 import { ExtensionSetting }                          from "../settings/extension";
 import * as Constant                                 from "../constant";
+import * as Wallpaper                                from "./select/wallpaper";
 
 export function getDefaultState(itemId: string): Partial<State> {
 	let state: Partial<State> = {};
@@ -25,7 +26,7 @@ export function getDefaultState(itemId: string): Partial<State> {
 		case ExtensionSetting.propertyIds.slideRandomPlay:
 			state.placeholder = "Do you want to randomize the sliding order of images?";
 			state.items       = Constant.slideRandomPlay;
-				break;
+			break;
 		case ExtensionSetting.propertyIds.slideEffectFadeIn:
 			state.placeholder = "Do you want to fade in effect when the slide image changes?";
 			state.items       = Constant.slideEffectFadeIn
@@ -46,9 +47,7 @@ export class SlideFilePathsGuide extends InputResourceGuide {
 export class SlideIntervalGuide extends BaseInputGuide {
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
 		this.prompt    =
-		"Enter a number between "
-			+ Constant.minimumSlideInterval
-			+ " and 65555 in "
+			`Enter a number between ${Constant.minimumSlideInterval} and 65555 in `
 			+ (
 				this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
 					? this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
@@ -70,11 +69,10 @@ export class SlideIntervalGuide extends BaseInputGuide {
 	}
 }
 
-export class SlideRandomPlayGuide extends BaseQuickPickGuide {
-	public async final(): Promise<void> {
-		await super.final();
+export class SlideRandomPlayGuide extends AbstractQuickPickGuide {
+	public async after(): Promise<void> {
+		await this.registSetting();
 
-		this.installer.installAsSlide();
-		this.state.reload = true;	
+		Wallpaper.installByType(this.state, Constant.wallpaperType.Slide);
 	}
 }

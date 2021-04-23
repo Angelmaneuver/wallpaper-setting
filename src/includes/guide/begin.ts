@@ -68,9 +68,9 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 	}
 
 	private setupAsSlide(): () => Promise<void> {
-		let state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
-
 		return async () => {
+			let state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
+
 			this.setNextSteps([
 				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
 				{ key: "OpacityGuide" },

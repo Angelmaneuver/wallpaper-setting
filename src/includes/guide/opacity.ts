@@ -1,31 +1,22 @@
-import { BaseInputGuide }            from "./base/input";
-import { State }                     from "./base/base";
-import { BaseValidator }             from "./validator/base";
-import { ExtensionSetting }          from "../settings/extension";
-import * as Constant                 from "../constant";
+import { BaseInputGuide }   from "./base/input";
+import { BaseValidator }    from "./validator/base";
+import { ExtensionSetting } from "../settings/extension";
+import * as Constant        from "../constant";
+import * as Wallpaper       from "./select/wallpaper";
 
 export class OpacityGuide extends BaseInputGuide {
-	constructor(
-		state: State,
-	) {
-		super(state);
+	public init(): void {
+		super.init();
 
 		this.itemId   = this.settingItemId.opacity;
-		this.prompt   =
-			"Enter a number between "
-				+ Constant.maximumOpacity
-				+ " and "
-				+ Constant.minimumOpacity
-				+ " for opacity."
-				+ " (Default: 0.75)";
+		this.prompt   = `Enter a number between ${Constant.maximumOpacity} and ${Constant.minimumOpacity} for opacity. (Default: 0.75)`;
 		this.validate = OpacityGuide.validateOpacity;
 	}
 
 	public async final(): Promise<void> {
 		await super.final();
 
-		this.installer.install();
-		this.state.reload = true;
+		Wallpaper.installByType(this.state, Constant.wallpaperType.Image);
 	}
 
 	public static async validateOpacity(opacity: string): Promise<string | undefined> {
