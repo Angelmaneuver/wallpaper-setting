@@ -1,7 +1,7 @@
 export abstract class AbstractSettingItem {
-	protected _itemId:       string = "";
-	private   _value:        any    = undefined;
-	protected _defaultValue: any    = undefined;
+	protected _itemId = "";
+	private   _value:        any = undefined;
+	protected _defaultValue: any = undefined;
 
 	constructor(
 		itemId:       string,
@@ -33,7 +33,7 @@ export abstract class AbstractSettingItem {
 
 	public get validValue(): any {
 		return this.convert4Registration ? this.convert4Registration : this.defaultValue;
-	};
+	}
 
 	protected checkDefault(): void {
 		this.value = this.value === this.defaultValue ? undefined : this.value;

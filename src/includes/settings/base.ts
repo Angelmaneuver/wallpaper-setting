@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 export class SettingBase {
-	private key:    string = "";
+	private key = "";
 	private config: vscode.WorkspaceConfiguration;
 	private target: vscode.ConfigurationTarget;
 

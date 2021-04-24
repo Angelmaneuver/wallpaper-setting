@@ -21,12 +21,13 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 		super.init();
 
 		this.placeholder   = "Select the item you want to do.";
-		this.items         = new Array()
-							.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
-							.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
-							.concat(this.installer.isReady                              ? [items.Setting]            : [])
-							.concat(this.settings.isRegisterd                           ? [items.Favorite]           : [])
-							.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
+		this.items         =
+			this.items
+			.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
+			.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
+			.concat(this.installer.isReady                              ? [items.Setting]            : [])
+			.concat(this.settings.isRegisterd                           ? [items.Favorite]           : [])
+			.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
@@ -69,7 +70,7 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 
 	private setupAsSlide(): () => Promise<void> {
 		return async () => {
-			let state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
+			const state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
 
 			this.setNextSteps([
 				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },

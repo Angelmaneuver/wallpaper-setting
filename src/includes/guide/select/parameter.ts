@@ -72,7 +72,7 @@ export class SelectParameterType extends AbstractQuickPickGuide {
 	}
 
 	private createOptionState(itemId: string): optionState {
-		let result: optionState = {};
+		const result: optionState = {};
 
 		switch(itemId) {
 			case this.settingItemId.slideFilePaths:
@@ -98,7 +98,7 @@ export class SelectParameterType extends AbstractQuickPickGuide {
 		additionalTitle: string,
 		optionState?:    optionState
 	): void {
-		let state = this.createBaseState(additionalTitle, this.guideGroupId, 0, itemId);
+		const state = this.createBaseState(additionalTitle, this.guideGroupId, 0, itemId);
 
 		if (optionState) {
 			if (optionState.subState) {

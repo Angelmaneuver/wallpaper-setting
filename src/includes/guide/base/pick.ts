@@ -26,7 +26,7 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 	}
 
 	public async after(): Promise<void> {
-		let callback = this.getExecute(this.activeItem?.label);
+		const callback = this.getExecute(this.activeItem?.label);
 
 		if (callback) {
 			await callback();
@@ -35,7 +35,7 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
 		return undefined;
-	};
+	}
 
 	protected get inputValue(): QuickPickItem | undefined {
 		let label = super.inputValue;
@@ -48,12 +48,12 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 		}
 	}
 
-	protected getItemByLabel(items: Array<QuickPickItem>, label: string) {
+	protected getItemByLabel(items: Array<QuickPickItem>, label: string): QuickPickItem | undefined {
 		return items.find((item) => { return item.label === label; });
 	}
 
 	protected createBaseState(additionalTitle: string, guideGroupId: string, totalStep?: number, itemId?: string): Partial<State> {
-		let state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
+		const state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
 
 		if (totalStep) {
 			state.totalSteps = totalStep;
@@ -67,4 +67,12 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 	}
 }
 
-export class BaseQuickPickGuide extends AbstractQuickPickGuide {}
+export class BaseQuickPickGuide extends AbstractQuickPickGuide {
+	public async after(): Promise<void> {
+		if (this.totalSteps === 0) {
+			this.prev();
+		} else if (this.step === this.totalSteps) {
+			await this.final();
+		}
+	}
+}

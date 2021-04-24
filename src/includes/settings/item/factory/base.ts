@@ -4,7 +4,7 @@ import * as Constant                                              from "../../..
 
 interface Constructable<T> extends Function {
 	new (...args: any[]): T;
-};
+}
 
 type Items = { [key: string]: { className: string, args: { [key: string]: any } } };
 
@@ -25,7 +25,7 @@ export abstract class SettingItemFactory {
 		);
 
 		if (classObject) {
-			let args: any[] = [];
+			const args: any[] = [];
 
 			Object.keys(item.args).forEach((key) => { args.push(item.args[key]); } );
 

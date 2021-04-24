@@ -19,11 +19,11 @@ async function registFavorite(
 	let registFavorite: Partial<Favorite> = {};
 
 	if (favorites.option && Object.keys(favorites.option).length > 0) {
-		let temporary = { ...favorites.option, ...favorites.favorite};
+		const temporary = { ...favorites.option, ...favorites.favorite};
 
 		Object.keys(temporary).sort().map((key) => { registFavorite[key] = temporary[key]; });
 	} else {
-		registFavorite = favorites.favorite;
+		registFavorite  = favorites.favorite;
 	}
 
 	state.settings.setItemValue(key, registFavorite);
@@ -78,15 +78,15 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 	}
 
 	private createRegistFavorite(): Array<Partial<Favorite>> {
-		let favorite:   Partial<Favorite> = {};
-		let registered: Partial<Favorite> = {};
+		const favorite:   Partial<Favorite> = {};
+		let   registered: Partial<Favorite> = {};
 
 		if (this.type === Constant.wallpaperType.Image) {
 			favorite[this.inputResult] = {
 				filePath: this.settings.filePath.value,
 				opacity:  this.settings.opacity.validValue
 			};
-			registered                 = this.settings.favoriteImageSet.value;
+			registered = this.settings.favoriteImageSet.value;
 		} else {
 			favorite[this.inputResult] = {
 				slideFilePaths:    this.settings.slideFilePaths.value,
@@ -96,7 +96,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 				slideRandomPlay:   this.settings.slideRandomPlay.validValue,
 				slideEffectFadeIn: this.settings.slideEffectFadeIn.validValue
 			}
-			registered                 = this.settings.favoriteSlideSet.value;
+			registered = this.settings.favoriteSlideSet.value;
 		}
 
 		return [favorite, registered];
@@ -104,7 +104,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 }
 
 class BaseRegistedFavoriteOperationGuide extends AbstractQuickPickGuide {
-	protected static labelling: string = "$(file-media) ";
+	protected static labelling = "$(file-media) ";
 	protected type:             number;
 	protected returnItem:       QuickPickItem;
 
@@ -167,7 +167,7 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 			const name     = this.activeItemLabel;
 			const message  = `UnRegistered ${name} from my favorites!`;
 
-			let   favorite = this.removedFavorite(this.type, name);
+			const   favorite = this.removedFavorite(this.type, name);
 
 			this.state.placeholder = "Do you want to unregister it?";
 			this.setNextSteps([{
@@ -186,8 +186,8 @@ export class UnRegisterFavoriteGuide extends BaseRegistedFavoriteOperationGuide 
 	}
 
 	private removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
-		let registered: Favorite = {};
-		let favorite:   Favorite = {};
+		let   registered: Favorite = {};
+		const favorite:   Favorite = {};
 
 		if (this.type === Constant.wallpaperType.Image) {
 			registered = this.settings.favoriteImageSet.value;
@@ -238,7 +238,7 @@ export class LoadFavoriteGuide extends BaseRegistedFavoriteOperationGuide {
 			favorite = this.settings.favoriteSlideSet.value[favoriteName] as Partial<Favorite>;
 		}
 
-		for (let key of Object.keys(favorite)) {
+		for (const key of Object.keys(favorite)) {
 			await this.settings.setItemValue(key, favorite[key]);
 		}
 
@@ -265,6 +265,7 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickGuide {
 		switch (label) {
 			case this.items[0].label:
 				this.state.reload = true;
+				// fallsthrough
 			case this.items[1].label:
 				return async () => { this.registSetting(); };
 			default:

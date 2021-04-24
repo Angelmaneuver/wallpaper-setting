@@ -39,7 +39,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 				}]);
 			};
 		} else {
-			let typeName = Object.keys(Constant.wallpaperType).filter(
+			const typeName = Object.keys(Constant.wallpaperType).filter(
 				(key) => {
 					return Constant.wallpaperType[key] === this.settings.FavoriteAutoset;
 				}
@@ -109,7 +109,7 @@ export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
 			return async () => { this.prev(); };
 		}
 
-		let [wallpaperType, typeName, itemId] = this.getParameter(label);
+		const [wallpaperType, typeName, itemId] = this.getParameter(label);
 
 		this.state.itemId = itemId;
 

@@ -42,9 +42,17 @@ export const Type = {
 	Directory: 1,
 }
 
+interface Options{
+	canSelectFolders?: boolean,
+	canSelectFiles?:   boolean,
+	canSelectMany?:    boolean,
+	openLabel?:        boolean,
+	filters?:          { [key: string]: Array<string> },	
+}
+
 export class InputResourceGuide extends BaseInputGuide {
 	private type:    number;
-	private options: {};
+	private options: Options;
 
 	constructor(
 		state: State,

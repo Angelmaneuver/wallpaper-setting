@@ -59,7 +59,7 @@ export abstract class BaseGuide extends AbstractGuide {
 	}
 
 	protected async registSetting(): Promise<void> {
-		for (let key of Object.keys(this.guideGroupResultSet)) {
+		for (const key of Object.keys(this.guideGroupResultSet)) {
 			if (key === this.settingItemId.slideFilePaths) {
 				this.guideGroupResultSet[this.settingItemId.slideFilePaths] = File.getChldrens(
 					this.guideGroupResultSet[this.settingItemId.slideFilePaths],

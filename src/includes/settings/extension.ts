@@ -3,7 +3,6 @@ import { SettingBase }         from "./base";
 import { AbstractSettingItem } from "./item/abc";
 import { SettingItemFactory }  from "./item/factory/base";
 import * as Constant           from "../constant";
-import { CONNREFUSED } from "node:dns";
 
 export interface Favorite {
 	[key: string]: {
@@ -38,9 +37,9 @@ export class ExtensionSetting extends SettingBase {
 		favoriteRandomSet: "favoriteWallpaperRandomSet"
 	};
 
-	private _items:             AbstractSettingItem[]       = new Array();
-	private _isRegisterd:       undefined | Registerd       = undefined;
-	private _FavoriteAutoSet:   undefined | FavoriteAutoSet = undefined;
+	private _items:           AbstractSettingItem[]       = [];
+	private _isRegisterd:     undefined | Registerd       = undefined;
+	private _FavoriteAutoSet: undefined | FavoriteAutoSet = undefined;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -56,8 +55,8 @@ export class ExtensionSetting extends SettingBase {
 			}
 		)
 
-		let image: boolean = Object.keys(this.favoriteImageSet).length > 0;
-		let slide: boolean = Object.keys(this.favoriteSlideSet).length > 0;
+		const image: boolean = Object.keys(this.favoriteImageSet).length > 0;
+		const slide: boolean = Object.keys(this.favoriteSlideSet).length > 0;
 
 		this._isRegisterd = image || slide ? { image: image, slide: slide } : undefined;
 
@@ -75,7 +74,7 @@ export class ExtensionSetting extends SettingBase {
 		return item;
 	}
 
-	public async setItemValue(itemId: string, value: any) {
+	public async setItemValue(itemId: string, value: any): Promise<void> {
 		await super.set(itemId, this.setItemValueNotRegist(itemId, value).convert4Registration);
 	}
 
@@ -95,7 +94,7 @@ export class ExtensionSetting extends SettingBase {
 	}
 
 	public async uninstall(): Promise<void> {
-		for (let key of Object.keys(ExtensionSetting.propertyIds)) {
+		for (const key of Object.keys(ExtensionSetting.propertyIds)) {
 			await this.remove(ExtensionSetting.propertyIds[key]);
 		}
 	}
@@ -141,15 +140,18 @@ export class ExtensionSetting extends SettingBase {
 	}
 
 	public get slideIntervalUnit2Millisecond(): number {
-		let baseTime: number = 1;
+		let baseTime = 1;
 
 		switch (this.slideIntervalUnit.value) {
 			case "Hour":
 				baseTime *= 60;
+				// fallsthrough
 			case "Minute":
 				baseTime *= 60;
+				// fallsthrough
 			case "Second":
 				baseTime *= 1000;
+				// fallsthrough
 			default:
 				baseTime *= 1;
 		}

@@ -38,7 +38,7 @@ export class InputFlowAction {
 }
 
 export class MultiStepInput {
-	static async run<T>(start: InputStep) {
+	static async run<T>(start: InputStep): Promise<void> {
 		return new MultiStepInput().stepThrough(start);
 	}
 
@@ -67,7 +67,7 @@ export class MultiStepInput {
 
 	async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>(
 		{ title, step, totalSteps, items, activeItem, placeholder, buttons, shouldResume }: P
-	) {
+	): Promise<T | (P extends { buttons: (infer I)[]; } ? I : never)> {
 		const disposable: Disposable[] = [];
 
 		try {
@@ -116,7 +116,7 @@ export class MultiStepInput {
 
 	async showInputBox<P extends InputBoxParameters>(
 		{ title, step, totalSteps, value, prompt, validate, buttons, shouldResume }: P
-	) {
+	): Promise<string | (P extends { buttons: (infer I)[]; } ? I : never)> {
 		const disposable: Disposable[] = [];
 
 		try {

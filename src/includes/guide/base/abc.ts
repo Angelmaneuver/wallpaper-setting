@@ -22,7 +22,9 @@ export interface AbstractState{
 	resultSet:     {
 		[key: string]: any,
 	},
-};
+}
+
+interface Guide{ key: string, state?: Partial<State>, args?: Array<any>}
 
 const initialFields = [
 	"guideGroupId",
@@ -43,23 +45,23 @@ const initialFields = [
 
 export abstract class AbstractGuide {
 	protected _state:        State;
-	protected _initialize:   boolean                     = false;
-	protected initialFields: Array<string>               = initialFields;
-	protected guideGroupId:  string                      = "";
-	protected itemId:        string                      = "";
-	protected title:         string                      = "";
-	protected step:          number                      = 0;
-	protected totalSteps:    number                      = 0;
-	protected buttons:       Array<any>                  = [];
-	protected placeholder:   string                      = "";
-	protected prompt:        string                      = "";
-	protected inputResult:   any                         = undefined;
-	protected items:         Array<QuickPickItem>        = [];
-	protected activeItem:    QuickPickItem   | undefined = undefined;
-	protected validate:      any                         = () => undefined;
-	protected shouldResume:  any                         = () => new Promise<boolean>((resolve, reject) => {});
-	protected initailValue:  any                         = undefined;
-	protected nextStep:      any                         = undefined;
+	protected _initialize                              = false;
+	protected initialFields: Array<string>             = initialFields;
+	protected guideGroupId                             = "";
+	protected itemId                                   = "";
+	protected title                                    = "";
+	protected step                                     = 0;
+	protected totalSteps                               = 0;
+	protected buttons:       Array<any>                = [];
+	protected placeholder                              = "";
+	protected prompt                                   = "";
+	protected inputResult:   any                       = undefined;
+	protected items:         Array<QuickPickItem>      = new Array<QuickPickItem>();
+	protected activeItem:    QuickPickItem | undefined = undefined;
+	protected validate:      any                       = () => undefined;
+	protected shouldResume:  any                       = () => new Promise<boolean>((resolve, reject) => { return });
+	protected initailValue:  any                       = undefined;
+	protected nextStep:      any                       = undefined;
 
 	constructor(
 		state: State
@@ -107,13 +109,8 @@ export abstract class AbstractGuide {
 		return guide;
 	}
 
-	public setNextSteps(
-		guides:       {
-			key:    string,
-			state?: Partial<State>,
-			args?:  any[]
-		}[],
-	) {
+
+	public setNextSteps(guides: Array<Guide>): void {
 		let guideInstances: undefined | AbstractGuide = undefined;
 		let preInstance:    undefined | AbstractGuide = undefined;
 
@@ -122,7 +119,8 @@ export abstract class AbstractGuide {
 				if (guide.state) {
 					Object.assign(this.state, guide.state);					
 				}
-				let   args          = guide.args ? guide.args : [];
+
+				const args          = guide.args ? guide.args : [];
 				const guideInstance = GuideFactory.create(guide.key, this.state, ...args);
 
 				guideInstance.init();

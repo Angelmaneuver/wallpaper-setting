@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 
 export class Selecter {
-	public canSelectFolders: boolean;
-	public canSelectFiles:   boolean;
-	public canSelectMany:    boolean;
-	public openLable:        string;
-	public filters:          {};
-	private fileUrls:        vscode.Uri[] | undefined;
+	public  canSelectFolders: boolean;
+	public  canSelectFiles:   boolean;
+	public  canSelectMany:    boolean;
+	public  openLable:        string;
+	public  filters:          { [name: string]: Array<string> } | undefined;
+	private fileUrls:         vscode.Uri[] | undefined;
 
 	constructor(initializer: Partial<Selecter>) {
 		this.canSelectFolders = initializer.canSelectFolders ?? false;

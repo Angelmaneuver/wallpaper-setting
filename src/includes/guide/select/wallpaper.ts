@@ -3,7 +3,7 @@ import { AbstractQuickPickGuide } from "../base/pick";
 import { State }                  from "../base/base";
 import * as Constant              from "../../constant";
 
-export function delegation2Transition(guide: AbstractGuide, state: State, random?: boolean,) {
+export function delegation2Transition(guide: AbstractGuide, state: State, random?: boolean): void {
 	if (state.installer.isAutoSet === undefined) {
 		autoSetByFavorite(guide, state, random);
 	} else {
@@ -11,7 +11,7 @@ export function delegation2Transition(guide: AbstractGuide, state: State, random
 	}
 }
 
-export function autoSetByFavorite(guide: AbstractGuide, state: State, random?: boolean,) {
+export function autoSetByFavorite(guide: AbstractGuide, state: State, random?: boolean): void {
 	if (random && state.settings.favoriteRandomSet.validValue) {
 		state.reload = true;
 	} else {
@@ -19,7 +19,7 @@ export function autoSetByFavorite(guide: AbstractGuide, state: State, random?: b
 	}
 }
 
-export function installByType(state: State, type: number) {
+export function installByType(state: State, type: number): void {
 	if (type === Constant.wallpaperType.Image) {
 		state.installer.install();
 	} else {

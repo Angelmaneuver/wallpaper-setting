@@ -4,7 +4,6 @@ import * as Constant        from "./constant";
 import { formatByArray }    from "./utils/base/string";
 import { File }             from "./utils/base/file";
 
-const packageInfo       = require("./../../package.json");
 const imageChangeScript = `const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`;
 const feedInScript1     = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
 const feedInScript2     = `await feedin({0},0.01,50);`;
@@ -50,8 +49,8 @@ export class Wallpaper {
 
 	private checkIsReady(): undefined | Ready {
 		let checkResult: undefined | Ready = undefined;
-		let image: boolean                 = this.settings.filePath.value.length > 0;
-		let slide: boolean                 = this.settings.slideFilePaths.value.length > 0;
+		const image: boolean                 = this.settings.filePath.value.length > 0;
+		const slide: boolean                 = this.settings.slideFilePaths.value.length > 0;
 
 		if (image || slide) {
 			checkResult =  {
@@ -90,7 +89,7 @@ export class Wallpaper {
 	}
 
 	public install(): void {
-		let editFile     = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.content) +
@@ -100,7 +99,7 @@ export class Wallpaper {
 	}
 
 	public installAsSlide(): void {
-		let editFile     = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.content) +
@@ -116,7 +115,7 @@ export class Wallpaper {
 	}
 
 	public uninstall(): void {
-		let editFile     = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
 		editFile.content = this.clearWallpaperScript(editFile.content);
 
@@ -124,12 +123,12 @@ export class Wallpaper {
 	}
 
 	private getWallpaperScript(filePath: string, opacity: number): string {
-		let result: string = "";
+		let result = "";
 
 		if (filePath && opacity) {
-			let image = new File(filePath);
+			const image = new File(filePath);
 
-			result    = formatByArray(
+			result      = formatByArray(
 				this.getScriptTemplate(opacity),
 				`document.body.style.backgroundImage='url("data:image/${
 					image.extension
@@ -147,24 +146,24 @@ export class Wallpaper {
 		random:    boolean,
 		feedin:    boolean
 	): string {
-		let result: string = "";
+		let result = "";
 
 		if (filePaths.length > 0 && opacity && interval) {
-			const script1     = feedin ? formatByArray(feedInScript1, opacity) : ``;
-			const script2     = feedin ? formatByArray(feedInScript2, opacity) : ``;
+			const script1 = feedin ? formatByArray(feedInScript1, opacity.toString()) : ``;
+			const script2 = feedin ? formatByArray(feedInScript2, opacity.toString()) : ``;
 
-			let temp: string  = `let images=new Array();`;
+			let temp      = `let images=new Array();`;
 
 			filePaths.forEach((filePath) => {
-				let image = new File(filePath);
-				temp      += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
+				const image = new File(filePath);
+				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
 			});
 
-			temp += formatByArray(imageChangeScript, script1, script2);
-			temp += this.getRandomOrNormalScript(random);
-			temp += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
+			temp          += formatByArray(imageChangeScript, script1, script2);
+			temp          += this.getRandomOrNormalScript(random);
+			temp          += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
 
-			result = formatByArray(this.getScriptTemplate(opacity), temp);
+			result        = formatByArray(this.getScriptTemplate(opacity), temp);
 		}
 
 		return result;
@@ -173,7 +172,7 @@ export class Wallpaper {
 	private getScriptTemplate(opacity: number): string {
 		let result = `
 /*${this.extensionKey}-start*/
-/*${this.extensionKey}.ver.${packageInfo.version}*/
+/*${this.extensionKey}.ver.${Constant.version}*/
 window.onload=()=>{`;
 		result     += `document.body.style.opacity=${opacity};`;
 		result     += `document.body.style.backgroundSize="cover";`;
@@ -198,7 +197,7 @@ window.onload=()=>{`;
 	}
 
 	private getRandomOrNormalScript(random: boolean): string {
-		let result: string = "";
+		let result = "";
 		if (random) {
 			result += `let played=new Array();let i=0;`;
 			result += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;

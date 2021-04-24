@@ -8,9 +8,9 @@ import * as Constant                                 from "../constant";
 import * as Wallpaper                                from "./select/wallpaper";
 
 export function getDefaultState(itemId: string): Partial<State> {
-	let state: Partial<State> = {};
+	const state: Partial<State> = {};
 
-	state.itemId              = itemId;
+	state.itemId                = itemId;
 
 	switch (itemId) {
 		case ExtensionSetting.propertyIds.slideFilePaths:
@@ -71,7 +71,7 @@ export class SlideIntervalGuide extends BaseInputGuide {
 
 export class SlideRandomPlayGuide extends AbstractQuickPickGuide {
 	public async after(): Promise<void> {
-		await this.registSetting();
+		await super.after();
 
 		Wallpaper.installByType(this.state, Constant.wallpaperType.Slide);
 	}

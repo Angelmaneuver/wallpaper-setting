@@ -44,9 +44,9 @@ export class BaseValidator {
 		value:    string,
 		options?: { minimum?: number; maximum?: number; }
 	): Promise<string | undefined> {
-		let minimum: number = Optional.ofNullable(options?.minimum).orElseNonNullable(0);
-		let maximum: number = Optional.ofNullable(options?.maximum).orElseNonNullable(65555);
-		let string2Number   = Number(value);
+		const minimum: number = Optional.ofNullable(options?.minimum).orElseNonNullable(0);
+		const maximum: number = Optional.ofNullable(options?.maximum).orElseNonNullable(65555);
+		const string2Number   = Number(value);
 
 		if (
 			(value.length > 0 && !isNaN(string2Number)) &&

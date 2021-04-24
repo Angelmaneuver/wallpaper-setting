@@ -1,6 +1,6 @@
 import { AbstractSettingItem } from "./abc";
 
-export class BaseSettingItem<T extends (string | {} | [] | undefined)> extends AbstractSettingItem {
+export class BaseSettingItem<T extends (string | Record<string, unknown> | [] | undefined)> extends AbstractSettingItem {
 	constructor(
 		itemId:       string,
 		value:        T,
