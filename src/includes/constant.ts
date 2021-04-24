@@ -1,9 +1,10 @@
-import { VSCodePreset } from "./utils/base/vscodePreset";
+import { QuickPickItem } from "vscode";
+import { VSCodePreset }  from "./utils/base/vscodePreset";
 
 export const ItemType = { Confirm: 0, Wallpaper: 1 };
 
-export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }) => {
-	let items: Array<any> = [];
+export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> | undefined => {
+	let items: Array<QuickPickItem> = [];
 
 	switch (type) {
 		case ItemType.Confirm:
