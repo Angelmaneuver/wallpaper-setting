@@ -1,28 +1,24 @@
-import * as path from "path";
-import * as fs   from "fs";
+import * as path    from "path";
+import * as fs      from "fs";
+import { Optional } from "./optional";
+
+type FsOption     = { encoding?: string; flag?: string; };
+type SearchOption = { filters?: Array<string>; fullPath?:  boolean; recursive?: boolean; }
 
 export class File {
-	private _path:    string = "";
-	private _content: any    = null;
+	private _path         = "";
+	private _content: any = null;
 
-	constructor(targetPath: string, options?: {}) {
-		this.path = targetPath;
+	constructor(targetPath: string, options?: FsOption) {
+		this._path = targetPath;
 
 		if (this.path) {
-			try {
-				this.content = fs.readFileSync(path.resolve(this.path), options);
-			} catch (e) {
-				throw e;
-			}
+			this.content = fs.readFileSync(path.resolve(this.path), options);
 		}
 	}
 
 	get path(): string {
 		return this._path;
-	}
-
-	set path(targetPath: string) {
-		this._path = targetPath;
 	}
 
 	get extension(): string {
@@ -41,37 +37,25 @@ export class File {
 		return this.content ? true : false;
 	}
 
-	public write(options?: {}) {
+	public write(options?: fs.WriteFileOptions): void {
 		if (this.isPresent) {
-			try {
-				fs.writeFileSync(path.resolve(this.path), this.content, options);
-			} catch (e) {
-				throw e;
-			}
+			fs.writeFileSync(path.resolve(this.path), this.content, options);
 		}
 	}
 
 	public toString(): string {
-		try {
-			return this.isPresent ? this.content?.toString() : "";
-		} catch (e) {
-			throw e;
-		}
+		return Optional.ofNullable(this._content?.toString()).orElseNonNullable("");
 	}
 
 	public toBase64(): string {
-		try {
-			return this.isPresent ? this.content?.toString("base64") : "";
-		} catch (e) {
-			throw e;
-		}
+		return Optional.ofNullable(this._content?.toString("base64")).orElseNonNullable("");
 	}
 
 	public static isFile(
 		targetPath:       string,
 		matchExtensions?: Array<string>
 	): boolean {
-		let result: boolean = false;
+		let result = false;
 
 		try {
 			if (fs.statSync(targetPath).isFile()) {
@@ -80,19 +64,23 @@ export class File {
 						? true
 						: false
 			}
-		} catch (e) {}
+		} catch (e) {
+			return result;
+		}
 
 		return result;
 	}
 
 	public static isDirectory(targetPath: string): boolean {
-		let result: boolean = false;
+		let result = false;
 
 		try {
 			if (fs.statSync(targetPath).isDirectory()) {
 				result = true;
 			}
-		} catch (e) {}
+		} catch (e) {
+			return result;
+		}
 
 		return result;
 	}
@@ -103,11 +91,7 @@ export class File {
 
 	public static getChldrens(
 		targetPath: string,
-		options?:   {
-			filters?:   Array<any>;
-			fullPath?:  boolean;
-			recursive?: boolean;
-		}
+		options?:   SearchOption
 	): Array<string> | undefined {
 		if (this.isDirectory(targetPath)) {
 			return File.getChildren(targetPath, options);
@@ -118,25 +102,18 @@ export class File {
 
 	private static getChildren(
 		targetPath: string,
-		options?:   {
-			filters?:   Array<any>;
-			fullPath?:  boolean;
-			recursive?: boolean;
-		}
+		options?:   SearchOption
 	): Array<string> {
-		let result:    Array<string> = new Array();
-		let filters:   Array<string> = options?.filters   ? options.filters   : new Array();
-		let filtering: boolean       = options?.filters   ? true              : false;
-		let fullPath:  boolean       = options?.fullPath  ? options.fullPath  : false;
-		let recursive: boolean       = options?.recursive ? options.recursive : false;
+		const filters   = Optional.ofNullable(options?.filters).orElseNonNullable([]);
+		const filtering = filters ? true : false;
+		const fullPath  = Optional.ofNullable(options?.fullPath).orElseNonNullable(false);
+		const recursive = Optional.ofNullable(options?.recursive).orElseNonNullable(false);
+		const dirents   = fs.readdirSync(targetPath, { withFileTypes: true });
 
-		let dirents = fs.readdirSync(targetPath, { withFileTypes: true });
-		result      = result.concat(this.getFiles(targetPath, dirents, filters, filtering, fullPath));
+		let   result    = this.getFiles(targetPath, dirents, filters, filtering, fullPath);
 
 		if (recursive) {
-			this.getDirectories(targetPath, dirents).forEach((value) => {
-				result = result.concat(File.getChildren(value, options));
-			});
+			this.getDirectories(targetPath, dirents).forEach((value) => { result = result.concat(File.getChildren(value, options)); });
 		}
 
 		return result;
@@ -145,25 +122,21 @@ export class File {
 	private static getFiles(
 		targetPath: string,
 		dirents:    fs.Dirent[],
-		filters:    Array<any>,
+		filters:    Array<string>,
 		filtering:  boolean,
 		fullPath:   boolean
 	): string[] {
-		return dirents.filter(
-			(dirent) => {
-				return dirent.isFile() && (filters.includes(File.getExtension(dirent.name)) || !filtering);
-			}
-		).map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
+		return dirents
+				.filter((dirent) => { return dirent.isFile() && (filters.includes(File.getExtension(dirent.name)) || !filtering); }
+				).map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
 	}
 
 	private static getDirectories(
 		targetPath: string,
 		dirents:    fs.Dirent[]
 	): string[] {
-		return dirents.filter(
-			(dirent) => {
-				return dirent.isDirectory();
-			}
-		).map(({ name }) => path.join(targetPath, name));
+		return dirents
+				.filter((dirent) => { return dirent.isDirectory(); }
+				).map(({ name }) => path.join(targetPath, name));
 	}
 }
