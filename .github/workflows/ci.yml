@@ -1,11 +1,6 @@
 name: Test Coverage Report
 on:
   push:
-    branches:
-      - master
-    tags:
-      - '!*' # Do not execute on tags
-    paths:
 jobs:
   test:
     strategy:
