@@ -15,6 +15,10 @@ export class Optional<T> {
 		return new Optional<T>(value);
 	}
 
+	public isPresent(): boolean {
+		return this.value !== null && this.value !== undefined ? true : false;
+	}
+
 	public orElseNonNullable(other: NonNullable<T>): NonNullable<T> {
 		return (this.value !== null && this.value !== undefined ? this.value : other) as NonNullable<T>;
 	}
