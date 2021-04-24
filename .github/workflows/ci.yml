@@ -1,4 +1,4 @@
-name: Test Coverage Report.
+name: Test Coverage Report
 on:
   push:
     branches:
