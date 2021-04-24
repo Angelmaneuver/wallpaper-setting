@@ -3,7 +3,7 @@ import { VSCodePreset }  from "./utils/base/vscodePreset";
 
 export const ItemType = { Confirm: 0, Wallpaper: 1 };
 
-export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> | undefined => {
+export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
 	let items: Array<QuickPickItem> = [];
 
 	switch (type) {
