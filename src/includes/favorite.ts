@@ -3,7 +3,7 @@ import { ExtensionSetting } from "./settings/extension";
 import * as Constant        from "./constant";
 
 interface Favorite{ name: string, type: number }
-interface FavoritesByHash{ [key: string]: any }
+interface FavoritesByHash{ [key: string]: unknown }
 
 const choice         = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) +min;
@@ -19,7 +19,7 @@ const favorite2array = (
 	}
 )
 const favoriteSetter = (
-	(favorite: { [key:string]: any }) => {
+	(favorite: { [key:string]: unknown }) => {
 		Object.keys(favorite).forEach(
 			(key) => { setting.setItemValueNotRegist(key, favorite[key]); }
 		);

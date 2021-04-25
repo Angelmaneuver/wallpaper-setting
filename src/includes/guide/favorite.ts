@@ -1,11 +1,15 @@
-import { QuickPickItem }          from "vscode";
-import { State }                  from "./base/base";
-import { BaseInputGuide }         from "./base/input";
-import { AbstractQuickPickGuide } from "./base/pick";
-import { BaseValidator }          from "./validator/base";
-import { Favorite }               from "../settings/extension";
-import { VSCodePreset }           from "../utils/base/vscodePreset";
-import * as Constant              from "../constant";
+import { QuickPickItem }         from "vscode";
+import { State }                 from "./base/base";
+import { BaseInputGuide }        from "./base/input";
+import {
+	AbstractQuickPickGuide,
+	AbstractQuickPickSelectGuide
+}                                from "./base/pick";
+import { BaseValidator }         from "./validator/base";
+import { Favorite }              from "../settings/extension";
+import * as StartUp              from "../favorite";
+import { VSCodePreset }          from "../utils/base/vscodePreset";
+import * as Constant             from "../constant";
 
 async function registFavorite(
 	key:       string,
@@ -238,7 +242,7 @@ export class LoadFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 	}
 }
 
-export class FavoriteRandomSetGuide extends AbstractQuickPickGuide {
+export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
@@ -253,7 +257,7 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickGuide {
 				this.state.reload = true;
 				// fallsthrough
 			case this.items[1].label:
-				return async () => { this.registSetting(); };
+				return async () => { this.registSetting(); await StartUp.randomSet(); };
 			default:
 				return async () => { this.prev(); }
 		}
