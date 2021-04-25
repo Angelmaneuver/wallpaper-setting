@@ -1,8 +1,10 @@
-import { InputStep, MultiStepInput, InputFlowAction } from "../../utils/multiStepInput";
-import { QuickPickItem }                              from "vscode";
-import { State }                                      from "./base";
-import { GuideFactory }                               from "../factory/base";
-import { Optional }                                   from "../../utils/base/optional";
+import {
+	InputStep,
+	MultiStepInput,
+	InputFlowAction
+}                       from "../../utils/multiStepInput";
+import { GuideFactory } from "../factory/base";
+import { Optional }     from "../../utils/base/optional";
 
 export interface AbstractState{
 	guideGroupId?: string,
@@ -10,62 +12,34 @@ export interface AbstractState{
 	title:         string,
 	step?:         number,
 	totalSteps?:   number,
-	buttons?:      Array<any>,
-	placeholder?:  string,
-	prompt?:       string,
-	inputResult?:  any,
-	items?:        Array<QuickPickItem>,
-	activeItem?:   QuickPickItem,
-	validate?:     any,
-	shouldResume?: any, 
-	initailValue?: any,
-	resultSet:     {
-		[key: string]: any,
-	},
+	initailValue?: unknown,
+	validate?:     (arg: any) => Promise<any>,
+	shouldResume?: () => Promise<boolean>,
+	resultSet:     { [key: string]: any },
 }
 
-interface Guide{ key: string, state?: Partial<State>, args?: Array<any>}
+interface Guide{ key: string, state?: Partial<AbstractState>, args?: Array<any>}
 
 const initialFields = [
-	"guideGroupId",
-	"itemId",
-	"title",
-	"step",
-	"totalSteps",
-	"buttons",
-	"placeholder",
-	"prompt",
-	"inputResult",
-	"items",
-	"activeItem",
-	"validate",
-	"shouldResume",
-	"initailValue"
+	"guideGroupId", "itemId", "title", "step", "totalSteps", "initailValue", "inputResult", "validate", "shouldResume"
 ];
 
 export abstract class AbstractGuide {
-	protected _state:        State;
-	protected _initialize                              = false;
-	protected initialFields: Array<string>             = initialFields;
-	protected guideGroupId                             = "";
-	protected itemId                                   = "";
-	protected title                                    = "";
-	protected step                                     = 0;
-	protected totalSteps                               = 0;
-	protected buttons:       Array<any>                = [];
-	protected placeholder                              = "";
-	protected prompt                                   = "";
-	protected inputResult:   any                       = undefined;
-	protected items:         Array<QuickPickItem>      = new Array<QuickPickItem>();
-	protected activeItem:    QuickPickItem | undefined = undefined;
-	protected validate:      any                       = () => undefined;
-	protected shouldResume:  any                       = () => new Promise<boolean>((resolve, reject) => { return });
-	protected initailValue:  any                       = undefined;
-	protected nextStep:      any                       = undefined;
+	protected _initialize                           = false;
+	protected _state;
+	protected initialFields: Array<string>              = initialFields;
+	protected guideGroupId                              = "";
+	protected itemId                                    = "";
+	protected title                                     = "";
+	protected step                                      = 0;
+	protected totalSteps                                = 0;
+	protected initailValue:  unknown                    = undefined;
+	protected _inputValue:   unknown                    = undefined;
+	protected validate:      (arg: any) => Promise<any> = async () => { return; };
+	protected shouldResume:  () => Promise<boolean>     = async () => new Promise<boolean>((resolve, reject) => { return; });
+	protected nextStep: any                             = undefined;
 
-	constructor(
-		state: State
-	) {
+	constructor(state: AbstractState) {
 		this._state = state;
 	}
 
@@ -86,21 +60,39 @@ export abstract class AbstractGuide {
 		this._initialize = true;
 	}
 
-	private stateClear(): void {
+	protected stateClear(): void {
 		this.state.itemId       = undefined;
-		this.state.buttons      = undefined;
-		this.state.placeholder  = undefined;
-		this.state.prompt       = undefined;
-		this.state.inputResult  = undefined;
-		this.state.items        = undefined;
-		this.state.activeItem   = undefined;
+		this.state.initailValue = undefined;
 		this.state.validate     = undefined;
 		this.state.shouldResume = undefined;
-		this.state.initailValue = undefined;
 	}
 
-	public get state(): State {
+	protected get state(): AbstractState {
 		return this._state;
+	}
+
+	protected set inputValue(value: unknown) {
+		this._inputValue = value;
+	}
+
+	protected get inputValue(): unknown {
+		return (
+			this.guideGroupResultSet[this.itemId] !== undefined
+				? this.guideGroupResultSet[this.itemId]
+				: Optional.ofNullable(this._inputValue).orElseNonNullable(this.initailValue)
+		);
+	}
+
+	protected get inputValueAsString(): string {
+		return typeof(this.inputValue) === "string" ? this.inputValue : "";
+	}
+
+	protected get guideGroupResultSet(): { [key: string]: any } {
+		if (!this.state.resultSet[this.guideGroupId]) {
+			this.state.resultSet[this.guideGroupId] = {};
+		}
+
+		return this.state.resultSet[this.guideGroupId];
 	}
 
 	public setNextStep(guide: AbstractGuide): AbstractGuide {
@@ -108,7 +100,6 @@ export abstract class AbstractGuide {
 
 		return guide;
 	}
-
 
 	public setNextSteps(guides: Array<Guide>): void {
 		let guideInstances: undefined | AbstractGuide = undefined;
@@ -150,31 +141,15 @@ export abstract class AbstractGuide {
 		if (this.nextStep instanceof AbstractGuide) {
 			return () => this.nextStep.start(input);
 		}
+
+		await this.final();
 	}
 
 	abstract show(input: MultiStepInput): Promise<void | InputStep>;
 
-	public async after(): Promise<void> {
-		if (this.totalSteps === 0) {
-			this.prev();
-		} else if (this.step === this.totalSteps) {
-			await this.final();
-		}
-	}
+	protected async after(): Promise<void> { return; }
 
-	abstract final(): Promise<void>;
-
-	protected get inputValue(): any {
-		return this.guideGroupResultSet[this.itemId] !== undefined ? this.guideGroupResultSet[this.itemId] : this.initailValue;
-	}
-
-	protected get guideGroupResultSet(): { [key: string]: any } {
-		if (!this.state.resultSet[this.guideGroupId]) {
-			this.state.resultSet[this.guideGroupId] = {};
-		}
-
-		return this.state.resultSet[this.guideGroupId];
-	}
+	protected async final(): Promise<void> { return; }
 
 	protected prev(): void {
 		throw InputFlowAction.back;

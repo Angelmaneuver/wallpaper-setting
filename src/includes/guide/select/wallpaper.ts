@@ -1,7 +1,7 @@
-import { AbstractGuide }          from "../base/abc";
-import { AbstractQuickPickGuide } from "../base/pick";
-import { State }                  from "../base/base";
-import * as Constant              from "../../constant";
+import { AbstractGuide }                from "../base/abc";
+import { State }                        from "../base/base";
+import { AbstractQuickPickSelectGuide } from "../base/pick";
+import * as Constant                    from "../../constant";
 
 export function delegation2Transition(guide: AbstractGuide, state: State, random?: boolean): void {
 	if (state.installer.isAutoSet === undefined) {
@@ -29,7 +29,7 @@ export function installByType(state: State, type: number): void {
 	state.reload = true;
 }
 
-export class SelectSetupType extends AbstractQuickPickGuide {
+export class SelectSetupType extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
@@ -48,9 +48,9 @@ export class SelectSetupType extends AbstractQuickPickGuide {
 				return async () => { installByType(
 					this.state,
 					this.activeItem === this.items[0] ? Constant.wallpaperType.Image : Constant.wallpaperType.Slide);
-				}
+				};
 			default:
-				return async () => { this.prev(); }
+				return async () => { this.prev(); };
 		}
 	}
 }

@@ -3,15 +3,12 @@ import {
 	commands,
 	ExtensionContext
 } from "vscode";
-import { MultiStepInput }             from "./utils/multiStepInput";
-import { State }                      from "./guide/base/base";
-import { GuideFactory }               from "./guide/factory/base";
+import { MultiStepInput }    from "./utils/multiStepInput";
+import { State }             from "./guide/base/base";
+import { GuideFactory }      from "./guide/factory/base";
 
 export async function guidance(context: ExtensionContext): Promise<void> {
-	const state = {
-		title:     "Wallpaper Setting",
-		resultSet: {}
-	} as Partial<State>;
+	const state = { title: "Wallpaper Setting", resultSet: {} } as Partial<State>;
 
 	try {
 		const menu = GuideFactory.create("StartMenuGuide", state, context);

@@ -1,9 +1,9 @@
-type Nullable<T> = T | null | undefined;
+import * as Types from "./type";
 
 export class Optional<T> {
-	private value: Nullable<T>;
+	private value: Types.Nullable<T>;
 
-	constructor(value: Nullable<T>) {
+	constructor(value: Types.Nullable<T>) {
 		this.value = value;
 	}
 
@@ -11,7 +11,7 @@ export class Optional<T> {
 		return new Optional<T>(null);
 	}
 
-	public static ofNullable<T>(value: Nullable<T>): Optional<T> {
+	public static ofNullable<T>(value: Types.Nullable<T>): Optional<T> {
 		return new Optional<T>(value);
 	}
 

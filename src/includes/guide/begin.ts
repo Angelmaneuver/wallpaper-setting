@@ -1,8 +1,7 @@
-import { AbstractQuickPickGuide } from "./base/pick";
-import { State }                  from "./base/base";
-import { VSCodePreset }           from "../utils/base/vscodePreset";
-import * as Wallpaper             from "./select/wallpaper";
-import * as Slide                 from "./slide";
+import { AbstractQuickPickSelectGuide } from "./base/pick";
+import { VSCodePreset }                 from "../utils/base/vscodePreset";
+import * as Wallpaper                   from "./select/wallpaper";
+import * as Slide                       from "./slide";
 
 const items = {
 	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
@@ -16,7 +15,7 @@ const items = {
 	Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
 };
 
-export class StartMenuGuide extends AbstractQuickPickGuide {
+export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
@@ -62,7 +61,7 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 	private setup(): () => Promise<void> {
 		return async () => {
 			this.setNextSteps([
-				{ key: "ImageFilePathGuide", state: this.createBaseState(" - Image Setup", "setup", 2, this.settingItemId.filePath)},
+				{ key: "ImageFilePathGuide", state: this.createBaseState(" - Image Setup", "setup", 2, this.itemIds.filePath)},
 				{ key: "OpacityGuide" }
 			]);
 		}
@@ -70,14 +69,14 @@ export class StartMenuGuide extends AbstractQuickPickGuide {
 
 	private setupAsSlide(): () => Promise<void> {
 		return async () => {
-			const state: Partial<State> = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.settingItemId.slideFilePaths);
+			const state = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.itemIds.slideFilePaths);
 
 			this.setNextSteps([
-				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.settingItemId.slideFilePaths)) },
+				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.itemIds.slideFilePaths)) },
 				{ key: "OpacityGuide" },
-				{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.settingItemId.slideIntervalUnit) },
-				{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.settingItemId.slideInterval) },
-				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.settingItemId.slideRandomPlay) }
+				{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.itemIds.slideIntervalUnit) },
+				{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.itemIds.slideInterval) },
+				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.itemIds.slideRandomPlay) }
 			]);
 		}
 	}

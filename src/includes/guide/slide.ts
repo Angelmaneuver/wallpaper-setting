@@ -1,7 +1,7 @@
 import { InputStep, MultiStepInput }                 from "../utils/multiStepInput";
-import { BaseInputGuide, InputResourceGuide, Type }  from "./base/input";
-import { AbstractQuickPickGuide }                    from "./base/pick";
 import { State }                                     from "./base/base";
+import { BaseInputGuide, InputResourceGuide, Type }  from "./base/input";
+import { BaseQuickPickGuide }                        from "./base/pick";
 import { BaseValidator }                             from "./validator/base";
 import { ExtensionSetting }                          from "../settings/extension";
 import * as Constant                                 from "../constant";
@@ -49,8 +49,8 @@ export class SlideIntervalGuide extends BaseInputGuide {
 		this.prompt    =
 			`Enter a number between ${Constant.minimumSlideInterval} and 65555 in `
 			+ (
-				this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
-					? this.guideGroupResultSet[this.settingItemId.slideIntervalUnit]
+				this.guideGroupResultSet[this.itemIds.slideIntervalUnit]
+					? this.guideGroupResultSet[this.itemIds.slideIntervalUnit]
 					: this.settings.slideIntervalUnit.value
 			)
 			+ ". (Default: 25)";
@@ -59,17 +59,11 @@ export class SlideIntervalGuide extends BaseInputGuide {
 	}
 
 	public static async validateSlideInterval(slideInterval: string): Promise<string | undefined> {
-		return await BaseValidator.validateNumber(
-			"slide interval",
-			slideInterval,
-			{
-				minimum: Constant.minimumSlideInterval,
-			}
-		);
+		return await BaseValidator.validateNumber("slide interval", slideInterval, { minimum: Constant.minimumSlideInterval });
 	}
 }
 
-export class SlideRandomPlayGuide extends AbstractQuickPickGuide {
+export class SlideRandomPlayGuide extends BaseQuickPickGuide {
 	public async after(): Promise<void> {
 		await super.after();
 

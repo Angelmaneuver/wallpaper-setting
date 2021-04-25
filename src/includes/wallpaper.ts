@@ -26,7 +26,7 @@ export class Wallpaper {
 	private _isAutoSet:      undefined | AutoSet;
 
 	constructor(
-		locationPath: any,
+		locationPath: string,
 		fileName:     string,
 		settings:     ExtensionSetting,
 		extensionKey: string

@@ -1,14 +1,14 @@
-import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
-import { AbstractQuickPickGuide }    from "../base/pick";
-import { QuickPickItem }             from "vscode";
-import { State }                     from "../base/base";
-import { VSCodePreset }              from "../../utils/base/vscodePreset";
-import * as Wallpaper                from "../select/wallpaper";
-import * as Slide                    from "../slide";
+import { InputStep, MultiStepInput }    from "../../utils/multiStepInput";
+import { State }                        from "../base/base";
+import { AbstractQuickPickSelectGuide } from "../base/pick";
+import { QuickPickItem }                from "vscode";
+import { VSCodePreset }                 from "../../utils/base/vscodePreset";
+import * as Wallpaper                   from "../select/wallpaper";
+import * as Slide                       from "../slide";
 
-type optionState = { subState?: Partial<State>, initialValue?: any };
+type optionState = { subState?: Partial<State>, initialValue?: string };
 
-export class SelectParameterType extends AbstractQuickPickGuide {
+export class SelectParameterType extends AbstractQuickPickSelectGuide {
 	private static templateItems: Array<QuickPickItem>     = [
 		VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image Path",            "Set the image to be used as the wallpaper."),
 		VSCodePreset.create(VSCodePreset.Icons.folder,    "Image Files Path",      "Set the images to be used as the slide."),
@@ -21,20 +21,20 @@ export class SelectParameterType extends AbstractQuickPickGuide {
 		VSCodePreset.create(VSCodePreset.Icons.reply,     "Return",                "Return without saving any changes."),
 	];
 
-	private guideParameters: { [key: number]: Array<any> } = {};
+	private guideParameters: { [key: number]: [string, string, string, optionState] } = {};
 
 	public init(): void {
 		super.init();
 
 		this.placeholder     = "Select the item you want to set.";
 		this.guideParameters = {
-			0: [this.settingItemId.filePath,          "ImageFilePathGuide",   " - Image Path",            this.createOptionState(this.settingItemId.filePath)],
-			1: [this.settingItemId.slideFilePaths,    "SlideFilePathsGuide",  " - Image Files Path",      this.createOptionState(this.settingItemId.slideFilePaths)],
-			2: [this.settingItemId.opacity,           "OpacityGuide",         " - Opacity",               this.createOptionState(this.settingItemId.opacity)],
-			3: [this.settingItemId.slideInterval,     "SlideIntervalGuide",   " - Slide Interval",        this.createOptionState(this.settingItemId.slideInterval)],
-			4: [this.settingItemId.slideIntervalUnit, "BaseQuickPickGuide",   " - Slide Interval Unit",   this.createOptionState(this.settingItemId.slideIntervalUnit)],
-			5: [this.settingItemId.slideRandomPlay,   "SlideRandomPlayGuide", " - Slide Random Playback", this.createOptionState(this.settingItemId.slideRandomPlay)],
-			6: [this.settingItemId.slideEffectFadeIn, "BaseQuickPickGuide",   " - Slide Effect Fade In",  this.createOptionState(this.settingItemId.slideEffectFadeIn)]
+			0: [this.itemIds.filePath,          "ImageFilePathGuide",   " - Image Path",            this.createOptionState(this.itemIds.filePath)],
+			1: [this.itemIds.slideFilePaths,    "SlideFilePathsGuide",  " - Image Files Path",      this.createOptionState(this.itemIds.slideFilePaths)],
+			2: [this.itemIds.opacity,           "OpacityGuide",         " - Opacity",               this.createOptionState(this.itemIds.opacity)],
+			3: [this.itemIds.slideInterval,     "SlideIntervalGuide",   " - Slide Interval",        this.createOptionState(this.itemIds.slideInterval)],
+			4: [this.itemIds.slideIntervalUnit, "BaseQuickPickGuide",   " - Slide Interval Unit",   this.createOptionState(this.itemIds.slideIntervalUnit)],
+			5: [this.itemIds.slideRandomPlay,   "SlideRandomPlayGuide", " - Slide Random Playback", this.createOptionState(this.itemIds.slideRandomPlay)],
+			6: [this.itemIds.slideEffectFadeIn, "BaseQuickPickGuide",   " - Slide Effect Fade In",  this.createOptionState(this.itemIds.slideEffectFadeIn)]
 		}
 	}
 
@@ -75,17 +75,17 @@ export class SelectParameterType extends AbstractQuickPickGuide {
 		const result: optionState = {};
 
 		switch(itemId) {
-			case this.settingItemId.slideFilePaths:
-			case this.settingItemId.slideInterval:
-			case this.settingItemId.slideIntervalUnit:
-			case this.settingItemId.slideRandomPlay:
-			case this.settingItemId.slideEffectFadeIn:
+			case this.itemIds.slideFilePaths:
+			case this.itemIds.slideInterval:
+			case this.itemIds.slideIntervalUnit:
+			case this.itemIds.slideRandomPlay:
+			case this.itemIds.slideEffectFadeIn:
 				result["subState"] = Slide.getDefaultState(itemId);
 		}
 
-		if (itemId === this.settingItemId.slideRandomPlay || itemId === this.settingItemId.slideEffectFadeIn) {
+		if (itemId === this.itemIds.slideRandomPlay || itemId === this.itemIds.slideEffectFadeIn) {
 			result["initialValue"] = this.settings.getItem(itemId).value;
-		} else if (itemId !== this.settingItemId.slideFilePaths) {
+		} else if (itemId !== this.itemIds.slideFilePaths) {
 			result["initialValue"] = this.settings.getItem(itemId).validValue;
 		}
 

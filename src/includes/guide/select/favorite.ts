@@ -1,9 +1,9 @@
-import { AbstractQuickPickGuide } from "../base/pick";
-import { State }                  from "../base/base";
-import * as Constant              from "../../constant";
-import { formatByArray }          from "../../utils/base/string";
+import { State }                        from "../base/base";
+import { AbstractQuickPickSelectGuide } from "../base/pick";
+import * as Constant                    from "../../constant";
+import { formatByArray }                from "../../utils/base/string";
 
-export class SelectFavoriteProcess extends AbstractQuickPickGuide {
+export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
@@ -19,13 +19,13 @@ export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 			case Constant.favoriteProcess[0].label:
 				return this.setTransition(operation.Register);
 			case Constant.favoriteProcess[1].label:
-				return this.setTransition(operation.UnRegister)
+				return this.setTransition(operation.UnRegister);
 			case Constant.favoriteProcess[2].label:
 				return this.setTransition(operation.Load);
 			case Constant.favoriteProcess[3].label:
 				return this.startUp();
 			default:
-				return async () => { this.prev(); }
+				return async () => { this.prev(); };
 		}
 	}
 
@@ -69,7 +69,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickGuide {
 
 const operation = { Register: "Register", UnRegister: "UnRegister", Load: "Load" };
 
-export class SelectFavoriteOperationType extends AbstractQuickPickGuide {
+export class SelectFavoriteOperationType extends AbstractQuickPickSelectGuide {
 	private operationType: string;
 
 	constructor(

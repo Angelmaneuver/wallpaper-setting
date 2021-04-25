@@ -8,13 +8,13 @@ export class OpacityGuide extends BaseInputGuide {
 	public init(): void {
 		super.init();
 
-		this.itemId   = this.settingItemId.opacity;
+		this.itemId   = this.itemIds.opacity;
 		this.prompt   = `Enter a number between ${Constant.maximumOpacity} and ${Constant.minimumOpacity} for opacity. (Default: 0.75)`;
 		this.validate = OpacityGuide.validateOpacity;
 	}
 
-	public async final(): Promise<void> {
-		await super.final();
+	protected async lastInputStepExecute(): Promise<void> {
+		await super.lastInputStepExecute();
 
 		Wallpaper.installByType(this.state, Constant.wallpaperType.Image);
 	}

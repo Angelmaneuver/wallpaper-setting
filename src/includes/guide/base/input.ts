@@ -1,32 +1,45 @@
 import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
-import { State, BaseGuide }          from "./base";
+import { AbstractBaseGuide, State }  from "./base";
 import { QuickInputButton, Uri }     from "vscode";
 import { BaseValidator }             from "../validator/base";
 import { Selecter }                  from "../../utils/selecter";
 import * as Constant                 from "../../constant";
 
-export class BaseInputGuide extends BaseGuide {
+export class BaseInputGuide extends AbstractBaseGuide {
+	protected prompt  = "";
+	protected buttons = new Array<QuickInputButton>();
+
+	public init(): void {
+		this.initialFields.push("buttons", "prompt");
+
+		super.init();
+	}
+
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		this.inputResult = await input.showInputBox(
+		this.inputValue = await input.showInputBox(
 			{
 				title:        this.title,
 				step:         this.step,
 				totalSteps:   this.totalSteps,
-				buttons:      this.buttons,
-				value:        this.inputValue,
+				value:        this.inputValueAsString,
 				prompt:       this.prompt,
+				buttons:      this.buttons,
 				validate:     this.validate,
 				shouldResume: this.shouldResume,
 			}
 		);
 
-		this.setResultSet(this.inputResult);
+		this.setResultSet(this.inputValue);
 	}
 
-	protected setResultSet(value: any): void {
-		if (this.itemId.length > 0 && typeof(value) === "string") {
+	protected setResultSet(value: unknown): void {
+		if (typeof(value) === "string" && this.itemId.length > 0) {
 			this.guideGroupResultSet[this.itemId] = value;
 		}
+	}
+
+	protected async after(): Promise<void> {
+		await this.inputStepAfter();
 	}
 }
 
@@ -81,15 +94,18 @@ export class InputResourceGuide extends BaseInputGuide {
 		do {
 			await super.show(input);
 
-			if (this.inputResult instanceof GuideButton) {
-				this.inputResult = undefined;
+			if (this.inputValue instanceof GuideButton) {
+				this.inputValue = undefined;
 				const selected   = await new Selecter(this.options).openFileDialog();
 
 				if (selected) {
-					this.inputResult = selected.path;
-					this.setResultSet(this.inputResult);
+					this.inputValue = selected.path;
+					this.setResultSet(this.inputValue);
 				}
 			}
-		} while (!(this.inputResult) || this.inputResult.length === 0);
+		} while (
+			!(this.inputValue)                                                      ||
+			(typeof(this.inputValue) === "string" && this.inputValue.length === 0)
+		);
 	}
 }

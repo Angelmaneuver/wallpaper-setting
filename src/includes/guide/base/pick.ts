@@ -1,10 +1,20 @@
 import { QuickPickItem }             from "vscode";
 import { InputStep, MultiStepInput } from "../../utils/multiStepInput";
-import { BaseGuide, State }          from "./base";
+import { AbstractBaseGuide, State }  from "./base";
 
 const match = /^\$\(.+\) /;
 
-export abstract class AbstractQuickPickGuide extends BaseGuide {
+export abstract class AbstractQuickPickGuide extends AbstractBaseGuide {
+	protected placeholder                           = "";
+	protected items                                 = Array<QuickPickItem>();
+	protected activeItem: QuickPickItem | undefined = undefined;
+
+	public init(): void {
+		this.initialFields.push("placeholder", "items", "activeItem");
+
+		super.init();
+	}
+
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
 		this.nextStep   = this.totalSteps === 0 ? undefined : this.nextStep;
 		this.activeItem = await input.showQuickPick(
@@ -14,7 +24,7 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 				totalSteps:   this.totalSteps,
 				placeholder:  this.placeholder,
 				items:        this.items,
-				activeItem:   this.inputValue,
+				activeItem:   this.inputPick,
 				validate:     this.validate,
 				shouldResume: this.shouldResume,
 			}
@@ -25,20 +35,12 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 		}
 	}
 
-	public async after(): Promise<void> {
-		const callback = this.getExecute(this.activeItem?.label);
-
-		if (callback) {
-			await callback();
-		}
+	protected get state(): State {
+		return this._state as State;
 	}
 
-	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
-		return undefined;
-	}
-
-	protected get inputValue(): QuickPickItem | undefined {
-		let label = super.inputValue;
+	protected get inputPick(): QuickPickItem | undefined {
+		let label = this.inputValue;
 
 		if (typeof(label) === "string") {
 			label = label.replace(match, "");
@@ -67,12 +69,21 @@ export abstract class AbstractQuickPickGuide extends BaseGuide {
 	}
 }
 
+export abstract class AbstractQuickPickSelectGuide extends AbstractQuickPickGuide {
+	public async after(): Promise<void> {
+		const callback = this.getExecute(this.activeItem?.label);
+
+		if (callback) {
+			await callback();
+		}
+	}
+
+	protected abstract getExecute(label: string | undefined): (() => Promise<void>) | undefined;
+}
+
+
 export class BaseQuickPickGuide extends AbstractQuickPickGuide {
 	public async after(): Promise<void> {
-		if (this.totalSteps === 0) {
-			this.prev();
-		} else if (this.step === this.totalSteps) {
-			await this.final();
-		}
+		await this.inputStepAfter();
 	}
 }
