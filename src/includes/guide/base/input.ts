@@ -95,17 +95,21 @@ export class InputResourceGuide extends BaseInputGuide {
 			await super.show(input);
 
 			if (this.inputValue instanceof GuideButton) {
-				this.inputValue = undefined;
-				const selected   = await new Selecter(this.options).openFileDialog();
-
-				if (selected) {
-					this.inputValue = selected.path;
-					this.setResultSet(this.inputValue);
-				}
+				await this.pushButton();
 			}
 		} while (
 			!(this.inputValue)                                                      ||
 			(typeof(this.inputValue) === "string" && this.inputValue.length === 0)
 		);
+	}
+
+	private async pushButton(): Promise<void> {
+		this.inputValue = undefined;
+		const selected  = await new Selecter(this.options).openFileDialog();
+
+		if (selected && selected.path.length > 0) {
+			this.inputValue = selected.path;
+			this.setResultSet(this.inputValue);
+		}
 	}
 }
