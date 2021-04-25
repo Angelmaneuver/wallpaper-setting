@@ -1,4 +1,5 @@
 # ignore node dependency directories
+.vscode-test
 node_modules/
 
 # ignore temporary compilation result file.
