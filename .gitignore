@@ -1,9 +1,13 @@
 # ignore node dependency directories
-.vscode-test
 node_modules/
 
 # ignore temporary compilation result file.
 out/
+
+# ignore test result file.
+.nyc_output/
+.vscode-test/
+coverage/
 
 # ignore extension package file.
 *.vsix

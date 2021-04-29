@@ -22,11 +22,16 @@ suite('VSCode Preset Utility Test Suite', () => {
 	});
 
 	test('create', () => {
-		const label         = "label string";
-		const description   = "description string";
-		const result        = testTarget.VSCodePreset.create(testTarget.VSCodePreset.Icons.account, label, description);
+		const label       = "label string";
+		const description = "description string";
+		let result        = testTarget.VSCodePreset.create(testTarget.VSCodePreset.Icons.account, label, description);
 
 		assert.strictEqual(result.label,       `$(account) ${label}`);
 		assert.strictEqual(result.description, description);
+
+		result            = testTarget.VSCodePreset.create(testTarget.VSCodePreset.Icons.account);
+
+		assert.strictEqual(result.label,       testTarget.VSCodePreset.Icons.account.label);
+		assert.strictEqual(result.description, testTarget.VSCodePreset.Icons.account.description);
 	});
 });
