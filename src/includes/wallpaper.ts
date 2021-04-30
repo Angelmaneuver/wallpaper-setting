@@ -92,7 +92,7 @@ export class Wallpaper {
 		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
 		editFile.content =
-			this.clearWallpaperScript(editFile.content) +
+			this.clearWallpaperScript(editFile.toString()) +
 			this.getWallpaperScript(this.settings.filePath.value, this.settings.opacity.validValue);
 
 		editFile.write({ encoding: "utf-8" });
@@ -102,7 +102,7 @@ export class Wallpaper {
 		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
 		editFile.content =
-			this.clearWallpaperScript(editFile.content) +
+			this.clearWallpaperScript(editFile.toString()) +
 			this.getSlideScript(
 				this.settings.slideFilePaths.value,
 				this.settings.opacity.validValue,
@@ -117,7 +117,7 @@ export class Wallpaper {
 	public uninstall(): void {
 		const editFile   = new File(this.installPath, { encoding: "utf-8" });
 
-		editFile.content = this.clearWallpaperScript(editFile.content);
+		editFile.content = this.clearWallpaperScript(editFile.toString());
 
 		editFile.write({ encoding: "utf-8" });
 	}

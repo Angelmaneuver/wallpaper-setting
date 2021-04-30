@@ -6,14 +6,15 @@ type FsOption     = { encoding?: string; flag?: string; };
 type SearchOption = { filters?: Array<string>; fullPath?:  boolean; recursive?: boolean; }
 
 export class File {
-	private _path         = "";
-	private _content: any = null;
+	private _path:    string;
+	private _content: string | Buffer | null;
 
 	constructor(targetPath: string, options?: FsOption) {
-		this._path = targetPath;
-
-		if (this.path) {
-			this.content = fs.readFileSync(path.resolve(this.path), options);
+		if (typeof(targetPath) === "string" && targetPath.length > 0) {
+			this._path    = targetPath;
+			this._content = fs.readFileSync(path.resolve(this.path), options);
+		} else {
+			throw new ReferenceError("File path is not specified.");
 		}
 	}
 
@@ -25,11 +26,11 @@ export class File {
 		return File.getExtension(this._path);
 	}
 
-	get content(): any {
+	get content(): string | Buffer | null {
 		return this._content;
 	}
 
-	set content(value: any) {
+	set content(value: string | Buffer | null) {
 		this._content = value;
 	}
 
@@ -38,9 +39,7 @@ export class File {
 	}
 
 	public write(options?: fs.WriteFileOptions): void {
-		if (this.isPresent) {
-			fs.writeFileSync(path.resolve(this.path), this.content, options);
-		}
+		fs.writeFileSync(path.resolve(this.path), this.content, options);
 	}
 
 	public toString(): string {
@@ -105,7 +104,7 @@ export class File {
 		options?:   SearchOption
 	): Array<string> {
 		const filters   = Optional.ofNullable(options?.filters).orElseNonNullable([]);
-		const filtering = filters ? true : false;
+		const filtering = filters.length > 0 ? true : false;
 		const fullPath  = Optional.ofNullable(options?.fullPath).orElseNonNullable(false);
 		const recursive = Optional.ofNullable(options?.recursive).orElseNonNullable(false);
 		const dirents   = fs.readdirSync(targetPath, { withFileTypes: true });
