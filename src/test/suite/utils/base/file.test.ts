@@ -1,5 +1,6 @@
 import * as assert     from "assert";
 import * as sinon      from "sinon";
+import * as path       from "path";
 import * as fs         from "fs";
 import * as testTarget from "../../../../includes/utils/base/file";
 
@@ -7,7 +8,7 @@ suite('File Utility Test Suite', () => {
 	test('constructor', () => {
 		const mock       = sinon.mock(fs);
 		const extension  = "txt;"
-		const targetPath = `/tmp/test.${extension}`;
+		const targetPath = path.join(__dirname, "tmp", `test.${extension}`);
 		const result     = "file utility test."
 
 		mock.expects("readFileSync").once().withArgs(targetPath).returns(result);
@@ -25,7 +26,7 @@ suite('File Utility Test Suite', () => {
 
 	test('constructor - with options', () => {
 		const mock         = sinon.mock(fs);
-		const targetPath   = "/tmp/test.txt";
+		const targetPath   = path.join(__dirname, "tmp", "test.txt");
 		const readOptions  = { encoding: "utf-8", flag: "a" }
 		const result       = "file utility test."
 		const plus         = " write";
@@ -60,7 +61,7 @@ suite('File Utility Test Suite', () => {
 	test('isFile', () => {
 		const mock1      = sinon.mock(fs);
 		const extension  = "txt;"
-		const targetPath = `/tmp/test.${extension}`;
+		const targetPath = path.join(__dirname, "tmp", `test.${extension}`);
 		const fsStats    = new fs.Stats();
 		const mock2      = sinon.mock(fsStats);
 
@@ -79,7 +80,7 @@ suite('File Utility Test Suite', () => {
 
 	test('isDirectory', () => {
 		const mock1      = sinon.mock(fs);
-		const targetPath = `/tmp/test`;
+		const targetPath = path.join(__dirname, "tmp", "test");
 		const fsStats    = new fs.Stats();
 		const mock2      = sinon.mock(fsStats);
 
@@ -97,15 +98,15 @@ suite('File Utility Test Suite', () => {
 
 	test('getExtension', () => {
 		const extension   = "txt;"
-		const targetPath1 = `/tmp/test.${extension}`;
-		const targetPath2 = `/tmp/test`;
+		const targetPath1 = path.join(__dirname, "tmp", `test.${extension}`);
+		const targetPath2 = path.join(__dirname, "tmp", `test`);
 
 		assert.strictEqual(testTarget.File.getExtension(targetPath1), extension);
 		assert.strictEqual(testTarget.File.getExtension(targetPath2), "");
 	});
 
 	test('getChildrens', () => {
-		const rootDir    = `/tmp/`;
+		const rootDir    = path.join(__dirname, "tmp");
 		const extension1 = `txt`;
 		const extension2 = `png`;
 		const fileName1  = `testFile`;
@@ -141,19 +142,19 @@ suite('File Utility Test Suite', () => {
 		mock4.expects("isFile").thrice().returns(true);
 		mock5.expects("isFile").thrice().returns(false);
 		mock5.expects("isDirectory").once().returns(true);
-		mock1.expects("readdirSync").once().withArgs(rootDir + directory1, { withFileTypes: true }).returns(dirents2);
+		mock1.expects("readdirSync").once().withArgs(path.join(rootDir, directory1), { withFileTypes: true }).returns(dirents2);
 		mock6.expects("isFile").once().returns(true);
 
 		assert.notStrictEqual(testTarget.File.getChldrens(rootDir), [file1, file2]);
 
 		assert.notStrictEqual(
 			testTarget.File.getChldrens(rootDir, { filters: [extension1], fullPath: true }),
-			[rootDir + file1]
+			[path.join(rootDir, file1)]
 		);
 
 		assert.notStrictEqual(
 			testTarget.File.getChldrens(rootDir, { filters: [extension2], fullPath: true, recursive: true }),
-			[rootDir + file2, `${rootDir}${directory1}/${file3}`]
+			[path.join(rootDir, file2), path.join(rootDir, directory1, file3)]
 		);
 
 		mock1.restore();
