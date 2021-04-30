@@ -43,3 +43,4 @@ jobs:
       with:
         coverageCommand: xvfb-run -a yarn coverage
         coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
+    - run: cat ${{github.workspace}}/coverage/lcov.info
