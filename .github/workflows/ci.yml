@@ -1,3 +1,5 @@
+name: Wallpaper Setting CI
+
 on:
   push:
     branches:
