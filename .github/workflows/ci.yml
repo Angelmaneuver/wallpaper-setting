@@ -2,8 +2,6 @@ name: Wallpaper Setting CI
 
 on:
   push:
-    branches:
-      - master
 
 jobs:
   build:
