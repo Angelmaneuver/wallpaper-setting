@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -23,3 +23,22 @@ jobs:
       if: runner.os == 'Linux'
     - run: yarn test
       if: runner.os != 'Linux'
+  coverage:
+    needs: [ test ]
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Install Node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: 14
+    - run: npm install -g yarn
+    - run: yarn install
+    - run: yarn compile
+    - uses: paambaati/codeclimate-action@v2.2.4
+      env:
+        CC_TEST_REPORTER_ID: a7202a1a6a2fc73bfb3e9d8b616b983b0281a02cca3e0b030b9d6482af3f1c25
+      with:
+        coverageCommand: xvfb-run -a yarn coverage
