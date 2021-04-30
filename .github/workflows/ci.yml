@@ -19,7 +19,6 @@ jobs:
     - run: npm install -g yarn
     - run: yarn install
     - run: yarn compile
-    - run: yarn watch
     - run: xvfb-run -a yarn test
       if: runner.os == 'Linux'
     - run: yarn test
