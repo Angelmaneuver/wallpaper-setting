@@ -111,25 +111,6 @@
 		"test": "node ./out/test/runTest.js",
 		"coverage": "nyc yarn run test"
 	},
-	"nyc": {
-		"require": [
-			"ts-node/register"
-		],
-		"include": [
-			"src/**/*.ts",
-			"out/**/*.js"
-		],
-		"exclude": [
-			"src/test/*"
-		],
-		"reporter": [
-			"text-summary",
-			"lcov",
-			"html"
-		],
-		"sourceMap": true,
-		"all": true
-	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",

@@ -1,0 +1,17 @@
+require:
+  - "ts-node/register"
+
+include:
+  - "src/**/*.ts"
+  - "out/**/*.js"
+
+exclude:
+  - "src/test/*"
+
+reporter:
+  - "text-summary"
+  - "lcov"
+  - "html"
+
+sourceMap: true
+all: true
