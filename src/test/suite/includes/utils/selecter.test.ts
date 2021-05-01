@@ -2,8 +2,8 @@ import * as assert     from "assert";
 import * as sinon      from "sinon";
 import * as path       from "path";
 import * as vscode     from "vscode";
-import * as Constant   from "../../../includes/constant";
-import * as testTarget from "../../../includes/utils/selecter";
+import * as Constant   from "../../../../includes/constant";
+import * as testTarget from "../../../../includes/utils/selecter";
 
 suite('File Dialog Utility Test Suite', async () => {
 	test('constructor', async () => {

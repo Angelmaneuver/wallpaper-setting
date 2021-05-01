@@ -1,5 +1,5 @@
 import * as assert     from "assert";
-import * as testTarget from "../../../../includes/utils/base/vscodePreset";
+import * as testTarget from "../../../../../includes/utils/base/vscodePreset";
 
 suite('VSCode Preset Utility Test Suite', () => {
 	test('getAllIcons', () => {

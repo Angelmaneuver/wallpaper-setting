@@ -1,5 +1,5 @@
 import * as assert     from "assert";
-import * as testTarget from "../../../../includes/utils/base/optional";
+import * as testTarget from "../../../../../includes/utils/base/optional";
 
 suite('Optional Utility Test Suite', () => {
 	const error = new Error();

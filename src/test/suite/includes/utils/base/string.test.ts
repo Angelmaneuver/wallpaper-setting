@@ -1,5 +1,5 @@
 import * as assert     from "assert";
-import * as testTarget from "../../../../includes/utils/base/string";
+import * as testTarget from "../../../../../includes/utils/base/string";
 
 suite('String Utility Test Suite', () => {
 	test('Format By Array', () => {

@@ -1,7 +1,7 @@
 import * as assert     from "assert";
 import * as sinon      from "sinon";
-import { Optional }    from "../../../../../includes/utils/base/optional";
-import * as testTarget from "../../../../../includes/settings/item/factory/base";
+import { Optional }    from "../../../../../../includes/utils/base/optional";
+import * as testTarget from "../../../../../../includes/settings/item/factory/base";
 
 suite('Settings Item Factory Test Suite', async () => {
 	test('create - Non Exist Class', () => {

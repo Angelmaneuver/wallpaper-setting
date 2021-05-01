@@ -2,7 +2,7 @@ import * as assert     from "assert";
 import * as sinon      from "sinon";
 import * as path       from "path";
 import * as fs         from "fs";
-import * as testTarget from "../../../../includes/utils/base/file";
+import * as testTarget from "../../../../../includes/utils/base/file";
 
 suite('File Utility Test Suite', () => {
 	test('constructor', () => {
