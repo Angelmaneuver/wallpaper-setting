@@ -22,4 +22,12 @@ export class Optional<T> {
 	public orElseNonNullable(other: NonNullable<T>): NonNullable<T> {
 		return (this.value !== null && this.value !== undefined ? this.value : other) as NonNullable<T>;
 	}
+
+	public orElseThrow(error: Error): NonNullable<T> {
+		if (this.value !== null && this.value !== undefined) {
+			return this.value as NonNullable<T>;
+		} else {
+			throw error;
+		}
+	}
 }

@@ -1,38 +1,39 @@
-import { AbstractSettingItem }                                    from "../abc";
-import { BaseSettingItem, NumberSettingItem, BooleanSettingItem } from "../base";
-import * as Constant                                              from "../../../constant";
+import { AbstractSettingItem } from "../abc";
+import {
+	BaseSettingItem,
+	NumberSettingItem,
+	BooleanSettingItem
+}                              from "../base";
+import { Optional }            from "../../../utils/base/optional";
+import * as Constant           from "../../../constant";
 
-interface Constructable<T> extends Function {
-	new (...args: any[]): T;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface Constructable<T> extends Function { new (...args: Array<any>): T; }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Items = { [key: string]: { className: string, args: { [key: string]: any } } };
 
 export abstract class SettingItemFactory {
-	private static items:    Items                                = {};
-	private static classes:  Constructable<AbstractSettingItem>[] = [];
+	private static items:    Items                                     = {};
+	private static classes:  Array<Constructable<AbstractSettingItem>> = [];
 
-	public static create(itemId: string, value: any): AbstractSettingItem {
+	public static create(itemId: string, value: unknown): AbstractSettingItem {
 		if (Object.keys(this.items).length === 0) {
 			this.init();
 		}
 
-		const item        = this.items[itemId];
-		const classObject = this.classes.find(
-			(itemClass) => {
-				return itemClass.name === item.className;
-			}
-		);
+		const error       = ReferenceError("Requested " + itemId + "'s class not found...");
+		const item        = Optional.ofNullable(this.items[itemId]).orElseThrow(error);
+		const classObject = Optional.ofNullable(this.classes.find((itemClass) => {
+			return itemClass.name === item.className;
+		})).orElseThrow(error);
 
-		if (classObject) {
-			const args: any[] = [];
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const args: Array<any> = [];
 
-			Object.keys(item.args).forEach((key) => { args.push(item.args[key]); } );
+		Object.keys(item.args).forEach((key) => { args.push(item.args[key]); } );
 
-			return new classObject(...[itemId, value, ...args]);
-		} else {
-			throw new ReferenceError("Requested " + itemId + "'s class not found...");
-		}
+		return new classObject(...[itemId, value, ...args]);
 	}
 
 	private static init(): void {
