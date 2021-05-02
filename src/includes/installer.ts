@@ -1,22 +1,12 @@
 import * as path            from "path";
 import { ExtensionSetting } from "./settings/extension";
 import { Wallpaper }        from "./wallpaper";
+import { Optional }         from "./utils/base/optional";
 
 export function getInstance(setting: ExtensionSetting): Wallpaper {
-	return new Wallpaper(
-		(
-			() => {
-				const entryPoint = require.main?.filename;
-				
-				if (entryPoint) {
-					return path.dirname(entryPoint);
-				} else {
-					throw new URIError("No entry point found...");
-				}
-			}
-		)(),
-		"bootstrap-window.js",
-		setting,
-		"wallpaper-setting"
-	);
+	return new Wallpaper(getEntryPoint(), "bootstrap-window.js", setting, "wallpaper-setting");
+}
+
+function getEntryPoint(): string {
+	return path.dirname(Optional.ofNullable(require.main?.filename).orElseThrow(new URIError("No entry point found...")));
 }
