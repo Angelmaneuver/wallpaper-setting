@@ -25,10 +25,13 @@ suite('File Dialog Utility Test Suite', async () => {
 			canSelectMany:    false,
 			openLabel:        "",
 			filters:          {},
-		}).returns([{ fsPath: targetPath}]);
+		}).resolves([{ fsPath: targetPath }] as Array<vscode.Uri>);
 
 		assert.strictEqual(await instance.openFileDialog(), instance);
 		assert.strictEqual(instance.path,                   targetPath);
+
+		mock.verify();
+		mock.restore();
 	});
 
 	test('constructor - with options', () => {
