@@ -27,14 +27,14 @@ import {
 	FavoriteRandomSetGuide
 } from "../favorite";
 
-interface Constructable<T> extends Function {
-	new (...args: any[]): T;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface Constructable<T> extends Function { new (...args: Array<any>): T; }
 
 export abstract class GuideFactory {
-	private static guides: Constructable<AbstractGuide>[] = [];
+	private static guides: Array<Constructable<AbstractGuide>> = [];
 
-	public static create(className: string, ...args: any[]): AbstractGuide {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public static create(className: string, ...args: Array<any>): AbstractGuide {
 		if (this.guides.length === 0) {
 			this.init();
 		}
