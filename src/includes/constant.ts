@@ -20,7 +20,7 @@ export const itemsCreat = (type: number, description: { item1: string, item2: st
 			];
 			break;
 		default:
-			break;
+			throw new ReferenceError("Requested parameter type " + type + " not support with this method...");
 	}
 
 	return items.concat(description.return ? VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.return) : []);
