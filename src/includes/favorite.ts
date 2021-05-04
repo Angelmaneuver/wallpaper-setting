@@ -27,7 +27,7 @@ const favoriteSetter = (
 );
 
 export async function randomSet(): Promise<void> {
-	if (setting.isRegisterd && setting.favoriteRandomSet.validValue) {
+	if (setting.isFavoriteRegisterd && setting.favoriteRandomSet.validValue) {
 		const favorites =
 			new Array<Favorite>()
 			.concat(favorite2array(Constant.wallpaperType.Image, setting.favoriteImageSet.value))

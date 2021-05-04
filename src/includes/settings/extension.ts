@@ -1,6 +1,7 @@
 import { ConfigurationTarget } from "vscode";
 import { SettingBase }         from "./base";
 import { AbstractSettingItem } from "./item/abc";
+import { BooleanSettingItem }  from "./item/base"
 import { SettingItemFactory }  from "./item/factory/base";
 import * as Constant           from "../constant";
 
@@ -16,15 +17,11 @@ export interface Favorite {
 	}
 }
 
-type Registerd       = {
-	image: boolean,
-	slide: boolean
-};
-
+type Registerd       = { image: boolean, slide: boolean };
 type FavoriteAutoSet = number;
 
 export class ExtensionSetting extends SettingBase {
-	public static propertyIds: { [key: string]: string }     = {
+	public static propertyIds: { [key: string]: string }      = {
 		filePath:          "filePath",
 		slideFilePaths:    "slideFilePaths",
 		opacity:           "opacity",
@@ -37,9 +34,9 @@ export class ExtensionSetting extends SettingBase {
 		favoriteRandomSet: "favoriteWallpaperRandomSet"
 	};
 
-	private _items:           AbstractSettingItem[]       = [];
-	private _isRegisterd:     undefined | Registerd       = undefined;
-	private _FavoriteAutoSet: undefined | FavoriteAutoSet = undefined;
+	private _items:               AbstractSettingItem[]       = [];
+	private _isFavoriteRegisterd: undefined | Registerd       = undefined;
+	private _FavoriteAutoSet:     undefined | FavoriteAutoSet = undefined;
 
 	constructor() {
 		super("wallpaper-setting", ConfigurationTarget.Global);
@@ -55,10 +52,10 @@ export class ExtensionSetting extends SettingBase {
 			}
 		)
 
-		const image: boolean = Object.keys(this.favoriteImageSet).length > 0;
-		const slide: boolean = Object.keys(this.favoriteSlideSet).length > 0;
+		const image: boolean      = Object.keys(this.favoriteImageSet.value).length > 0;
+		const slide: boolean      = Object.keys(this.favoriteSlideSet.value).length > 0;
 
-		this._isRegisterd = image || slide ? { image: image, slide: slide } : undefined;
+		this._isFavoriteRegisterd = image || slide ? { image: image, slide: slide } : undefined;
 
 		if (image && !slide) {
 			this._FavoriteAutoSet = Constant.wallpaperType.Image;
@@ -67,14 +64,14 @@ export class ExtensionSetting extends SettingBase {
 		}
 	}
 
-	public setItemValueNotRegist(itemId: string, value: any): AbstractSettingItem {
+	public setItemValueNotRegist(itemId: string, value: unknown): AbstractSettingItem {
 		const item = this.getItem(itemId);
 		item.value = value;
 
 		return item;
 	}
 
-	public async setItemValue(itemId: string, value: any): Promise<void> {
+	public async setItemValue(itemId: string, value: unknown): Promise<void> {
 		await super.set(itemId, this.setItemValueNotRegist(itemId, value).convert4Registration);
 	}
 
@@ -88,9 +85,16 @@ export class ExtensionSetting extends SettingBase {
 		}
 	}
 
-	public getItemValue(itemId: string): any {
+	public getItemValue(itemId: string): unknown {
 		const item = this.getItem(itemId);
-		return item?.value;
+		return item.value;
+	}
+
+	public async batchInstall(): Promise<void> {
+		for (const key of Object.keys(ExtensionSetting.propertyIds)) {
+			const itemId = ExtensionSetting.propertyIds[key];
+			await this.set(itemId, this.getItem(itemId).convert4Registration);
+		}
 	}
 
 	public async uninstall(): Promise<void> {
@@ -119,12 +123,12 @@ export class ExtensionSetting extends SettingBase {
 		return this.getItem(ExtensionSetting.propertyIds.slideIntervalUnit);
 	}
 
-	public get slideRandomPlay(): AbstractSettingItem {
-		return this.getItem(ExtensionSetting.propertyIds.slideRandomPlay);
+	public get slideRandomPlay(): BooleanSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideRandomPlay) as BooleanSettingItem;
 	}
 
-	public get slideEffectFadeIn(): AbstractSettingItem {
-		return this.getItem(ExtensionSetting.propertyIds.slideEffectFadeIn);
+	public get slideEffectFadeIn(): BooleanSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideEffectFadeIn) as BooleanSettingItem;
 	}
 
 	public get favoriteImageSet(): AbstractSettingItem {
@@ -135,32 +139,25 @@ export class ExtensionSetting extends SettingBase {
 		return this.getItem(ExtensionSetting.propertyIds.favoriteSlideSet);
 	}
 
-	public get favoriteRandomSet(): AbstractSettingItem {
-		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSet);
+	public get favoriteRandomSet(): BooleanSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSet) as BooleanSettingItem;
 	}
 
 	public get slideIntervalUnit2Millisecond(): number {
 		let baseTime = 1;
 
 		switch (this.slideIntervalUnit.value) {
-			case "Hour":
-				baseTime *= 60;
-				// fallsthrough
-			case "Minute":
-				baseTime *= 60;
-				// fallsthrough
-			case "Second":
-				baseTime *= 1000;
-				// fallsthrough
-			default:
-				baseTime *= 1;
+			case "Hour":   baseTime *= 60;   // fallsthrough
+			case "Minute": baseTime *= 60;   // fallsthrough
+			case "Second": baseTime *= 1000; // fallsthrough
+			default:       baseTime *= 1;
 		}
 
 		return this.slideInterval.validValue * baseTime;
 	}
 
-	public get isRegisterd(): undefined | Registerd {
-		return this._isRegisterd;
+	public get isFavoriteRegisterd(): undefined | Registerd {
+		return this._isFavoriteRegisterd;
 	}
 
 	public get FavoriteAutoset(): undefined | FavoriteAutoSet {

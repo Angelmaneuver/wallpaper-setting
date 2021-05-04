@@ -1,8 +1,9 @@
-import * as path from 'path';
-import * as Mocha from 'mocha';
-import * as glob from 'glob';
+import * as path            from 'path';
+import * as Mocha           from 'mocha';
+import * as glob            from 'glob';
+import { ExtensionSetting } from '../../includes/settings/extension';
 
-export function run(): Promise<void> {
+export async function run(): Promise<void> {
 	// Create the mocha test
 	const mocha = new Mocha({
 		ui: 'tdd',
@@ -10,9 +11,13 @@ export function run(): Promise<void> {
 	});
 
 	const testsRoot = path.resolve(__dirname, '..');
+	const backup    = new ExtensionSetting();
 
-	return new Promise((c, e) => {
-		glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
+	await new ExtensionSetting().uninstall();
+
+	// eslint-disable-next-line no-async-promise-executor
+	return new Promise(async (c, e) => {
+		glob('**/**.test.js', { cwd: testsRoot }, async (err, files) => {
 			if (err) {
 				return e(err);
 			}
@@ -22,7 +27,9 @@ export function run(): Promise<void> {
 
 			try {
 				// Run the mocha test
-				mocha.run(failures => {
+				mocha.run(async failures => {
+					await backup.batchInstall();
+
 					if (failures > 0) {
 						e(new Error(`${failures} tests failed.`));
 					} else {

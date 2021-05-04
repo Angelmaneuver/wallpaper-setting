@@ -10,7 +10,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 		this.placeholder = "Select the process you want to perform.";
 		this.items       =
 			[Constant.favoriteProcess[0]]
-			.concat(this.settings.isRegisterd ? [Constant.favoriteProcess[1], Constant.favoriteProcess[2], Constant.favoriteProcess[3]] : [])
+			.concat(this.settings.isFavoriteRegisterd ? [Constant.favoriteProcess[1], Constant.favoriteProcess[2], Constant.favoriteProcess[3]] : [])
 			.concat([Constant.favoriteProcess[4]]);
 	}
 
@@ -56,7 +56,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	}
 
 	private startUp(): () => Promise<void> {
-		this.state.activeItem = this.getItemByLabel(Constant.favoriteRandomSet, this.settings.favoriteRandomSet.value);
+		this.state.activeItem = this.getItemByLabel(Constant.favoriteRandomSet, this.settings.favoriteRandomSet.valueAsString);
 
 		return async () => {
 			this.setNextSteps([{
