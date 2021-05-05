@@ -8,10 +8,7 @@ const imageChangeScript = `const changeImage=(async(imageData)=>{{0}document.bod
 const feedInScript1     = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
 const feedInScript2     = `await feedin({0},0.01,50);`;
 
-type Ready = {
-	image: boolean,
-	slide: boolean
-};
+type Ready = { image: boolean, slide: boolean };
 
 type AutoSet = number;
 
@@ -49,14 +46,11 @@ export class Wallpaper {
 
 	private checkIsReady(): undefined | Ready {
 		let checkResult: undefined | Ready = undefined;
-		const image: boolean                 = this.settings.filePath.value.length > 0;
-		const slide: boolean                 = this.settings.slideFilePaths.value.length > 0;
+		const image: boolean               = this.settings.filePath.value.length > 0;
+		const slide: boolean               = this.settings.slideFilePaths.value.length > 0;
 
 		if (image || slide) {
-			checkResult =  {
-				"image": image,
-				"slide": slide
-			};
+			checkResult =  { "image": image, "slide": slide };
 		}
 
 		return checkResult;
@@ -127,12 +121,9 @@ export class Wallpaper {
 
 		if (filePath && opacity) {
 			const image = new File(filePath);
-
 			result      = formatByArray(
 				this.getScriptTemplate(opacity),
-				`document.body.style.backgroundImage='url("data:image/${
-					image.extension
-				};base64,${image.toBase64()}")';`
+				`document.body.style.backgroundImage='url("data:image/${image.extension};base64,${image.toBase64()}")';`
 			);
 		}
 
