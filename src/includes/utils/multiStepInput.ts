@@ -38,14 +38,14 @@ export class InputFlowAction {
 }
 
 export class MultiStepInput {
-	static async run<T>(start: InputStep): Promise<void> {
+	static async run(start: InputStep): Promise<void> {
 		return new MultiStepInput().stepThrough(start);
 	}
 
 	private current?: QuickInput;
 	private steps:    InputStep[] = [];
 
-	private async stepThrough<T>(start: InputStep) {
+	private async stepThrough(start: InputStep) {
 		let step: InputStep | void = start;
 
 		while (step) {
@@ -91,6 +91,7 @@ export class MultiStepInput {
 							if (item === QuickInputButtons.Back) {
 								reject(InputFlowAction.back);
 							} else {
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
 								resolve(<any>item);
 							}
 						}),
@@ -137,6 +138,7 @@ export class MultiStepInput {
 							if (item === QuickInputButtons.Back) {
 								reject(InputFlowAction.back);
 							} else {
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
 								resolve(<any>item);
 							}
 						}),
