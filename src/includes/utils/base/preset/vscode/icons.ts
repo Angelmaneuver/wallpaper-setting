@@ -10,6 +10,7 @@ export class VSCodePreset {
 	public static Icons: { [key: string]: { label: string, description: string}} = { ...iconA2E.icons, ...iconF2J.icons, ...iconK2O.icons, ...iconP2T.icons, ...iconU2Z.icons };
 
 	public static get getAllIcons(): Array<QuickPickItem> {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		return Object.entries(VSCodePreset.Icons).map(([key, value]) => (value));
 	}
 
