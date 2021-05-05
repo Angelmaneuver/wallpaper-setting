@@ -11,12 +11,12 @@ export class SettingBase {
 		this.target = target;
 	}
 
-	public async set(key: string, value: any): Promise<void> {
+	public async set(key: string, value: unknown): Promise<void> {
 		await this.config.update(key, value, this.target);
 	}
 
-	public get(key: string): any {
-		return this.config.get<any>(key);
+	public get(key: string): unknown {
+		return this.config.get<unknown>(key);
 	}
 
 	public async remove(key: string): Promise<void> {
