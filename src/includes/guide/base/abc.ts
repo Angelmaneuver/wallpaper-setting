@@ -13,31 +13,31 @@ export interface AbstractState{
 	step?:         number,
 	totalSteps?:   number,
 	initailValue?: unknown,
-	validate?:     (arg: any) => Promise<any>,
+	validate?:     (value: string) => Promise<string | undefined>,
 	shouldResume?: () => Promise<boolean>,
-	resultSet:     { [key: string]: any },
+	resultSet:     Record<string, unknown>,
 }
 
-interface Guide{ key: string, state?: Partial<AbstractState>, args?: Array<any>}
+interface Guide{ key: string, state?: Partial<AbstractState>, args?: Array<unknown>}
 
 const initialFields = [
 	"guideGroupId", "itemId", "title", "step", "totalSteps", "initailValue", "inputResult", "validate", "shouldResume"
 ];
 
 export abstract class AbstractGuide {
-	protected _initialize                           = false;
+	protected _initialize                                                   = false;
 	protected _state;
-	protected initialFields: Array<string>              = initialFields;
-	protected guideGroupId                              = "";
-	protected itemId                                    = "";
-	protected title                                     = "";
-	protected step                                      = 0;
-	protected totalSteps                                = 0;
-	protected initailValue:  unknown                    = undefined;
-	protected _inputValue:   unknown                    = undefined;
-	protected validate:      (arg: any) => Promise<any> = async () => { return; };
-	protected shouldResume:  () => Promise<boolean>     = async () => new Promise<boolean>((resolve, reject) => { return; });
-	protected nextStep: any                             = undefined;
+	protected initialFields: Array<string>                                  = initialFields;
+	protected guideGroupId                                                  = "";
+	protected itemId                                                        = "";
+	protected title                                                         = "";
+	protected step                                                          = 0;
+	protected totalSteps                                                    = 0;
+	protected initailValue:  unknown                                        = undefined;
+	protected _inputValue:   unknown                                        = undefined;
+	protected validate:      (value: string) => Promise<string | undefined> = async (value: string) => { return undefined; };                     // eslint-disable-line @typescript-eslint/no-unused-vars
+	protected shouldResume:  () => Promise<boolean>                         = async () => new Promise<boolean>((resolve, reject) => { return; }); // eslint-disable-line @typescript-eslint/no-unused-vars
+	protected nextStep:      AbstractGuide | undefined                      = undefined;
 
 	constructor(state: AbstractState) {
 		this._state = state;
@@ -87,12 +87,12 @@ export abstract class AbstractGuide {
 		return typeof(this.inputValue) === "string" ? this.inputValue : "";
 	}
 
-	protected get guideGroupResultSet(): { [key: string]: any } {
+	protected get guideGroupResultSet(): Record<string, unknown> {
 		if (!this.state.resultSet[this.guideGroupId]) {
 			this.state.resultSet[this.guideGroupId] = {};
 		}
 
-		return this.state.resultSet[this.guideGroupId];
+		return this.state.resultSet[this.guideGroupId] as Record<string, unknown>;
 	}
 
 	public setNextStep(guide: AbstractGuide): AbstractGuide {
@@ -120,7 +120,7 @@ export abstract class AbstractGuide {
 					guideInstances = guideInstance;
 					preInstance    = guideInstance;
 				} else {
-					preInstance = preInstance?.setNextStep(guideInstance);
+					preInstance    = preInstance?.setNextStep(guideInstance);
 				}
 			}
 		);
@@ -139,7 +139,7 @@ export abstract class AbstractGuide {
 		await this.after();
 
 		if (this.nextStep instanceof AbstractGuide) {
-			return () => this.nextStep.start(input);
+			return () => (this.nextStep as AbstractGuide).start(input);
 		}
 
 		await this.final();

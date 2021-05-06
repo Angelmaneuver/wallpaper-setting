@@ -48,8 +48,6 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 		this.state.activeItem  = undefined;
 	}
 
-
-
 	protected get state(): State {
 		return this._state as State;
 	}
@@ -78,7 +76,7 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 		return this.state.settings;
 	}
 
-	protected get itemIds(): { [key: string]: string } {
+	protected get itemIds(): Record<string, string> {
 		return ExtensionSetting.propertyIds;
 	}
 
@@ -98,7 +96,7 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 		for (const key of Object.keys(this.guideGroupResultSet)) {
 			if (key === this.itemIds.slideFilePaths) {
 				this.guideGroupResultSet[this.itemIds.slideFilePaths] = File.getChldrens(
-					this.guideGroupResultSet[this.itemIds.slideFilePaths],
+					this.guideGroupResultSet[this.itemIds.slideFilePaths] as string,
 					{ filters: Constant.applyImageFile, fullPath: true, recursive: false }
 				)	
 			}
