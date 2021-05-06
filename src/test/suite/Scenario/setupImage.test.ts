@@ -14,7 +14,7 @@ suite('Scenario - Setup Image Test Suite', async () => {
 		Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
 	};
 
-	test('getExecute', async () => {
+	test('Begin -> Image -> Opacity', async () => {
 		const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = "0.55";
