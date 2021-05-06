@@ -13,6 +13,8 @@ export abstract class AbstractQuickPickGuide extends AbstractBaseGuide {
 		this.initialFields.push("placeholder", "items", "activeItem");
 
 		super.init();
+
+		this.items = [];
 	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
