@@ -14,10 +14,11 @@ export class BaseConfirmGuide extends AbstractQuickPickSelectGuide {
 	) {
 		super(state);
 
-		this.items      = Constant.itemsCreat(Constant.ItemType.Confirm, { item1: description.yes, item2: description.no });
-		this.activeItem = this.items[1];
-		this.callback   = callback;
-		this.args       = args;
+		this.activeItem  = this.items[1];
+		this.callback    = callback;
+		this.args        = args;
+
+		this.state.items = Constant.itemsCreat(Constant.ItemType.Confirm, { item1: description.yes, item2: description.no });
 	}
 
 	public getExecute(label: string | undefined): () => Promise<void> {
