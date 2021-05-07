@@ -32,10 +32,10 @@ export class NumberSettingItem extends AbstractSettingItem {
 	public set value(value: unknown) {
 		if (typeof(value) === "number") {
 			this._value = value;
+		} else if (typeof(value) === "string") {
+			this._value = this.string2Number(value, this._defaultValue);
 		} else {
-			let converted = Number(value);
-			converted     = typeof(value) === "string" && value.length === 0 ? this._defaultValue : converted;
-			this._value   = isNaN(converted) ? this._defaultValue : converted;
+			this._value = undefined;
 		}
 	}
 
@@ -45,6 +45,15 @@ export class NumberSettingItem extends AbstractSettingItem {
 
 	public get convert4Registration(): number | undefined {
 		return this.checkDefault();
+	}
+
+	private string2Number(value: string, defaultValue: number): unknown {
+		if (value.length === 0) {
+			return defaultValue;
+		} else {
+			const converted = Number(value);
+			return isNaN(converted) ? undefined : converted;
+		}
 	}
 }
 

@@ -207,8 +207,10 @@ suite('Extension Setting Test Suite', async () => {
 		assert.strictEqual(instance.slideEffectFadeIn.validValue, false);
 
 		instance.opacity.value           = "亞";
+		instance.slideInterval.value     = ["test1", "test2"];
 		instance.favoriteRandomSet.value = true;
-		assert.strictEqual(instance.opacity.value,                0.75);
+		assert.strictEqual(instance.opacity.value,                undefined);
+		assert.strictEqual(instance.slideInterval.value,          undefined);
 		assert.strictEqual(instance.favoriteRandomSet.value,      Constant.favoriteRandomSet[0].label);
 		assert.strictEqual(instance.favoriteRandomSet.validValue, true);
 
