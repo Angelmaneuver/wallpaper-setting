@@ -29,6 +29,7 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
 		const fileStub      = sinon.stub(File,                            "getChldrens");
 		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "installAsSlide");
+		const state         = stateCreater();
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 
 		pickStub.onFirstCall().resolves(items.SetUpAsSlide);
@@ -38,7 +39,10 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		inputStub.onThirdCall().resolves(interval);
 		pickStub.onThirdCall().resolves(randomPlay);
 		fileStub.onFirstCall().returns(filePaths);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(stateCreater(), context).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
+
+		assert.strictEqual(state.reload,                                                             true);
+		assert.strictEqual(inputStub.getCall(2).args[0].prompt,                                      prompt);
 
 		const setting       = new ExtensionSetting();
 
@@ -63,7 +67,6 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		assert.strictEqual(inputStub.calledThrice,                                                   true);
 		assert.strictEqual(fileStub.calledOnce,                                                      true);
 		assert.strictEqual(wallpaperStub.calledOnce,                                                 true);
-		assert.strictEqual(inputStub.getCall(2).args[0].prompt,                                      prompt);
 
 		inputStub.restore();
 		pickStub.restore();
