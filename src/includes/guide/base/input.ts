@@ -78,7 +78,7 @@ export class InputResourceGuide extends BaseInputGuide {
 			this.type === Type.File
 				? { filters: { Images: Constant.applyImageFile } }
 				: { canSelectFolders: true, canSelectFiles: false };
-		this.buttons = [
+		this.state.buttons = [
 			new GuideButton(
 				{
 					dark:  Uri.file(this.context.asAbsolutePath("resource/light/folder.svg")),
@@ -87,7 +87,7 @@ export class InputResourceGuide extends BaseInputGuide {
 				"Open the dialog."
 			)
 		];
-		this.validate = this.type === Type.File ? BaseValidator.validateFileExist : BaseValidator.validateDirectoryExist;
+		this.state.validate = this.type === Type.File ? BaseValidator.validateFileExist : BaseValidator.validateDirectoryExist;
 	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
