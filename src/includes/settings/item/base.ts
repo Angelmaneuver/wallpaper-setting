@@ -33,7 +33,9 @@ export class NumberSettingItem extends AbstractSettingItem {
 		if (typeof(value) === "number") {
 			this._value = value;
 		} else {
-			this._value = Number(value);
+			let converted = Number(value);
+			converted     = typeof(value) === "string" && value.length === 0 ? this._defaultValue : converted;
+			this._value   = isNaN(converted) ? this._defaultValue : converted;
 		}
 	}
 

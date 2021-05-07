@@ -86,7 +86,16 @@ export class SelectParameterType extends AbstractQuickPickSelectGuide {
 		if (itemId === this.itemIds.slideRandomPlay || itemId === this.itemIds.slideEffectFadeIn) {
 			result["initialValue"] = this.settings.getItem(itemId).value;
 		} else if (itemId !== this.itemIds.slideFilePaths) {
-			result["initialValue"] = this.settings.getItem(itemId).validValue;
+			const validValue = this.settings.getItem(itemId).validValue;
+			let   value      = "";
+
+			if (typeof(validValue) === "number") {
+				value = validValue.toString();
+			} else {
+				value = validValue;
+			}
+
+			result["initialValue"] = value;
 		}
 
 		return result;
