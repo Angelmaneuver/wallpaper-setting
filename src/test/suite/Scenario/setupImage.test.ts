@@ -40,5 +40,5 @@ suite('Scenario - Setup Image Test Suite', async () => {
 		wallpaperStub.restore();
 
 		await setting.uninstall();
-	});
+	}).timeout(30 * 1000);
 });
