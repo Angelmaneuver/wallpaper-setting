@@ -167,7 +167,7 @@ export class Wallpaper {
 window.onload=()=>{`;
 		result     += `document.body.style.opacity=${opacity};`;
 		result     += `document.body.style.backgroundSize="cover";`;
-		result     += `document.body.style.backgroundPosition="Top Left";`;
+		result     += `document.body.style.backgroundPosition="Center";`;
 		result     += `document.body.style.backgroundRepeat="no-repeat";`;
 		result     += `{0}`;
 		result     += `}
