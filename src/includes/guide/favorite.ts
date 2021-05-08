@@ -27,15 +27,15 @@ async function registFavorite(
 		registFavorite  = favorites.favorite;
 	}
 
-	state.settings.setItemValue(key, registFavorite);
-
 	state.message = message;
+
+	return state.settings.setItemValue(key, registFavorite);
 }
 
 async function removeFavorite(key: string, state: State, message: string): Promise<void> {
-	state.settings.setItemValue(key, undefined);
-
 	state.message = message;
+
+	return state.settings.setItemValue(key, undefined);
 }
 
 export class RegisterFavoriteGuide extends BaseInputGuide {
@@ -67,7 +67,7 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 				args:  [{ yes: "Overwrite.", no: "Back to previous." }, registFavorite, this.itemId, this.state, message, { favorite: favorite, option: registered }]
 			}]);
 		} else {
-			registFavorite(this.itemId, this.state, message, { favorite: favorite, option: registered });
+			return registFavorite(this.itemId, this.state, message, { favorite: favorite, option: registered });
 		}
 	}
 
@@ -113,18 +113,18 @@ abstract class AbstractRegistedFavoriteOperationGuide extends AbstractQuickPickG
 		super.init();
 
 		if (this.type === Constant.wallpaperType.Image) {
-			this.items = this.favorites2Items(this.settings.favoriteImageSet.value);
+			this.itemId = this.itemIds.favoriteImageSet;
+			this.items  = this.favorites2Items(this.settings.favoriteImageSet.value);
 		} else {
-			this.items = this.favorites2Items(this.settings.favoriteSlideSet.value);
+			this.itemId = this.itemIds.favoriteSlideSet;
+			this.items  = this.favorites2Items(this.settings.favoriteSlideSet.value);
 		}
 
 		this.items = this.items.concat([this.returnItem]);
 	}
 
 	public async after(): Promise<void> {
-		if (this.activeItem === this.returnItem) {
-			this.prev();
-		}
+		this.prev();
 	}
 
 	protected get activeItemLabel(): string {
@@ -151,13 +151,13 @@ export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGu
 	}
 
 	public async after(): Promise<void> {
-		await super.after();
-
-		if (this.activeItem !== this.returnItem) {
+		if (this.activeItem === this.returnItem) {
+			await super.after();
+		} else {
 			const name     = this.activeItemLabel;
 			const message  = `UnRegistered ${name} from my favorites!`;
 
-			const   favorite = this.removedFavorite(this.type, name);
+			const favorite = this.removedFavorite(this.type, name);
 
 			this.state.placeholder = "Do you want to unregister it?";
 			this.setNextSteps([{
@@ -212,9 +212,9 @@ export class LoadFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 	}
 
 	public async after(): Promise<void> {
-		await super.after();
-
-		if (this.activeItem !== this.returnItem) {
+		if (this.activeItem === this.returnItem) {
+			await super.after();
+		} else {
 			await this.loadFavorite(this.activeItemLabel);
 		}
 	}

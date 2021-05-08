@@ -109,9 +109,7 @@ export class SelectFavoriteOperationType extends AbstractQuickPickSelectGuide {
 			return async () => { this.prev(); };
 		}
 
-		const [wallpaperType, typeName, itemId] = this.getParameter(label);
-
-		this.state.itemId = itemId;
+		const [wallpaperType, typeName] = this.getParameter(label);
 
 		return async () => {
 			this.setNextSteps([{
@@ -122,11 +120,11 @@ export class SelectFavoriteOperationType extends AbstractQuickPickSelectGuide {
 		};
 	}
 
-	private getParameter(label: string): [number, string, string] {
+	private getParameter(label: string): [number, string] {
 		if (label === this.items[0].label) {
-			return [Constant.wallpaperType.Image, "Image", "favoriteWallpaperImageSet"];
+			return [Constant.wallpaperType.Image, "Image"];
 		} else {
-			return [Constant.wallpaperType.Slide, "Slide", "favoriteWallpaperSlideSet"];
+			return [Constant.wallpaperType.Slide, "Slide"];
 		}
 	}
 }
