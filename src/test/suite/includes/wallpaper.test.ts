@@ -87,7 +87,7 @@ suite('Wallpaper Test Suite', async () => {
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${Constant.version}*/
-window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Top Left";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
+window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
@@ -134,7 +134,7 @@ window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.ba
 		let   writeData         = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${Constant.version}*/
-window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Top Left";document.body.style.backgroundRepeat="no-repeat";`;
+window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${filePaths[0]}:base64Data")');images.push('url("data:image/gif;base64,${filePaths[1]}:base64Data")');`;
 		writeData               += `const changeImage=(async(imageData)=>{document.body.style.backgroundImage=imageData;});`;
 		writeData               += `let i=0;const choice=(min,max)=>{i++; return i===max?min:i;};const after=(index)=>{return;};document.body.style.backgroundImage=images[i];setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -157,7 +157,7 @@ window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.ba
 		writeData               = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${Constant.version}*/
-window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Top Left";document.body.style.backgroundRepeat="no-repeat";`;
+window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${filePaths[0]}:base64Data")');images.push('url("data:image/gif;base64,${filePaths[1]}:base64Data")');`;
 		writeData               += `const changeImage=(async(imageData)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;document.body.style.backgroundImage=imageData;await feedin(${opacity},0.01,50);});`;
 		writeData               += `let played=new Array();let i=0;const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};i=choice(0,images.length-1);document.body.style.backgroundImage=images[i];after(i);setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -181,7 +181,7 @@ window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.ba
 		const Data          = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${Constant.version}*/
-window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Top Left";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
+window.onload=()=>{document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
