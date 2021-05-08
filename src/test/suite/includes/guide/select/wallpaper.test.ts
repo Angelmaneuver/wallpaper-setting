@@ -1,14 +1,14 @@
 import * as assert                         from "assert";
 import * as sinon                          from "sinon";
 import { QuickInputButton, QuickPickItem } from "vscode";
-import * as testTarget                     from "../../../../includes/guide/select/wallpaper";
-import { MultiStepInput }                  from "../../../../includes/utils/multiStepInput";
-import { BaseInputGuide }                  from "../../../../includes/guide/base/input";
-import * as Installer                      from "../../../../includes/installer";
-import { State }                           from "../../../../includes/guide/base/base";
-import { Wallpaper }                       from "../../../../includes/wallpaper";
-import { ExtensionSetting }                from "../../../../includes/settings/extension";
-import * as Constant                       from "../../../../includes/constant";
+import * as testTarget                     from "../../../../../includes/guide/select/wallpaper";
+import { MultiStepInput }                  from "../../../../../includes/utils/multiStepInput";
+import { BaseInputGuide }                  from "../../../../../includes/guide/base/input";
+import * as Installer                      from "../../../../../includes/installer";
+import { State }                           from "../../../../../includes/guide/base/base";
+import { Wallpaper }                       from "../../../../../includes/wallpaper";
+import { ExtensionSetting }                from "../../../../../includes/settings/extension";
+import * as Constant                       from "../../../../../includes/constant";
 
 interface QuickPickParameters<T extends QuickPickItem> {
 	title:        string;
