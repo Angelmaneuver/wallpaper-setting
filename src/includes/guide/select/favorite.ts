@@ -30,7 +30,9 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	}
 
 	private setTransition(key: string): () => Promise<void> {
-		if (this.settings.FavoriteAutoset === undefined) {
+		const autoSet = key === operation.Register ? this.installer.isAutoSet : this.settings.FavoriteAutoset;
+
+		if (autoSet === undefined) {
 			return async() => {
 				this.setNextSteps([{
 					key:   `SelectFavoriteOperationType`,
@@ -41,15 +43,15 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 		} else {
 			const typeName = Object.keys(Constant.wallpaperType).filter(
 				(key) => {
-					return Constant.wallpaperType[key] === this.settings.FavoriteAutoset;
+					return Constant.wallpaperType[key] === autoSet;
 				}
 			)[0];
 
 			return async () => {
 				this.setNextSteps([{
 					key:   `${key}FavoriteGuide`,
-					state: this.createBaseState(`${this.title} - ${key} - ${typeName} wallpaper`, `${this.guideGroupId}${key}${typeName}`),
-					args:  [this.settings.FavoriteAutoset]
+					state: this.createBaseState(` - ${key} - ${typeName} wallpaper`, `${this.guideGroupId}${key}${typeName}`),
+					args:  [autoSet]
 				}]);
 			};
 		}

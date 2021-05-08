@@ -12,6 +12,7 @@ import {
 import * as Installer                      from "../../../../../includes/installer";
 import { State }                           from "../../../../../includes/guide/base/base";
 import { ExtensionSetting }                from "../../../../../includes/settings/extension";
+import { Wallpaper }                       from "../../../../../includes/wallpaper";
 import * as Constant                       from "../../../../../includes/constant";
 
 interface QuickPickParameters<T extends QuickPickItem> {
@@ -47,6 +48,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		const pickStub                = sinon.stub(MultiStepInput.prototype,                         "showQuickPick");
 		const isFavoriteRegisterdStub = sinon.stub(ExtensionSetting.prototype,                       "isFavoriteRegisterd");
 		const favoriteAutoSetStub     = sinon.stub(ExtensionSetting.prototype,                       "FavoriteAutoset")
+		const isAutoSetStub           = sinon.stub(Wallpaper.prototype,                              "isAutoSet");
 		const favoriteOperationStub   = sinon.stub(testTarget.SelectFavoriteOperationType.prototype, "start");
 		const favoriteRegisterStub    = sinon.stub(RegisterFavoriteGuide.prototype,                  "start");
 		const favoriteUnRegisterStub  = sinon.stub(UnRegisterFavoriteGuide.prototype,                "start");
@@ -57,10 +59,12 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[0])
 		isFavoriteRegisterdStub.get(() => undefined);
 		favoriteAutoSetStub.get(() => undefined);
+		isAutoSetStub.get(() => undefined);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
 		itemChecker([Constant.favoriteProcess[0], Constant.favoriteProcess[4]], pickStub.getCall(0).args[0].items);
 
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Image);
+		favoriteAutoSetStub.get(() => Constant.wallpaperType.Slide);
+		isAutoSetStub.get(() => Constant.wallpaperType.Image);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
 		itemChecker([Constant.favoriteProcess[0], Constant.favoriteProcess[4]], pickStub.getCall(1).args[0].items);
 
@@ -111,6 +115,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		pickStub.restore();
 		isFavoriteRegisterdStub.restore();
 		favoriteAutoSetStub.restore();
+		isAutoSetStub.restore();
 		favoriteOperationStub.restore();
 		favoriteRegisterStub.restore();
 		favoriteUnRegisterStub.restore();
