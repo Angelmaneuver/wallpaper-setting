@@ -130,5 +130,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		intervalStub.restore();
 		baseQuickPickStub.restore();
 		wallpaperStub.restore();
+
+		await new ExtensionSetting().uninstall();
 	}).timeout(30 * 1000);
 });
