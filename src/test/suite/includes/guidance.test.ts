@@ -1,3 +1,4 @@
+import * as assert          from "assert";
 import * as sinon           from "sinon";
 import * as vscode          from "vscode";
 import * as testTarget      from "../../../includes/guidance";
@@ -8,8 +9,9 @@ import { StartMenuGuide }   from "../../../includes/guide/begin";
 
 suite('Guidance Test Suite', async () => {
 	test('guidance', async () => {
-		const multiStepInputStub = sinon.stub(MultiStepInput, "run");
-		const guideFactoryStub   = sinon.stub(GuideFactory,   "create");
+		const multiStepInputStub = sinon.stub(MultiStepInput,           "run");
+		const guideFactoryStub   = sinon.stub(GuideFactory,             "create");
+		const menuGuideStub      = sinon.stub(StartMenuGuide.prototype, "start");
 		const windowMock         = sinon.mock(vscode.window);
 		const commandMock        = sinon.mock(vscode.commands);
 		const context            = {} as vscode.ExtensionContext;
@@ -43,5 +45,9 @@ suite('Guidance Test Suite', async () => {
 		multiStepInputStub.restore();
 		windowMock.restore();
 		commandMock.restore();
+
+		await testTarget.guidance(context);
+		assert.strictEqual(menuGuideStub.calledOnce, true);
+		menuGuideStub.restore();
 	});
 });

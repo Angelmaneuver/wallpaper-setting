@@ -1,6 +1,9 @@
-import * as assert     from "assert";
-import * as vscode     from "vscode";
-import * as testTarget from "../../extension";
+import * as assert        from "assert";
+import * as sinon         from "sinon";
+import * as vscode        from "vscode";
+import * as testTarget    from "../../extension";
+import * as Guidance      from "../../includes/guidance";
+import * as Favorite      from "../../includes/favorite";
 
 suite('Extension Test Suite', async () => {
 	const extensionId       = 'angelmaneuver.wallpaper-setting';
@@ -23,6 +26,14 @@ suite('Extension Test Suite', async () => {
 				}
 			}
 		})
+	});
+
+	test('Execute Commands', async () => {
+		const guidanceStub = sinon.stub(Guidance, "guidance");
+		const favoriteStub = sinon.stub(Favorite, "randomSet");
+		await vscode.commands.executeCommand(extenisonCommands[0]);
+		guidanceStub.restore();
+		favoriteStub.restore();
 	});
 
     test('DeActivate', async () => {
