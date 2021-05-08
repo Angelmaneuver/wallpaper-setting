@@ -154,25 +154,29 @@ export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGu
 		if (this.activeItem === this.returnItem) {
 			await super.after();
 		} else {
-			const name     = this.activeItemLabel;
-			const message  = `UnRegistered ${name} from my favorites!`;
-
-			const favorite = this.removedFavorite(this.type, name);
-
-			this.state.placeholder = "Do you want to unregister it?";
-			this.setNextSteps([{
-				key:   "BaseConfirmGuide",
-				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
-				args:  [
-					{ yes: "UnRegister.", no: "Back to previous." },
-					(Object.keys(favorite).length > 0 ? registFavorite : removeFavorite),
-					this.itemId,
-					this.state,
-					message,
-					(Object.keys(favorite).length > 0 ? { favorite: favorite } : undefined)
-				]
-			}]);
+			this.setupNextStep();
 		}
+	}
+
+	private setupNextStep(): void {
+		const name     = this.activeItemLabel;
+		const message  = `UnRegistered ${name} from my favorites!`;
+
+		const favorite = this.removedFavorite(this.type, name);
+
+		this.state.placeholder = "Do you want to unregister it?";
+		this.setNextSteps([{
+			key:   "BaseConfirmGuide",
+			state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
+			args:  [
+				{ yes: "UnRegister.", no: "Back to previous." },
+				(Object.keys(favorite).length > 0 ? registFavorite : removeFavorite),
+				this.itemId,
+				this.state,
+				message,
+				(Object.keys(favorite).length > 0 ? { favorite: favorite } : undefined)
+			]
+		}]);
 	}
 
 	private removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
