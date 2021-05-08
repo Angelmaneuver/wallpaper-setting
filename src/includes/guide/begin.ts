@@ -45,7 +45,7 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 			case items.SetUpAsSlide.label:
 				return this.setupAsSlide();
 			case items.Uninstall.label:
-				return async () => { this.clear(); await this.settings.uninstall(); }
+				return async () => { await this.clear()(); await this.settings.uninstall(); }
 			default:
 				return undefined;
 		}
