@@ -57,17 +57,14 @@ suite('Guide - Begin Test Suite', async () => {
 
 		isInstallStub.get(() => false);
 		isReadyStub.get(() => { return { image: true, slide: true }});
-		isFavoriteRegisterdStub.get(() => false);
 		instance.init(); await MultiStepInput.run((input: MultiStepInput) => instance.show(input));
 
 		isInstallStub.get(() => true);
 		isReadyStub.get(() => undefined);
-		isFavoriteRegisterdStub.get(() => false);
 		instance.init(); await MultiStepInput.run((input: MultiStepInput) => instance.show(input));
 
 		isInstallStub.get(() => false);
 		isReadyStub.get(() => undefined);
-		isFavoriteRegisterdStub.get(() => true);
 		instance.init(); await MultiStepInput.run((input: MultiStepInput) => instance.show(input));
 
 		itemchecker(
@@ -75,7 +72,7 @@ suite('Guide - Begin Test Suite', async () => {
 			pickStub.getCall(0).args[0].items
 		);
 		itemchecker(
-			[items.Set, items.Setting, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			[items.Set, items.Setting, items.Favorite, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
 			pickStub.getCall(1).args[0].items
 		);
 		itemchecker(
@@ -83,7 +80,7 @@ suite('Guide - Begin Test Suite', async () => {
 			pickStub.getCall(2).args[0].items
 		);
 		itemchecker(
-			[items.Favorite, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			[items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
 			pickStub.getCall(3).args[0].items
 		);
 

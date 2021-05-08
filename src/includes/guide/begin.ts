@@ -25,7 +25,7 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 			.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
 			.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
 			.concat(this.installer.isReady                              ? [items.Setting]            : [])
-			.concat(this.settings.isFavoriteRegisterd                   ? [items.Favorite]           : [])
+			.concat(this.installer.isReady                              ? [items.Favorite]           : [])
 			.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
 	}
 
