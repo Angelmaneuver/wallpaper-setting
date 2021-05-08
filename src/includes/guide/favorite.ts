@@ -261,7 +261,7 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 				this.state.reload = true;
 				// fallsthrough
 			case this.items[1].label:
-				return async () => { this.registSetting(); await StartUp.randomSet(); };
+				return async () => { await this.registSetting(); await StartUp.randomSet(); };
 			default:
 				return async () => { this.prev(); }
 		}
