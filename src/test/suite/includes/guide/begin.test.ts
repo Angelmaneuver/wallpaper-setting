@@ -133,7 +133,7 @@ suite('Guide - Begin Test Suite', async () => {
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
 		assert.strictEqual(wallpaperSelecterStub.calledTwice, true);
-		assert.strictEqual(wallpaperStub.calledOnce,          true);
+		assert.strictEqual(wallpaperStub.calledTwice,         true);
 		assert.strictEqual(selectParameterStub.calledOnce,    true);
 		assert.strictEqual(selectFavoriteStub.calledOnce,     true);
 		assert.strictEqual(imageStub.calledOnce,              true);
