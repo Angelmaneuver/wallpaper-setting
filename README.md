@@ -5,7 +5,6 @@
 Set an image as the VSCode background.
 
 ## Usage
-***
 ### Step1.
 Press '`⇧⌘P`' to bring up the command pallete and enter '`Wallpaper Setting`'.
 
@@ -18,13 +17,11 @@ Select the desired setting from the menu.
 
 ## Feature
 ### Easy Setup
-***
 Just follow the guide to easily set the wallpaper.
 
 ![Easy Setup image](resource/readme/demo1.gif)
 
 ### Wallpaper - Image
-***
 You can set an image as the VSCode background.
 
 ![Wallpaper - Image image](resource/readme/demo2.png)
@@ -33,7 +30,6 @@ Setting items
  - Opacity
 
 ### Wallpaper - Slide
-***
 You can set a slide image as the VSCode background.
 
 ![Wallpaper - Slide image](resource/readme/demo3.gif)
@@ -45,7 +41,6 @@ Setting items
  - Fade-in Effect
 
 ### Favorite
-***
 Do you have many favorite images or slides?
 
 You can easily switch between them using the Favorite Setting.
@@ -58,7 +53,6 @@ Setting items
  - Set wallpaper from favorite settings randomly when starting VSCode
 
 ### Uninstall
-***
 Didn't like this extension?
 
 Sorry for not being able to help you.
