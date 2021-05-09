@@ -1,7 +1,12 @@
 # Change Log
 
+## 0.5.1
+- Rewrite the Readme
+- Code review
+- Fixed image alignment to be centered
+
 ## 0.5.0
-- Added the function to set a random wallpaper from favorite settings at start up.
+- Added the function to set a random wallpaper from favorite settings at start up
 
 ## 0.4.0
 - Added the function to unregister from favorite wallpaper settings

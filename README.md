@@ -5,19 +5,66 @@
 Set an image as the VSCode background.
 
 ## Usage
+***
+### Step1.
+Press '`⇧⌘P`' to bring up the command pallete and enter '`Wallpaper Setting`'.
 
-1. Press '⇧⌘P' to bring up the command pallete and enter 'Wallpaper Setting'
+![Usage Step1. image](resource/readme/usage1.png)
 
-![Guide image1](resource/preview1.png)
+### Step2.
+Select the desired setting from the menu.
 
-2. Select the desired setting from the menu
+![Usage Step2. image](resource/readme/usage2.png)
 
-![Guide image2](resource/preview2.png)
+## Feature
+### Easy Setup
+***
+Just follow the guide to easily set the wallpaper.
 
-## Implementation schedule
+![Easy Setup image](resource/readme/demo1.gif)
 
-- [x] Reconfigure only some of the settings
-- [x] Retain recently set content
-- [x] Random playback of slides * May not be done due to lack of skills.
-- Break Mode * May not be done due to lack （ry
-- Display the time * May not be done due （ry
+### Wallpaper - Image
+***
+You can set an image as the VSCode background.
+
+![Wallpaper - Image image](resource/readme/demo2.png)
+
+Setting items
+ - Opacity
+
+### Wallpaper - Slide
+***
+You can set a slide image as the VSCode background.
+
+![Wallpaper - Slide image](resource/readme/demo3.gif)
+
+Setting items
+ - Opacity
+ - Slide Interval Time (Hour, Minute, Second, MilliSecond)
+ - Random Play
+ - Fade-in Effect
+
+### Favorite
+***
+Do you have many favorite images or slides?
+
+You can easily switch between them using the Favorite Setting.
+
+***Don't repeat yourself!*** with this features.
+
+![Favorite image](resource/readme/demo4.gif)
+
+Setting items
+ - Set wallpaper from favorite settings randomly when starting VSCode
+
+### Uninstall
+***
+Didn't like this extension?
+
+Sorry for not being able to help you.
+
+Let's uninstall it and erase all settings related to this extension.
+
+It won't pollute your environment.
+
+![Uninstall image](resource/readme/demo5.gif)
