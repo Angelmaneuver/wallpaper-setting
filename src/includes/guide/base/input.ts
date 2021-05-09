@@ -16,7 +16,7 @@ export class BaseInputGuide extends AbstractBaseGuide {
 	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
-		this.inputValue = await input.showInputBox(
+		this._inputValue = await input.showInputBox(
 			{
 				title:        this.title,
 				step:         this.step,
@@ -29,7 +29,7 @@ export class BaseInputGuide extends AbstractBaseGuide {
 			}
 		);
 
-		this.setResultSet(this.inputValue);
+		this.setResultSet(this._inputValue);
 	}
 
 	protected setResultSet(value: unknown): void {
@@ -94,22 +94,23 @@ export class InputResourceGuide extends BaseInputGuide {
 		do {
 			await super.show(input);
 
-			if (this.inputValue instanceof GuideButton) {
+			if (this._inputValue instanceof GuideButton) {
 				await this.pushButton();
 			}
 		} while (
-			!(this.inputValue)                                                      ||
-			(typeof(this.inputValue) === "string" && this.inputValue.length === 0)
+			!this.guideGroupResultSet[this.itemId]                                  ||
+			(typeof(this.guideGroupResultSet[this.itemId]) === "string" && (this.guideGroupResultSet[this.itemId] as string).length === 0)
 		);
 	}
 
 	private async pushButton(): Promise<void> {
-		this.inputValue = undefined;
+		this._inputValue                      = undefined;
+		this.guideGroupResultSet[this.itemId] = undefined;
 		const selected  = await new Selecter(this.options).openFileDialog();
 
 		if (selected && selected.path.length > 0) {
-			this.inputValue = selected.path;
-			this.setResultSet(this.inputValue);
+			this._inputValue = selected.path;
+			this.setResultSet(this._inputValue);
 		}
 	}
 }
