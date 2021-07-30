@@ -1,7 +1,7 @@
 import { QuickPickItem } from "vscode";
 import { VSCodePreset }  from "./utils/base/vscodePreset";
 
-export const version    = "0.5.1";
+export const version    = "0.5.2";
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
 	let items: Array<QuickPickItem> = [];
@@ -26,7 +26,7 @@ export const itemsCreat = (type: number, description: { item1: string, item2: st
 	return items.concat(description.return ? VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.return) : []);
 }
 export const wallpaperType: { [key: string]: number } = { Image: 0, Slide: 1 };
-export const applyImageFile                           = ["png", "jpg", "jpeg", "gif"];
+export const applyImageFile                           = ["png", "jpg", "jpeg", "gif", "webp"];
 export const maximumOpacity                           = 0.5;
 export const minimumOpacity                           = 1;
 export const minimumSlideInterval                     = 0.1;

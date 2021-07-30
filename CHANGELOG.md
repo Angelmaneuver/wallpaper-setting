@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.2
+ - Added WebP as a configurable image format.
+
 ## 0.5.1
 - Rewrite the Readme
 - Code review

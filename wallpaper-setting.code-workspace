@@ -10,7 +10,7 @@
 		"editor.detectIndentation": false,
 		"files.insertFinalNewline": true,
 		"files.trimFinalNewlines": true,
-		"typescript.tsc.autoDetect": "off"
+		"typescript.tsc.autoDetect": "off",
 	},
 	"extensions": {
 		"recommendations": [
@@ -18,7 +18,8 @@
 			"christian-kohler.path-intellisense",
 			"dbaeumer.vscode-eslint",
 			"esbenp.prettier-vscode",
-			"eamodio.tsl-problem-matcher"
+			"eamodio.tsl-problem-matcher",
+			"cschleiden.vscode-github-actions",
 		]
 	}
 }
