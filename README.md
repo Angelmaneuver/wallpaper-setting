@@ -62,3 +62,13 @@ Let's uninstall it and erase all settings related to this extension.
 It won't pollute your environment.
 
 ![Uninstall image](resource/readme/demo5.gif)
+
+## Cautions
+### How will this extension affect your environment?
+This extension will make changes to the following two files.
+
+1. "VSCode installation directory" /resources/app/out/bootstrap-window.js
+1. settings.json
+
+"bootstrap-window.js" requires write permission.
+Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be granted).

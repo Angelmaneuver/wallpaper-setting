@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.3
+ - Rewrite the Readme (Reflects findings from issue [#1](https://github.com/Angelmaneuver/wallpaper-setting/issues/1))
+
 ## 0.5.2
  - Added WebP as a configurable image format.
 
