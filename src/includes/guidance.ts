@@ -14,8 +14,10 @@ export async function guidance(context: ExtensionContext): Promise<void> {
 		const menu = GuideFactory.create("StartMenuGuide", state, context);
 		await MultiStepInput.run((input: MultiStepInput) => menu.start(input));
 	} catch (e) {
-		window.showWarningMessage(e.message);
-		console.debug(e);
+		if (e instanceof Error) {
+			window.showWarningMessage(e.message);
+			console.debug(e);
+		}
 	}
 
 	if (state.message && state.message.length > 0) {

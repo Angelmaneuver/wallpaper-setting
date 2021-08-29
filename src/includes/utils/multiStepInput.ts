@@ -31,7 +31,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
 	shouldResume: () => Thenable<boolean>;
 }
 
-export class InputFlowAction {
+export class InputFlowAction extends Error {
 	static back   = new InputFlowAction();
 	static cancel = new InputFlowAction();
 	static resume = new InputFlowAction();
@@ -58,7 +58,9 @@ export class MultiStepInput {
 			try {
 				step = await step(this);
 			} catch (error) {
-				step = this.errorHandle(error);
+				if (error instanceof Error) {
+					step = this.errorHandle(error);
+				}
 			}
 		}
 
