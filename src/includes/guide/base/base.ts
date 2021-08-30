@@ -95,9 +95,9 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 	protected async registSetting(): Promise<void> {
 		for (const key of Object.keys(this.guideGroupResultSet)) {
 			if (key === this.itemIds.slideFilePaths) {
-				this.guideGroupResultSet[this.itemIds.slideFilePaths] = File.getChldrens(
+				this.guideGroupResultSet[this.itemIds.slideFilePaths] = File.getChildrens(
 					this.guideGroupResultSet[this.itemIds.slideFilePaths] as string,
-					{ filters: Constant.applyImageFile, fullPath: true, recursive: false }
+					{ filter: { extension: Constant.applyImageFile }, fullPath: true, recursive: false }
 				)	
 			}
 

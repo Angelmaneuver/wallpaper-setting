@@ -3,7 +3,8 @@ import * as fs      from "fs";
 import { Optional } from "./optional";
 
 type FsOption     = { encoding?: string; flag?: string; };
-type SearchOption = { filters?: Array<string>; fullPath?:  boolean; recursive?: boolean; }
+type Filter       = { name?: string, extension?: Array<string> };
+type SearchOption = { filter?: Filter; fullPath?:  boolean; recursive?: boolean; }
 
 export class File {
 	private _path:    string;
@@ -84,11 +85,15 @@ export class File {
 		return result;
 	}
 
+	public static getFilename(targetPath: string): string {
+		return path.basename(targetPath, path.extname(targetPath));
+	}
+
 	public static getExtension(targetPath: string): string {
 		return path.extname(targetPath).replace(".", "");
 	}
 
-	public static getChldrens(
+	public static getChildrens(
 		targetPath: string,
 		options?:   SearchOption
 	): Array<string> | undefined {
@@ -103,13 +108,16 @@ export class File {
 		targetPath: string,
 		options?:   SearchOption
 	): Array<string> {
-		const filters   = Optional.ofNullable(options?.filters).orElseNonNullable([]);
-		const filtering = filters.length > 0 ? true : false;
-		const fullPath  = Optional.ofNullable(options?.fullPath).orElseNonNullable(false);
-		const recursive = Optional.ofNullable(options?.recursive).orElseNonNullable(false);
-		const dirents   = fs.readdirSync(targetPath, { withFileTypes: true });
+		const filter             = Optional.ofNullable(options?.filter).orElseNonNullable({}) as Filter;
+		const nameFilter         = Optional.ofNullable(filter.name).orElseNonNullable("");
+		const nameFiltering      = nameFilter.length > 0 ? true : false;
+		const extensionFilter    = Optional.ofNullable(filter.extension).orElseNonNullable([]);
+		const extensionFiltering = extensionFilter.length > 0 ? true : false;
+		const fullPath           = Optional.ofNullable(options?.fullPath).orElseNonNullable(false);
+		const recursive          = Optional.ofNullable(options?.recursive).orElseNonNullable(false);
+		const dirents            = fs.readdirSync(targetPath, { withFileTypes: true });
 
-		let   result    = this.getFiles(targetPath, dirents, filters, filtering, fullPath);
+		let   result             = this.getFiles(targetPath, dirents, nameFilter, nameFiltering, extensionFilter, extensionFiltering, fullPath);
 
 		if (recursive) {
 			this.getDirectories(targetPath, dirents).forEach((value) => { result = result.concat(File.getChildren(value, options)); });
@@ -119,14 +127,20 @@ export class File {
 	}
 
 	private static getFiles(
-		targetPath: string,
-		dirents:    fs.Dirent[],
-		filters:    Array<string>,
-		filtering:  boolean,
-		fullPath:   boolean
+		targetPath:         string,
+		dirents:            fs.Dirent[],
+		nameFilter:         string,
+		nameFiltering:      boolean,
+		extensionFilter:    Array<string>,
+		extensionFiltering: boolean,
+		fullPath:           boolean
 	): string[] {
 		return dirents
-				.filter((dirent) => { return dirent.isFile() && (filters.includes(File.getExtension(dirent.name)) || !filtering); }
+				.filter((dirent) => { return (
+					dirent.isFile()
+					&& (File.getFilename(dirent.name).includes(nameFilter)       || !nameFiltering)
+					&& (extensionFilter.includes(File.getExtension(dirent.name)) || !extensionFiltering)
+				); }
 				).map(({ name }) => (fullPath ? path.join(targetPath, name) : name));
 	}
 

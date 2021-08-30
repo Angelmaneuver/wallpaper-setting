@@ -27,7 +27,7 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const randomPlay    = Constant.slideRandomPlay[0];
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
-		const fileStub      = sinon.stub(File,                            "getChldrens");
+		const fileStub      = sinon.stub(File,                            "getChildrens");
 		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "installAsSlide");
 		const state         = stateCreater();
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;

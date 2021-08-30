@@ -106,6 +106,17 @@ suite('File Utility Test Suite', () => {
 		fsStatsMock.restore();
 	});
 
+	test('getFilename', () => {
+		const extension   = "txt;"
+		const targetPath1 = path.join(__dirname, "tmp", `test.${extension}`);
+		const targetPath2 = path.join(__dirname, "tmp", `test`);
+		const targetPath3 = `test`;
+
+		assert.strictEqual(testTarget.File.getFilename(targetPath1), "test");
+		assert.strictEqual(testTarget.File.getFilename(targetPath2), "test");
+		assert.strictEqual(testTarget.File.getFilename(targetPath3), "test");
+	});
+
 	test('getExtension', () => {
 		const extension   = "txt;"
 		const targetPath1 = path.join(__dirname, "tmp", `test.${extension}`);
@@ -144,25 +155,30 @@ suite('File Utility Test Suite', () => {
 		const direntMock3 = sinon.mock(dirent3);
 		const direntMock4 = sinon.mock(dirent4);
 
-		fsMock.expects("statSync").thrice().withArgs(rootDir).returns(fsStats);
-		fsStatsMock.expects("isDirectory").thrice().returns(true);
-		fsMock.expects("readdirSync").thrice().withArgs(rootDir, { withFileTypes: true }).returns(dirents1);
-		direntMock1.expects("isFile").thrice().returns(true);
-		direntMock2.expects("isFile").thrice().returns(true);
-		direntMock3.expects("isFile").thrice().returns(false);
+		fsMock.expects("statSync").exactly(4).withArgs(rootDir).returns(fsStats);
+		fsStatsMock.expects("isDirectory").exactly(4).returns(true);
+		fsMock.expects("readdirSync").exactly(4).withArgs(rootDir, { withFileTypes: true }).returns(dirents1);
+		direntMock1.expects("isFile").exactly(4).returns(true);
+		direntMock2.expects("isFile").exactly(4).returns(true);
+		direntMock3.expects("isFile").exactly(4).returns(false);
 		direntMock3.expects("isDirectory").once().returns(true);
 		fsMock.expects("readdirSync").once().withArgs(path.join(rootDir, directory1), { withFileTypes: true }).returns(dirents2);
 		direntMock4.expects("isFile").once().returns(true);
 
-		assert.notStrictEqual(testTarget.File.getChldrens(rootDir), [file1, file2]);
+		assert.notStrictEqual(testTarget.File.getChildrens(rootDir), [file1, file2]);
 
 		assert.notStrictEqual(
-			testTarget.File.getChldrens(rootDir, { filters: [extension1], fullPath: true }),
+			testTarget.File.getChildrens(rootDir, { filter: { name: "test" }, fullPath: true }),
+			[path.join(rootDir, file1), path.join(rootDir, file3)]
+		);
+
+		assert.notStrictEqual(
+			testTarget.File.getChildrens(rootDir, { filter: { extension: [extension1] }, fullPath: true }),
 			[path.join(rootDir, file1)]
 		);
 
 		assert.notStrictEqual(
-			testTarget.File.getChldrens(rootDir, { filters: [extension2], fullPath: true, recursive: true }),
+			testTarget.File.getChildrens(rootDir, { filter:  { extension: [extension2] }, fullPath: true, recursive: true }),
 			[path.join(rootDir, file2), path.join(rootDir, directory1, file3)]
 		);
 
@@ -180,6 +196,6 @@ suite('File Utility Test Suite', () => {
 		direntMock3.restore();
 		direntMock4.restore();
 
-		assert.strictEqual(testTarget.File.getChldrens(""), undefined);
+		assert.strictEqual(testTarget.File.getChildrens(""), undefined);
 	});
 });
