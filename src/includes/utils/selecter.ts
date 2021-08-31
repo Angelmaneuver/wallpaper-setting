@@ -33,4 +33,8 @@ export class Selecter {
 	get path(): string {
 		return this.fileUrls ? this.fileUrls[0].fsPath : "";
 	}
+
+	get paths(): Array<string> {
+		return this.fileUrls ? this.fileUrls.map(url => url.fsPath) : new Array<string>();
+	}
 }

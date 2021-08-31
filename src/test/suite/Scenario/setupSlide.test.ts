@@ -28,6 +28,8 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
 		const fileStub      = sinon.stub(File,                            "getChildrens");
+		const fileCheckStub = sinon.stub(File,                            "isFile");
+		const dirCheckStub  = sinon.stub(File,                            "isDirectory")
 		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "installAsSlide");
 		const state         = stateCreater();
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
@@ -38,6 +40,8 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		pickStub.onSecondCall().resolves(intervalUnit);
 		inputStub.onThirdCall().resolves(interval);
 		pickStub.onThirdCall().resolves(randomPlay);
+		fileCheckStub.onFirstCall().returns(false);
+		dirCheckStub.onFirstCall().returns(true);
 		fileStub.onFirstCall().returns(filePaths);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
@@ -65,11 +69,15 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		assert.strictEqual(setting.getItem(ExtensionSetting.propertyIds.slideRandomPlay).validValue, true);
 		assert.strictEqual(pickStub.calledThrice,                                                    true);
 		assert.strictEqual(inputStub.calledThrice,                                                   true);
+		assert.strictEqual(fileCheckStub.calledOnce,                                                 true);
+		assert.strictEqual(dirCheckStub.calledOnce,                                                  true);
 		assert.strictEqual(fileStub.calledOnce,                                                      true);
 		assert.strictEqual(wallpaperStub.calledOnce,                                                 true);
 
 		inputStub.restore();
 		pickStub.restore();
+		fileCheckStub.restore();
+		dirCheckStub.restore();
 		fileStub.restore();
 		wallpaperStub.restore();
 

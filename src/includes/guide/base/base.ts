@@ -95,13 +95,37 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 	protected async registSetting(): Promise<void> {
 		for (const key of Object.keys(this.guideGroupResultSet)) {
 			if (key === this.itemIds.slideFilePaths) {
-				this.guideGroupResultSet[this.itemIds.slideFilePaths] = File.getChildrens(
-					this.guideGroupResultSet[this.itemIds.slideFilePaths] as string,
-					{ filter: { extension: Constant.applyImageFile }, fullPath: true, recursive: false }
-				)	
+				this.setSlideFilePaths();
 			}
 
 			await this.settings.setItemValue(key, this.guideGroupResultSet[key]);
 		}
+	}
+
+	private setSlideFilePaths(): void {
+		const inputValue = this.guideGroupResultSet[this.itemIds.slideFilePaths];
+		let slidePaths   = new Array<string>();
+		let result       = new Array<string>();
+
+		if (Array.isArray(inputValue)) {
+			slidePaths = inputValue as Array<string>;
+		} else if (typeof(inputValue) === "string") {
+			slidePaths = [inputValue];
+		}
+
+		slidePaths.forEach( (slidePath) => {
+			if (File.isFile(slidePath)) {
+				result.push(slidePath);
+			} else if (File.isDirectory(slidePath)) {
+				const childrens = File.getChildrens(
+					slidePath,
+					{ filter: { extension: Constant.applyImageFile }, fullPath: true, recursive: false }
+				);
+
+				result = result.concat( childrens ? childrens : new Array<string>());
+			}
+		});
+
+		this.guideGroupResultSet[this.itemIds.slideFilePaths] = result;
 	}
 }

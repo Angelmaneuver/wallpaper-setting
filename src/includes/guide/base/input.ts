@@ -77,7 +77,11 @@ export class InputResourceGuide extends BaseInputGuide {
 		this.options =
 			this.type === Type.File
 				? { filters: { Images: Constant.applyImageFile } }
-				: { canSelectFolders: true, canSelectFiles: false };
+				: {
+					canSelectFolders: true,
+					canSelectMany:    true,
+					filters:          { Images: Constant.applyImageFile },
+				};
 		this.state.buttons = [
 			new GuideButton(
 				{
@@ -98,9 +102,18 @@ export class InputResourceGuide extends BaseInputGuide {
 				await this.pushButton();
 			}
 		} while (
-			!this.guideGroupResultSet[this.itemId]                                  ||
-			(typeof(this.guideGroupResultSet[this.itemId]) === "string" && (this.guideGroupResultSet[this.itemId] as string).length === 0)
+			!this.guideGroupResultSet[this.itemId]
+			|| (typeof(this.guideGroupResultSet[this.itemId]) === "string" && (this.guideGroupResultSet[this.itemId] as string).length === 0)
+			|| (Array.isArray(this.guideGroupResultSet[this.itemId])       && (this.guideGroupResultSet[this.itemId] as Array<string>).length === 0)
 		);
+	}
+
+	protected setResultSet(value: unknown): void {
+		super.setResultSet(value);
+
+		if (Array.isArray(value) && this.itemId.length > 0) {
+			this.guideGroupResultSet[this.itemId] = value;
+		}
 	}
 
 	private async pushButton(): Promise<void> {
@@ -108,8 +121,8 @@ export class InputResourceGuide extends BaseInputGuide {
 		this.guideGroupResultSet[this.itemId] = undefined;
 		const selected  = await new Selecter(this.options).openFileDialog();
 
-		if (selected && selected.path.length > 0) {
-			this._inputValue = selected.path;
+		if (selected && selected.paths.length > 0) {
+			this._inputValue = this.type === Type.File ? selected.path : selected.paths;
 			this.setResultSet(this._inputValue);
 		}
 	}
