@@ -165,6 +165,7 @@ export class Wallpaper {
 /*${this.extensionKey}-start*/
 /*${this.extensionKey}.ver.${Constant.version}*/
 window.onload=()=>{`;
+		result     += `if(document.querySelector("body > #process-list")){return;};`;
 		result     += `document.body.style.opacity=${opacity};`;
 		result     += `document.body.style.backgroundSize="cover";`;
 		result     += `document.body.style.backgroundPosition="Center";`;
