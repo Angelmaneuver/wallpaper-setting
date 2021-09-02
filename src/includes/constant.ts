@@ -1,7 +1,7 @@
 import { QuickPickItem } from "vscode";
 import { VSCodePreset }  from "./utils/base/vscodePreset";
 
-export const version    = "0.5.3";
+export const version    = "0.5.4";
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
 	let items: Array<QuickPickItem> = [];

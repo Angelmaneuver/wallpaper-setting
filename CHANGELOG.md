@@ -1,10 +1,14 @@
 # Change Log
 
+## 0.5.4
+ - In the dialog for selecting slide target files, it is now possible to select multiple files
+ - Fixed to not set wallpaler in Process Explorer (from issue [#2](https://github.com/Angelmaneuver/wallpaper-setting/issues/2))
+
 ## 0.5.3
  - Rewrite the Readme (Reflects findings from issue [#1](https://github.com/Angelmaneuver/wallpaper-setting/issues/1))
 
 ## 0.5.2
- - Added WebP as a configurable image format.
+ - Added WebP as a configurable image format
 
 ## 0.5.1
 - Rewrite the Readme
