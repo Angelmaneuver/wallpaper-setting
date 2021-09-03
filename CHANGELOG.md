@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.5
+ - Fixed to display a confirm dialog before uninstall
+
 ## 0.5.4
  - In the dialog for selecting slide target files, it is now possible to select multiple files
  - Fixed to not set wallpaler in Process Explorer (from issue [#2](https://github.com/Angelmaneuver/wallpaper-setting/issues/2))

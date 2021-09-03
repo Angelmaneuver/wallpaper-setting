@@ -35,7 +35,7 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 			case items.Reset.label:
 				return async () => { Wallpaper.delegation2Transition(this, this.state, true); };
 			case items.Crear.label:
-				return this.clear();
+				return async () => { this.installer.uninstall(); this.state.reload = true; };
 			case items.Setting.label:
 				return async () => { this.setNextSteps([{ key: "SelectParameterType",   state: this.createBaseState(" - Individual Settings", "setting",  0) }]); };
 			case items.Favorite.label:
@@ -45,16 +45,9 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 			case items.SetUpAsSlide.label:
 				return this.setupAsSlide();
 			case items.Uninstall.label:
-				return async () => { await this.clear()(); await this.settings.uninstall(); }
+				return this.uninstall();
 			default:
 				return undefined;
-		}
-	}
-
-	private clear(): () => Promise<void> {
-		return async () => {
-			this.installer.uninstall();
-			this.state.reload = true;	
 		}
 	}
 
@@ -78,6 +71,20 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 				{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.itemIds.slideInterval) },
 				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.itemIds.slideRandomPlay) }
 			]);
+		}
+	}
+
+	private uninstall(): () => Promise<void> {
+		return async () => {
+			this.state.placeholder = "Do you want to uninstall the wallpaper and erase all settings related to this extension?";
+			this.setNextSteps([{
+				key:   "BaseConfirmGuide",
+				state: { title: this.title },
+				args:  [
+					{ yes: "Uninstall.", no: "Back to previous." },
+					( async () => { this.installer.uninstall(); this.state.reload = true; await this.settings.uninstall(); } )
+				]
+			}]);
 		}
 	}
 }

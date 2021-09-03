@@ -40,6 +40,8 @@ suite('Guide - Begin Test Suite', async () => {
 		SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,       "Setup Slide", "Set an image slide to wallpaper."),
 		Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,     "Uninstall",   "Remove all parameters for this extension."),
 		Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
+		Yes:          VSCodePreset.create(VSCodePreset.Icons.check,        "Yes",         "Uninstall."),
+		No:           VSCodePreset.create(VSCodePreset.Icons.x,            "No",          "Back to previous."),
 	};
 
 	test('constructor', async () => {
@@ -126,9 +128,18 @@ suite('Guide - Begin Test Suite', async () => {
 		pickStub.resolves(items.SetUpAsSlide);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
-		pickStub.resolves(items.Uninstall);
+		pickStub.reset();
+		pickStub.onCall(0).resolves(items.Uninstall)
+				.onCall(1).resolves(items.No)
+				.onCall(2).resolves(items.Exit);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
+		pickStub.reset();
+		pickStub.onCall(0).resolves(items.Uninstall)
+				.onCall(1).resolves(items.Yes)
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
+
+		pickStub.reset();
 		pickStub.resolves(items.Exit);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
