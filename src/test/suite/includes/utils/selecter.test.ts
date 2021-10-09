@@ -34,7 +34,7 @@ suite('File Dialog Utility Test Suite', async () => {
 		mock.restore();
 	});
 
-	test('constructor - with options', () => {
+	test('constructor - with options', async () => {
 		const instance   = new testTarget.Selecter({
 			canSelectFolders: true,
 			canSelectFiles:   false,
@@ -48,5 +48,22 @@ suite('File Dialog Utility Test Suite', async () => {
 		assert.strictEqual(instance.canSelectMany,    true);
 		assert.strictEqual(instance.openLable,        "label");
 		assert.notStrictEqual(instance.filters,       { Images: Constant.applyImageFile });
+
+		const targetPaths = [path.join(__dirname, "testDir1"), path.join(__dirname, "testDir2")];
+		const mock        = sinon.mock(vscode.window);
+
+		mock.expects("showOpenDialog").once().withArgs({
+			canSelectFolders: true,
+			canSelectFiles:   false,
+			canSelectMany:    true,
+			openLabel:        "label",
+			filters:          { Images: Constant.applyImageFile },
+		}).resolves([{ fsPath: targetPaths[0] }, { fsPath: targetPaths[1] }] as Array<vscode.Uri>);
+
+		assert.strictEqual(await instance.openFileDialog(), instance);
+		assert.notStrictEqual(instance.paths,               targetPaths);
+
+		mock.verify();
+		mock.restore();
 	});
 });
