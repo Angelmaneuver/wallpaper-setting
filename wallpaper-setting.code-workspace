@@ -18,7 +18,7 @@
 			"christian-kohler.path-intellisense",
 			"dbaeumer.vscode-eslint",
 			"esbenp.prettier-vscode",
-			"eamodio.tsl-problem-matcher",
+			"amodio.tsl-problem-matcher",
 			"cschleiden.vscode-github-actions",
 		]
 	}
