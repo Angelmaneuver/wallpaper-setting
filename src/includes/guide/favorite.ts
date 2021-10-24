@@ -191,9 +191,7 @@ export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGu
 
 		Object.keys(registered).map(
 			(key) => {
-				if (removeFavoriteName !== key) {
-					favorite[key] = registered[key];
-				}
+				if (removeFavoriteName !== key) { favorite[key] = registered[key]; }
 			}
 		);
 
@@ -270,14 +268,7 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 				}
 				// fallsthrough
 			case this.items[1].label:
-				return async () => {
-					await this.settings.setItemValue(
-						this.itemIds.favoriteRandomSetFilter,
-						this.settings.favoriteRandomSetFilter.defaultValue
-					);
-					await this.registSetting();
-					await StartUp.randomSet();
-				};
+				return async () => { await this.settings.setItemValue(this.itemIds.favoriteRandomSetFilter, this.settings.favoriteRandomSetFilter.defaultValue); await this.registSetting(); await StartUp.randomSet(); };
 			default:
 				return async () => { this.prev(); }
 		}
