@@ -10,17 +10,13 @@ const choice         = (min: number, max: number) => {
 };
 const getFavorite    = (
 	(filter: string, imageSet: FavoritesByHash, slideSet: FavoritesByHash) => {
-		let temporary: Array<Favorite> = new Array<Favorite>();
-
-		if ("All" === filter || "Image" === filter) {
-			temporary = temporary.concat(favorite2array(Constant.wallpaperType.Image, imageSet));
+		if ("All" === filter) {
+			return favorite2array(Constant.wallpaperType.Image, imageSet).concat(favorite2array(Constant.wallpaperType.Slide, slideSet));
+		} else if ("Image" === filter) {
+			return favorite2array(Constant.wallpaperType.Image, imageSet);
+		} else {
+			return favorite2array(Constant.wallpaperType.Slide, slideSet);
 		}
-
-		if ("All" === filter || "Slide" === filter) {
-			temporary = temporary.concat(favorite2array(Constant.wallpaperType.Slide, slideSet));
-		}
-
-		return temporary;
 	}	
 );
 const favorite2array = (
