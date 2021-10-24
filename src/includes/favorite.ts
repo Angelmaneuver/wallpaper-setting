@@ -8,6 +8,21 @@ interface FavoritesByHash{ [key: string]: unknown }
 const choice         = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) +min;
 };
+const getFavorite    = (
+	(filter: string, imageSet: FavoritesByHash, slideSet: FavoritesByHash) => {
+		let temporary: Array<Favorite> = new Array<Favorite>();
+
+		if ("All" === filter || "Image" === filter) {
+			temporary = temporary.concat(favorite2array(Constant.wallpaperType.Image, imageSet));
+		}
+
+		if ("All" === filter || "Slide" === filter) {
+			temporary = temporary.concat(favorite2array(Constant.wallpaperType.Slide, slideSet));
+		}
+
+		return temporary;
+	}	
+);
 const favorite2array = (
 	(favoriteType: number, favorites: FavoritesByHash) => {
 		const temporary: Array<Favorite> = new Array<Favorite>();
@@ -15,7 +30,7 @@ const favorite2array = (
 		
 		return temporary;
 	}
-)
+);
 const favoriteSetter = (
 	(favorite: { [key:string]: unknown }, setting: ExtensionSetting) => {
 		Object.keys(favorite).forEach(
@@ -29,19 +44,11 @@ export async function randomSet(): Promise<void> {
 	const installer = Installer.getInstance(setting);
 
 	if (setting.isFavoriteRegisterd && setting.favoriteRandomSet.validValue) {
-		const filter    = setting.favoriteRandomSetFilter.validValue;
-		const favorites =
-			new Array<Favorite>()
-			.concat(
-				"All" === filter || "Image" === filter
-					? favorite2array(Constant.wallpaperType.Image, setting.favoriteImageSet.value)
-					: []
-			)
-			.concat(
-				"All" === filter || "Slide" === filter
-					? favorite2array(Constant.wallpaperType.Slide, setting.favoriteSlideSet.value)
-					: []
-			);
+		const favorites = getFavorite(
+			setting.favoriteRandomSetFilter.validValue,
+			setting.favoriteImageSet.value,
+			setting.favoriteSlideSet.value
+		);
 		const selection = favorites[choice(0, favorites.length -1)];
 
 		if (selection.type === Constant.wallpaperType.Image) {
