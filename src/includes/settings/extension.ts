@@ -22,16 +22,17 @@ type FavoriteAutoSet = number;
 
 export class ExtensionSetting extends SettingBase {
 	public static propertyIds: { [key: string]: string }      = {
-		filePath:          "filePath",
-		slideFilePaths:    "slideFilePaths",
-		opacity:           "opacity",
-		slideInterval:     "slideInterval",
-		slideIntervalUnit: "slideIntervalUnit",
-		slideRandomPlay:   "slideRandomPlay",
-		slideEffectFadeIn: "slideEffectFadeIn",
-		favoriteImageSet:  "favoriteWallpaperImageSet",
-		favoriteSlideSet:  "favoriteWallpaperSlideSet",
-		favoriteRandomSet: "favoriteWallpaperRandomSet"
+		filePath:                "filePath",
+		slideFilePaths:          "slideFilePaths",
+		opacity:                 "opacity",
+		slideInterval:           "slideInterval",
+		slideIntervalUnit:       "slideIntervalUnit",
+		slideRandomPlay:         "slideRandomPlay",
+		slideEffectFadeIn:       "slideEffectFadeIn",
+		favoriteImageSet:        "favoriteWallpaperImageSet",
+		favoriteSlideSet:        "favoriteWallpaperSlideSet",
+		favoriteRandomSet:       "favoriteWallpaperRandomSet",
+		favoriteRandomSetFilter: "favoriteWallpaperRandomSetFilter"
 	};
 
 	private _items:               AbstractSettingItem[]       = [];
@@ -162,5 +163,9 @@ export class ExtensionSetting extends SettingBase {
 
 	public get FavoriteAutoset(): undefined | FavoriteAutoSet {
 		return this._FavoriteAutoSet;
+	}
+
+	public get favoriteRandomSetFilter(): AbstractSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSetFilter);
 	}
 }

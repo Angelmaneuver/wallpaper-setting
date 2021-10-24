@@ -1,7 +1,7 @@
 import { QuickPickItem } from "vscode";
 import { VSCodePreset }  from "./utils/base/vscodePreset";
 
-export const version    = "0.5.5";
+export const version    = "0.5.6";
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
 	let items: Array<QuickPickItem> = [];
@@ -41,3 +41,8 @@ export const favoriteProcess                          = [
 	VSCodePreset.create(VSCodePreset.Icons.reply,      "Return",     "Return without saving any changes."),
 ];
 export const favoriteRandomSet                        = itemsCreat(ItemType.Confirm, { item1: "Random wallpaper at start up.", item2: "Not random.", return: "Return without saving any changes." });
+export const favoriteRandomSetFilter                  = [
+	VSCodePreset.create(VSCodePreset.Icons.checkAll,   "All",        "Target all images and slides.")
+].concat(
+	itemsCreat(ItemType.Wallpaper, { item1:  "Images only.", item2:  "Slides only.", return: "Return without saving any changes." })
+);

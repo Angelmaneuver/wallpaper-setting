@@ -55,6 +55,14 @@ export abstract class AbstractQuickPickGuide extends AbstractBaseGuide {
 		return items.find((item) => { return item.label === label; });
 	}
 
+	protected get getInputValueLabelString(): string {
+		return typeof(this.inputValue) === "string" ? this.inputValue.replace(match, "") : "";
+	}
+
+	protected getItemByLabelString(items: Array<QuickPickItem>, label: string): QuickPickItem | undefined {
+		return items.find((item) => { return item.label.replace(match, "") === label; });
+	}
+
 	protected createBaseState(additionalTitle: string, guideGroupId: string, totalStep?: number, itemId?: string): Partial<State> {
 		const state = { title: this.title + additionalTitle, guideGroupId: guideGroupId, step: 0, totalSteps: totalStep } as Partial<State>;
 
@@ -67,6 +75,10 @@ export abstract class AbstractQuickPickGuide extends AbstractBaseGuide {
 		}
 
 		return state;
+	}
+
+	protected setInputValueLabelString4GuideGroupResultSet(): void {
+		this.guideGroupResultSet[this.itemId] = this.getInputValueLabelString;
 	}
 }
 

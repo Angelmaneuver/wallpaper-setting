@@ -258,10 +258,53 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 	public getExecute(label: string): () => Promise<void> {
 		switch (label) {
 			case this.items[0].label:
-				this.state.reload = true;
+				if (this.settings.isFavoriteRegisterd && undefined === this.settings.FavoriteAutoset) {
+					return async () => {
+						this.setNextSteps([{
+							key:   "FavoriteRandomSetFilterGuide",
+							state: { title: this.title, guideGroupId: this.guideGroupId }
+						}]);
+					};
+				} else {
+					this.state.reload = true;
+				}
 				// fallsthrough
 			case this.items[1].label:
-				return async () => { await this.registSetting(); await StartUp.randomSet(); };
+				return async () => {
+					await this.settings.setItemValue(
+						this.itemIds.favoriteRandomSetFilter,
+						this.settings.favoriteRandomSetFilter.defaultValue
+					);
+					await this.registSetting();
+					await StartUp.randomSet();
+				};
+			default:
+				return async () => { this.prev(); }
+		}
+	}
+}
+
+export class FavoriteRandomSetFilterGuide extends AbstractQuickPickSelectGuide {
+	public init(): void {
+		super.init();
+
+		this.itemId      = this.itemIds.favoriteRandomSetFilter;
+		this.placeholder = "Select the favorite type you want to set as random.";
+		this.items       = Constant.favoriteRandomSetFilter;
+		this.activeItem  = this.getItemByLabelString(this.items, this.settings.favoriteRandomSetFilter.validValue);
+	}
+
+	public getExecute(label: string): () => Promise<void> {
+		switch (label) {
+			case this.items[0].label: // fallshrough
+			case this.items[1].label: // fallshrough
+			case this.items[2].label: // fallshrough
+				return async () => {
+					this.state.reload = true;
+					this.setInputValueLabelString4GuideGroupResultSet();
+					await this.registSetting();
+					await StartUp.randomSet();
+				};
 			default:
 				return async () => { this.prev(); }
 		}

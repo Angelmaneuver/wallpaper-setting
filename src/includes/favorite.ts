@@ -29,10 +29,19 @@ export async function randomSet(): Promise<void> {
 	const installer = Installer.getInstance(setting);
 
 	if (setting.isFavoriteRegisterd && setting.favoriteRandomSet.validValue) {
+		const filter    = setting.favoriteRandomSetFilter.validValue;
 		const favorites =
 			new Array<Favorite>()
-			.concat(favorite2array(Constant.wallpaperType.Image, setting.favoriteImageSet.value))
-			.concat(favorite2array(Constant.wallpaperType.Slide, setting.favoriteSlideSet.value));
+			.concat(
+				"All" === filter || "Image" === filter
+					? favorite2array(Constant.wallpaperType.Image, setting.favoriteImageSet.value)
+					: []
+			)
+			.concat(
+				"All" === filter || "Slide" === filter
+					? favorite2array(Constant.wallpaperType.Slide, setting.favoriteSlideSet.value)
+					: []
+			);
 		const selection = favorites[choice(0, favorites.length -1)];
 
 		if (selection.type === Constant.wallpaperType.Image) {

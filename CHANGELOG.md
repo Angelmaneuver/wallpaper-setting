@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.6
+ - Added the function to specify only images or slides to the feature that sets the wallpaper random from favorite at start up
+
 ## 0.5.5
  - Fixed to display a confirm dialog before uninstall
 

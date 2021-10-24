@@ -38,16 +38,17 @@ export abstract class SettingItemFactory {
 
 	private static init(): void {
 		this.items = {
-			filePath:                   { className: BaseSettingItem.name,    args: { default: "" } },
-			opacity:                    { className: NumberSettingItem.name,  args: { default: 0.75 } },
-			slideFilePaths:             { className: BaseSettingItem.name,    args: { default: [] } },
-			slideInterval:              { className: NumberSettingItem.name,  args: { default: 25 } },
-			slideIntervalUnit:          { className: BaseSettingItem.name,    args: { default: "Minute" } },
-			slideRandomPlay:            { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.slideRandomPlay[0].label,   falseValue: Constant.slideRandomPlay[1].label } },
-			slideEffectFadeIn:          { className: BooleanSettingItem.name, args: { default: true,  trueValue: Constant.slideEffectFadeIn[0].label, falseValue: Constant.slideEffectFadeIn[1].label } },
-			favoriteWallpaperImageSet:  { className: BaseSettingItem.name,    args: { default: {} } },
-			favoriteWallpaperSlideSet:  { className: BaseSettingItem.name,    args: { default: {} } },
-			favoriteWallpaperRandomSet: { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.favoriteRandomSet[0].label, falseValue: Constant.favoriteRandomSet[1].label } }
+			filePath:                         { className: BaseSettingItem.name,    args: { default: "" } },
+			opacity:                          { className: NumberSettingItem.name,  args: { default: 0.75 } },
+			slideFilePaths:                   { className: BaseSettingItem.name,    args: { default: [] } },
+			slideInterval:                    { className: NumberSettingItem.name,  args: { default: 25 } },
+			slideIntervalUnit:                { className: BaseSettingItem.name,    args: { default: "Minute" } },
+			slideRandomPlay:                  { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.slideRandomPlay[0].label,   falseValue: Constant.slideRandomPlay[1].label } },
+			slideEffectFadeIn:                { className: BooleanSettingItem.name, args: { default: true,  trueValue: Constant.slideEffectFadeIn[0].label, falseValue: Constant.slideEffectFadeIn[1].label } },
+			favoriteWallpaperImageSet:        { className: BaseSettingItem.name,    args: { default: {} } },
+			favoriteWallpaperSlideSet:        { className: BaseSettingItem.name,    args: { default: {} } },
+			favoriteWallpaperRandomSet:       { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.favoriteRandomSet[0].label, falseValue: Constant.favoriteRandomSet[1].label } },
+			favoriteWallpaperRandomSetFilter: { className: BaseSettingItem.name,    args: { default: "All" } },
 		};
 
 		this.classes.push(BaseSettingItem, NumberSettingItem, BooleanSettingItem);

@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.5.5",
+	"version": "0.5.6",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -98,6 +98,16 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Random wallpaper from your favorite settings at start up."
+				},
+				"wallpaper-setting.favoriteWallpaperRandomSetFilter": {
+					"type": "string",
+					"default": "All",
+					"enum": [
+						"All",
+						"Image",
+						"Slide"
+					],
+					"description": "Specifies the type of wallpaper to be set at start up."
 				}
 			}
 		}

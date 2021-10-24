@@ -24,7 +24,8 @@ import {
 	RegisterFavoriteGuide,
 	UnRegisterFavoriteGuide,
 	LoadFavoriteGuide,
-	FavoriteRandomSetGuide
+	FavoriteRandomSetGuide,
+	FavoriteRandomSetFilterGuide
 } from "../favorite";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,7 +71,8 @@ export abstract class GuideFactory {
 			RegisterFavoriteGuide,
 			UnRegisterFavoriteGuide,
 			LoadFavoriteGuide,
-			FavoriteRandomSetGuide
+			FavoriteRandomSetGuide,
+			FavoriteRandomSetFilterGuide
 		)
 	}
 }
