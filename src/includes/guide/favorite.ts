@@ -295,18 +295,10 @@ export class FavoriteRandomSetFilterGuide extends AbstractQuickPickSelectGuide {
 	}
 
 	public getExecute(label: string): () => Promise<void> {
-		switch (label) {
-			case this.items[0].label: // fallshrough
-			case this.items[1].label: // fallshrough
-			case this.items[2].label: // fallshrough
-				return async () => {
-					this.state.reload = true;
-					this.setInputValueLabelString4GuideGroupResultSet();
-					await this.registSetting();
-					await StartUp.randomSet();
-				};
-			default:
-				return async () => { this.prev(); }
+		if (this.items[3].label === label) {
+			return async () => { this.prev(); }
+		} else {
+			return async () => { this.state.reload = true; this.setInputValueLabelString4GuideGroupResultSet(); await this.registSetting(); await StartUp.randomSet(); };
 		}
 	}
 }
