@@ -1,17 +1,16 @@
-require:
-  - "ts-node/register"
-
+extends: "@istanbuljs/nyc-config-typescript"
+all: true
+cache: false
+check-coverage: true
 include:
   - "src/**/*.ts"
   - "out/**/*.js"
-
 exclude:
-  - "src/test/*"
-
+  - "**/test/*"
 reporter:
   - "text-summary"
   - "lcov"
   - "html"
-
+require:
+  - "ts-node/register"
 sourceMap: true
-all: true

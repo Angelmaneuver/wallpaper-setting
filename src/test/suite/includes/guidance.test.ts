@@ -1,6 +1,8 @@
 import * as assert          from "assert";
 import * as sinon           from "sinon";
 import * as vscode          from "vscode";
+import * as path            from "path";
+import * as fs              from "fs";
 import * as testTarget      from "../../../includes/guidance";
 import { MultiStepInput }   from "../../../includes/utils/multiStepInput";
 import { State }            from "../../../includes/guide/base/base";
@@ -12,6 +14,7 @@ suite('Guidance Test Suite', async () => {
 		const multiStepInputStub = sinon.stub(MultiStepInput,           "run");
 		const guideFactoryStub   = sinon.stub(GuideFactory,             "create");
 		const menuGuideStub      = sinon.stub(StartMenuGuide.prototype, "start");
+		const accessSyncStub     = sinon.stub(fs,                       "accessSync");
 		const windowMock         = sinon.mock(vscode.window);
 		const commandMock        = sinon.mock(vscode.commands);
 		const context            = {} as vscode.ExtensionContext;
@@ -38,6 +41,13 @@ suite('Guidance Test Suite', async () => {
 		commandMock.expects("executeCommand").once().withArgs("workbench.action.reloadWindow");
 		await testTarget.guidance(context);
 
+		const dirnameStub        = sinon.stub(path,                     "dirname");
+		dirnameStub.returns("/Applications/Visual Studio Code.app/Contents/Resources/app/out");
+		accessSyncStub.reset();
+		accessSyncStub.onFirstCall().throws(new Error("Access Error"));
+		windowMock.expects("showWarningMessage").withArgs(`You don't have permission to write to the file required to run this extension. Please check the permission on "/Applications/Visual Studio Code.app/Contents/Resources/app/out/bootstrap-window.js".`).once();
+		await testTarget.guidance(context);
+
 		windowMock.verify();
 		commandMock.verify();
 
@@ -49,5 +59,7 @@ suite('Guidance Test Suite', async () => {
 		await testTarget.guidance(context);
 		assert.strictEqual(menuGuideStub.calledOnce, true);
 		menuGuideStub.restore();
+		dirnameStub.restore();
+		accessSyncStub.restore();
 	});
 });
