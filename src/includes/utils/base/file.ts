@@ -51,6 +51,10 @@ export class File {
 		return Optional.ofNullable(this._content?.toString("base64")).orElseNonNullable("");
 	}
 
+	public static isWritable(paths: Array<string>): void {
+		fs.accessSync(path.join(...paths), fs.constants.W_OK);
+	}
+
 	public static isFile(
 		targetPath:       string,
 		matchExtensions?: Array<string>
