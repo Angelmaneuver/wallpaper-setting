@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.7
+ - Added a pre check to see if the extension meets the prerequisites to work, and if not, it so that people like Christian Rhodes can find out why.
+
 ## 0.5.6
  - Added the function to specify only images or slides to the feature that sets the wallpaper random from favorite at start up
 
