@@ -9,17 +9,18 @@ suite('File Utility Test Suite', () => {
 		const mock       = sinon.mock(fs);
 		const extension  = "txt;"
 		const targetPath = path.join(__dirname, "tmp", `test.${extension}`);
-		const result     = "file utility test."
+		const textString = "file utility test.";
+		const base64     = "ZmlsZSB1dGlsaXR5IHRlc3Qu";
 
-		mock.expects("readFileSync").once().withArgs(targetPath).returns(result);
+		mock.expects("readFileSync").once().withArgs(targetPath).returns(textString);
 
 		const instance   = new testTarget.File(targetPath);
-		assert.strictEqual(instance.content,    result);
+		assert.strictEqual(instance.content,    textString);
 		assert.strictEqual(instance.path,       targetPath);
 		assert.strictEqual(instance.extension,  extension);
 		assert.strictEqual(instance.isPresent,  true);
-		assert.strictEqual(instance.toString(), result);
-		assert.strictEqual(instance.toBase64(), result);
+		assert.strictEqual(instance.toString(), textString);
+		assert.strictEqual(instance.toBase64(), base64);
 
 		mock.verify();
 		mock.restore();
@@ -28,10 +29,10 @@ suite('File Utility Test Suite', () => {
 	test('constructor - with options', () => {
 		const mock         = sinon.mock(fs);
 		const targetPath   = path.join(__dirname, "tmp", "test.txt");
-		const readOptions  = { encoding: "utf-8", flag: "a" }
+		const readOptions  = { encoding: undefined, flag: "a" }
 		const result       = "file utility test."
 		const plus         = " write";
-		const writeOptions = { encoding: "utf-8", mode: 0o777, flag: "a" }
+		const writeOptions = { mode: 0o777, flag: "a" }
 
 		mock.expects("readFileSync").once().withArgs(targetPath, readOptions).returns(result);
 		mock.expects("writeFileSync").once().withArgs(targetPath, `${result}${plus}`);
@@ -43,8 +44,8 @@ suite('File Utility Test Suite', () => {
 		instance.write();
 		instance.write(writeOptions);
 
-		instance.content = null;
-		assert.strictEqual(instance.content,    null);
+		instance.content = "";
+		assert.strictEqual(instance.content,    "");
 		assert.strictEqual(instance.isPresent,  false);
 		assert.strictEqual(instance.toString(), "");
 		assert.strictEqual(instance.toBase64(), "");

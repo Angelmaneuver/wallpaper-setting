@@ -39,7 +39,7 @@ export class Wallpaper {
 	}
 
 	private checkIsInstall(): boolean {
-		const script =  new File(this.installPath, { encoding: "utf-8" }).toString().match(this.getScriptMatch());
+		const script =  new File(this.installPath).toString().match(this.getScriptMatch());
 
 		return script ? true : false;
 	}
@@ -83,17 +83,17 @@ export class Wallpaper {
 	}
 
 	public install(): void {
-		const editFile   = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath);
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.toString()) +
 			this.getWallpaperScript(this.settings.filePath.value, this.settings.opacity.validValue);
 
-		editFile.write({ encoding: "utf-8" });
+		editFile.write();
 	}
 
 	public installAsSlide(): void {
-		const editFile   = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath);
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.toString()) +
@@ -105,15 +105,15 @@ export class Wallpaper {
 				this.settings.slideEffectFadeIn.validValue
 			);
 
-		editFile.write({ encoding: "utf-8" });
+		editFile.write();
 	}
 
 	public uninstall(): void {
-		const editFile   = new File(this.installPath, { encoding: "utf-8" });
+		const editFile   = new File(this.installPath);
 
 		editFile.content = this.clearWallpaperScript(editFile.toString());
 
-		editFile.write({ encoding: "utf-8" });
+		editFile.write();
 	}
 
 	private getWallpaperScript(filePath: string, opacity: number): string {

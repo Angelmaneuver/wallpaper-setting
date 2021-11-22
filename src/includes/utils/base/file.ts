@@ -2,13 +2,13 @@ import * as path    from "path";
 import * as fs      from "fs";
 import { Optional } from "./optional";
 
-type FsOption     = { encoding?: string; flag?: string; };
+type FsOption     = { encoding?: null | undefined; flag?: string | undefined; }
 type Filter       = { name?: string, extension?: Array<string> };
 type SearchOption = { filter?: Filter; fullPath?:  boolean; recursive?: boolean; }
 
 export class File {
 	private _path:    string;
-	private _content: string | Buffer | null;
+	private _content: string | NodeJS.ArrayBufferView;
 
 	constructor(targetPath: string, options?: FsOption) {
 		if (typeof(targetPath) === "string" && targetPath.length > 0) {
@@ -27,11 +27,11 @@ export class File {
 		return File.getExtension(this._path);
 	}
 
-	get content(): string | Buffer | null {
+	get content(): string | NodeJS.ArrayBufferView {
 		return this._content;
 	}
 
-	set content(value: string | Buffer | null) {
+	set content(value: string | NodeJS.ArrayBufferView) {
 		this._content = value;
 	}
 
@@ -44,11 +44,19 @@ export class File {
 	}
 
 	public toString(): string {
-		return Optional.ofNullable(this._content?.toString()).orElseNonNullable("");
+		return this._content.toString();
 	}
 
 	public toBase64(): string {
-		return Optional.ofNullable(this._content?.toString("base64")).orElseNonNullable("");
+		const buffer = () => {
+			if (typeof this._content === "string") {
+				return Buffer.from(this._content);
+			} else {
+				return Buffer.from(this._content.buffer);
+			}
+		}
+
+		return buffer().toString("base64");
 	}
 
 	public static isWritable(paths: Array<string>): void {
