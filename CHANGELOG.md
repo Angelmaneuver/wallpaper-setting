@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.9
+ - Fixed a bug in version 1.66 where the background change no longer works on reload
+
 ## 0.5.8
  - Up-to-date the libraries used in development of this extension and fixed the source (No additional functions or fixes)
 
