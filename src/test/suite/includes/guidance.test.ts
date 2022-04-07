@@ -32,15 +32,6 @@ suite('Guidance Test Suite', async () => {
 		windowMock.expects("showInformationMessage").withArgs("Stub Info").once();
 		await testTarget.guidance(context);
 
-		guideFactoryStub.onThirdCall().callsFake(
-			(className: string, state: State, context: vscode.ExtensionContext) => {
-				state.reload = true;
-				return new StartMenuGuide(state, context);
-			}
-		);
-		commandMock.expects("executeCommand").once().withArgs("workbench.action.reloadWindow");
-		await testTarget.guidance(context);
-
 		const dirnameStub        = sinon.stub(path,                     "dirname");
 		dirnameStub.returns("");
 		accessSyncStub.reset();
@@ -49,12 +40,13 @@ suite('Guidance Test Suite', async () => {
 		await testTarget.guidance(context);
 
 		windowMock.verify();
+		windowMock.restore();
+
 		commandMock.verify();
+		commandMock.restore();
 
 		guideFactoryStub.restore();
 		multiStepInputStub.restore();
-		windowMock.restore();
-		commandMock.restore();
 
 		await testTarget.guidance(context);
 		assert.strictEqual(menuGuideStub.calledOnce, true);

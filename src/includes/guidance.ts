@@ -27,6 +27,17 @@ export async function guidance(context: ExtensionContext): Promise<void> {
 	}
 
 	if (state.reload) {
-		commands.executeCommand("workbench.action.reloadWindow");
+		const yes   = 'Yes'
+		const items = [yes, 'No']
+
+		window.showInformationMessage(
+			`VSCode must be restarted for the settings to take effect. Would you like to close this window and open a new one?`,
+			...items
+		).then(selectAction => {
+			if (selectAction === yes) {
+				commands.executeCommand('workbench.action.closeWindow');
+				commands.executeCommand('workbench.action.newWindow');
+			}
+		});
 	}
 }
