@@ -1,9 +1,7 @@
 import * as path from 'path';
 
-import {
-	downloadAndUnzipVSCode,
-	runTests
-} from '@vscode/test-electron';
+import { runTests }               from '@vscode/test-electron';
+// import { downloadAndUnzipVSCode } from '@vscode/test-electron';
 
 async function main() {
 	try {
@@ -16,10 +14,13 @@ async function main() {
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
 		// Download VS Code, unzip it and run the integration test
-		const vscodeExecutablePath = await downloadAndUnzipVSCode('1.62.1');
+		// const vscodeExecutablePath = await downloadAndUnzipVSCode();
+
+		// signal that the coverage data should be gathered
+		process.env['COVERAGE'] = process.argv.indexOf('--coverage') >= 0 ? '1' : '0';
 
 		await runTests({
-			vscodeExecutablePath:     vscodeExecutablePath,
+			// vscodeExecutablePath:     vscodeExecutablePath,
 			extensionDevelopmentPath: extensionDevelopmentPath,
 			extensionTestsPath:       extensionTestsPath,
 			launchArgs:               ["--disable-extensions"],
