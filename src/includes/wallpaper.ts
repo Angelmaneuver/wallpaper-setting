@@ -120,10 +120,11 @@ export class Wallpaper {
 		let result = "";
 
 		if (filePath && opacity) {
-			const image = new File(filePath);
+// 			const image = new File(filePath);
 			result      = formatByArray(
 				this.getScriptTemplate(opacity),
-				`document.body.style.backgroundImage='url("data:image/${image.extension};base64,${image.toBase64()}")';`
+// 				`document.body.style.backgroundImage='url("data:image/${image.extension};base64,${image.toBase64()}")';`
+				`document.body.style.backgroundImage='url("vscode-file://vscode-app/${filePath.replace(/\\/g, "/")}")';`
 			);
 		}
 
@@ -146,8 +147,9 @@ export class Wallpaper {
 			let temp      = `let images=new Array();`;
 
 			filePaths.forEach((filePath) => {
-				const image = new File(filePath);
-				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
+// 				const image = new File(filePath);
+// 				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
+				temp        += `images.push('url("vscode-file://vscode-app/${filePath.replace(/\\/g, "/")}")');`;
 			});
 
 			temp          += formatByArray(imageChangeScript, script1, script2);
