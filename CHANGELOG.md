@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.6.0
+ - Lightweight by bundle modules with webpack (No additional functions or fixes)
+
 ## 0.5.9
  - Fixed a bug in version 1.66 where the background change no longer works on reload
 

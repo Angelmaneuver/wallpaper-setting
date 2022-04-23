@@ -32,47 +32,45 @@ import {
 interface Constructable<T> extends Function { new (...args: Array<any>): T; }
 
 export abstract class GuideFactory {
-	private static guides: Array<Constructable<AbstractGuide>> = [];
+	private static guides: Record<string, Constructable<AbstractGuide>> = {};
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public static create(className: string, ...args: Array<any>): AbstractGuide {
-		if (this.guides.length === 0) {
+		if (0 === Object.keys(this.guides).length) {
 			this.init();
 		}
 
-		const classObject = this.guides.find(
-			(guide) => {
-				return guide.name === className;
-			}
-		);
+		const guideName = Object.keys(this.guides).find(guide => guide === className);
 
-		if (classObject) {
-			return new classObject(...args);
+		if (guideName) {
+			return new this.guides[guideName](...args);
 		} else {
 			throw new ReferenceError("Requested " + className + " class not found...");
 		}
 	}
 
 	private static init(): void {
-		this.guides.push(
-			StartMenuGuide,
-			BaseInputGuide,
-			BaseQuickPickGuide,
-			BaseConfirmGuide,
-			ImageFilePathGuide,
-			OpacityGuide,
-			SlideFilePathsGuide,
-			SlideIntervalGuide,
-			SlideRandomPlayGuide,
-			SelectSetupType,
-			SelectParameterType,
-			SelectFavoriteProcess,
-			SelectFavoriteOperationType,
-			RegisterFavoriteGuide,
-			UnRegisterFavoriteGuide,
-			LoadFavoriteGuide,
-			FavoriteRandomSetGuide,
-			FavoriteRandomSetFilterGuide
-		)
+		/* eslint-disable @typescript-eslint/naming-convention */
+		this.guides = {
+			StartMenuGuide:               StartMenuGuide,
+			BaseInputGuide:               BaseInputGuide,
+			BaseQuickPickGuide:           BaseQuickPickGuide,
+			BaseConfirmGuide:             BaseConfirmGuide,
+			ImageFilePathGuide:           ImageFilePathGuide,
+			OpacityGuide:                 OpacityGuide,
+			SlideFilePathsGuide:          SlideFilePathsGuide,
+			SlideIntervalGuide:           SlideIntervalGuide,
+			SlideRandomPlayGuide:         SlideRandomPlayGuide,
+			SelectSetupType:              SelectSetupType,
+			SelectParameterType:          SelectParameterType,
+			SelectFavoriteProcess:        SelectFavoriteProcess,
+			SelectFavoriteOperationType:  SelectFavoriteOperationType,
+			RegisterFavoriteGuide:        RegisterFavoriteGuide,
+			UnRegisterFavoriteGuide:      UnRegisterFavoriteGuide,
+			LoadFavoriteGuide:            LoadFavoriteGuide,
+			FavoriteRandomSetGuide:       FavoriteRandomSetGuide,
+			FavoriteRandomSetFilterGuide: FavoriteRandomSetFilterGuide
+		}
+		/* eslint-enable @typescript-eslint/naming-convention */
 	}
 }
