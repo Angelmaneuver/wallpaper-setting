@@ -42,6 +42,19 @@ suite('Guidance Test Suite', async () => {
 		windowMock.verify();
 		windowMock.restore();
 
+		const windowStub         = sinon.stub(vscode.window,            "showInformationMessage");
+		guideFactoryStub.onThirdCall().callsFake(
+			(className: string, state: State, context: vscode.ExtensionContext) => {
+				state.reload = true;
+				return new StartMenuGuide(state, context);
+			}
+		);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		windowStub.onFirstCall().resolves("No" as any as vscode.MessageItem);
+		await testTarget.guidance(context);
+
+		windowStub.restore();
+
 		commandMock.verify();
 		commandMock.restore();
 
