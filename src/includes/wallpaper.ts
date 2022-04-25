@@ -199,9 +199,9 @@ window.onload=()=>{`;
 			result += `i=choice(0,images.length-1);`;
 			result += `document.body.style.backgroundImage=images[i];after(i);`;
 		} else {
-			result += `let i=0;`;
-			result += `const choice=(min,max)=>{i++; return i===max?min:i;};`
+			result += `const choice=(min,max)=>{let idx=window.localStorage.getItem("WallpaperIndex");if(idx!==null){idx=parseInt(idx);if(idx<max){idx++;idx=(idx===max?min:idx);}else{idx=0}}else{idx=0;}window.localStorage.setItem('WallpaperIndex',idx);return idx;};`
 			result += `const after=(index)=>{return;};`;
+			result += `let i=choice(0,images.length-1);`;
 			result += `document.body.style.backgroundImage=images[i];`;
 		}
 
