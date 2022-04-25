@@ -1,4 +1,5 @@
 import * as path            from "path";
+import { env }              from "vscode";
 import { ExtensionSetting } from "./settings/extension";
 import { Wallpaper }        from "./wallpaper";
 import { Optional }         from "./utils/base/optional";
@@ -21,5 +22,5 @@ export function getInstance(setting: ExtensionSetting): Wallpaper {
 }
 
 function getEntryPoint(): string {
-	return path.dirname(Optional.ofNullable(require.main?.filename).orElseThrow(new URIError("No entry point found...")));
+	return path.join(Optional.ofNullable(env.appRoot).orElseThrow(new URIError("Entry point not found...")), "out");
 }

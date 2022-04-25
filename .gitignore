@@ -2,6 +2,7 @@
 node_modules/
 
 # ignore temporary compilation result file.
+dist/
 out/
 
 # ignore test result file.
