@@ -200,7 +200,7 @@ window.onload=()=>{`;
 			result += `document.body.style.backgroundImage=images[i];after(i);`;
 		} else {
 			result += `let realIndex=0;`
-			result += `const choice=(min,max)=>{let idx=window.localStorage.getItem("WallpaperIndex");console.log("min:"+min+" max:"+max+" idx:"+idx);if(idx!==null){idx=parseInt(idx);console.log("psrseInt:"+idx);if(idx>realIndex){realIndex=idx}else{idx=realIndex}console.log("realIndex:"+realIndex);if(idx<max){idx++;idx=(idx>max?min:idx)}else{console.log("Reset index to 0");idx=0}}else{console.log("Failed to get wallpaper index from local storage");idx=0}window.localStorage.setItem('WallpaperIndex',idx);realIndex=idx;console.log("SAVE min:"+min+" max:"+max+" idx:"+idx+" realIndex:"+realIndex);return idx};`
+			result += `const choice=(min,max)=>{let idx=window.localStorage.getItem("WallpaperIndex");if(idx!==null){idx=parseInt(idx);if(idx>realIndex){realIndex=idx}else{idx=realIndex}if(idx<max){idx++;idx=(idx>max?min:idx)}else{idx=0}}else{idx=0;}window.localStorage.setItem('WallpaperIndex',idx);realIndex=idx;return idx};`
 			result += `const after=(index)=>{return;};`;
 			result += `let i=choice(0,images.length-1);`;
 			result += `document.body.style.backgroundImage=images[i];`;
