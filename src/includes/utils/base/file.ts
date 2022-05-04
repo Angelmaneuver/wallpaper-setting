@@ -105,6 +105,14 @@ export class File {
 		return path.extname(targetPath).replace(".", "");
 	}
 
+	public static getFilesize(targetPath: string): number | boolean {
+		if (File.isFile(targetPath)) {
+			return (fs.statSync(targetPath)).size;
+		} else {
+			return false;
+		}
+	}
+
 	public static getChildrens(
 		targetPath: string,
 		options?:   SearchOption

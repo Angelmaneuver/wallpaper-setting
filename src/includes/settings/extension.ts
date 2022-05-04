@@ -32,7 +32,8 @@ export class ExtensionSetting extends SettingBase {
 		favoriteImageSet:        "favoriteWallpaperImageSet",
 		favoriteSlideSet:        "favoriteWallpaperSlideSet",
 		favoriteRandomSet:       "favoriteWallpaperRandomSet",
-		favoriteRandomSetFilter: "favoriteWallpaperRandomSetFilter"
+		favoriteRandomSetFilter: "favoriteWallpaperRandomSetFilter",
+		enableSync:              "enableSync",
 	};
 
 	private _items:               AbstractSettingItem[]       = [];

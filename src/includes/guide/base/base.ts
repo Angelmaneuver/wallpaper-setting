@@ -8,6 +8,7 @@ import {
 	AbstractGuide
 }                           from "./abc";
 import { ExtensionSetting } from "../../settings/extension";
+import { SettingSync }      from "../../settings/sync";
 import * as Constant        from "../../constant";
 import { File }             from "../../utils/base/file";
 import { Wallpaper }        from "../../wallpaper";
@@ -17,10 +18,11 @@ export interface State extends AbstractState {
 	context:      ExtensionContext,
 	installer:    Wallpaper,
 	settings:     ExtensionSetting,
-	message?:     string                  | undefined;
-	reload?:      boolean
+	sync:         SettingSync,
+	message?:     string                  | undefined,
+	reload?:      boolean,
 	prompt?:      string,
-	buttons?:     Array<QuickInputButton>
+	buttons?:     Array<QuickInputButton>,
 	placeholder?: string,
 	items?:       Array<QuickPickItem>,
 	activeItem?:  QuickPickItem,
@@ -78,6 +80,14 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 
 	protected get itemIds(): Record<string, string> {
 		return ExtensionSetting.propertyIds;
+	}
+
+	protected get sync(): SettingSync {
+		if (!this.state.sync) {
+			this.state.sync = SettingSync.getInstance(this.context);
+		}
+
+		return this.state.sync;
 	}
 
 	protected async inputStepAfter(): Promise<void> {

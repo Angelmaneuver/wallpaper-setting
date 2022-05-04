@@ -4,18 +4,20 @@ import * as fs              from "fs";
 import * as sinon           from "sinon";
 import * as testTarget      from "../../../includes/wallpaper";
 import { ExtensionSetting } from "../../../includes/settings/extension";
+import { ContextManager }   from "../../../includes/utils/base/context";
 import * as Constant        from "../../../includes/constant";
 import { Optional }         from "../../../includes/utils/base/optional";
 
 suite('Wallpaper Test Suite', async () => {
-	const installLocation = path.dirname(Optional.ofNullable(require.main?.filename).orElseThrow(new Error()));
-	const installFileName = "bootstrap-window.js";
-	const installFilePath = path.join(installLocation, installFileName);
-	const extensionKey    = "wallpaper-setting";
+	const installLocation  = path.dirname(Optional.ofNullable(require.main?.filename).orElseThrow(new Error()));
+	const installFileName  = "bootstrap-window.js";
+	const installFilePath  = path.join(installLocation, installFileName);
+	const extensionKey     = "wallpaper-setting";
 
 	test('isInstall', async () => {
 		const setting = new ExtensionSetting();
 		const fsStub  = sinon.stub(fs, "readFileSync");
+		const ctxStub = sinon.stub(ContextManager, "version").value("9.9.9");
 
 		fsStub.withArgs(installFilePath).returns(
 			"/*bootstrap-window.js - Data*/"
@@ -26,13 +28,14 @@ suite('Wallpaper Test Suite', async () => {
 		fsStub.withArgs(installFilePath).returns(
 `/* bootstrap-window.js - Data */
 /*${extensionKey}-start*/
-/*${extensionKey}.ver.${Constant.version}*/
+/*${extensionKey}.ver.${ContextManager.version}*/
 /*${extensionKey}-end*/`
 		);
 
 		instance      = new testTarget.Wallpaper(installLocation, installFileName, setting, extensionKey);
 		assert.strictEqual(instance.isInstall, true);
 		fsStub.restore();
+		ctxStub.restore();
 	}).timeout(30 * 1000);
 
 	test('isReady and isAutoSet', async () => {
@@ -81,14 +84,15 @@ suite('Wallpaper Test Suite', async () => {
 		fsStub.restore();
 	}).timeout(30 * 1000);
 
-	test('install', async () => {
+	test('install - Extension Setting', async () => {
+		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = 0.55;
 		const readData      = `test.png Data`;
 		const read2Base64   = `dGVzdC5wbmcgRGF0YQ==`;
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
-/*${extensionKey}.ver.${Constant.version}*/
+/*${extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
 /*${extensionKey}-end*/`;
 
@@ -113,6 +117,30 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		fsReaderStub.restore();
 		fsWriterMock.restore();
 		await setupInstance.uninstall();
+		ctxStub.restore();
+	}).timeout(30 * 1000);
+
+	test('install - Sync', async () => {
+		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
+		const opacity       = 0.55;
+		const readData      = `test.png Data`;
+		const writeData     = `/*bootstrap-window.js - Data*/
+/*${extensionKey}-start*/
+/*${extensionKey}.ver.${ContextManager.version}*/
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("${readData}")';}
+/*${extensionKey}-end*/`;
+
+		const fsReaderStub  = sinon.stub(fs, "readFileSync");
+		const fsWriterMock  = sinon.mock(fs);
+
+		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
+
+		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install(true, readData, opacity);
+
+		fsReaderStub.restore();
+		fsWriterMock.restore();
+		ctxStub.restore();
 	}).timeout(30 * 1000);
 
 	test('installAsSlide', async () => {
@@ -124,6 +152,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		const slideIntervalUnit = "Hour";
 		const fsReaderStub      = sinon.stub(fs, "readFileSync");
 		let   fsWriterMock      = sinon.mock(fs);
+		const ctxStub           = sinon.stub(ContextManager, "version").value("9.9.9");
 
 		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
 		fsReaderStub.withArgs(filePaths[0]).returns(`${readDatas[0]}`);
@@ -137,7 +166,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 
 		let   writeData         = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
-/*${extensionKey}.ver.${Constant.version}*/
+/*${extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{document.body.style.backgroundImage=imageData;});`;
@@ -160,7 +189,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		fsWriterMock            = sinon.mock(fs);
 		writeData               = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
-/*${extensionKey}.ver.${Constant.version}*/
+/*${extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;document.body.style.backgroundImage=imageData;await feedin(${opacity},0.01,50);});`;
@@ -176,15 +205,17 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
+		ctxStub.restore();
 		await setupInstance.uninstall();
 	}).timeout(30 * 1000);
 
 	test('uninstall', async () => {
+		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = 0.55;
 		const Data          = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
-/*${extensionKey}.ver.${Constant.version}*/
+/*${extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
 /*${extensionKey}-end*/`;
 
@@ -198,5 +229,6 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
+		ctxStub.restore();
 	}).timeout(30 * 1000);
 });

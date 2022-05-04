@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.0
+ - Added the Sync function to share wallpaper settings between multiple machines
+
 ## 0.6.0
  - Lightweight by bundle modules with webpack (No additional functions or fixes)
 

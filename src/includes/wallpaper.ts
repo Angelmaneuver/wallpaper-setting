@@ -1,5 +1,6 @@
 import * as path            from "path";
 import { ExtensionSetting } from "./settings/extension";
+import { ContextManager }   from "./utils/base/context";
 import * as Constant        from "./constant";
 import { formatByArray }    from "./utils/base/string";
 import { File }             from "./utils/base/file";
@@ -82,12 +83,27 @@ export class Wallpaper {
 		return this._isAutoSet;
 	}
 
-	public install(): void {
+	public install(fromSync?: boolean, syncData?: string, syncOpacity?: number): void {
 		const editFile   = new File(this.installPath);
+		let   image      = "";
+		let   opacity    = undefined;
+
+		if (
+			fromSync                                              &&
+			syncData    && syncData.length > 0                    &&
+			syncOpacity && syncOpacity >= Constant.maximumOpacity
+		) {
+			image        = syncData;
+			opacity      = syncOpacity;
+		} else if (this.settings.filePath.value) {
+			const file   = new File(this.settings.filePath.value,);
+			image        = `data:image/${file.extension};base64,${file.toBase64()}`
+			opacity      = this.settings.opacity.validValue;
+		}
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.toString()) +
-			this.getWallpaperScript(this.settings.filePath.value, this.settings.opacity.validValue);
+			this.getWallpaperScript(image, opacity);
 
 		editFile.write();
 	}
@@ -116,14 +132,13 @@ export class Wallpaper {
 		editFile.write();
 	}
 
-	private getWallpaperScript(filePath: string, opacity: number): string {
+	private getWallpaperScript(image: string, opacity: number): string {
 		let result = "";
 
-		if (filePath && opacity) {
-			const image = new File(filePath);
-			result      = formatByArray(
+		if (image && opacity) {
+			result = formatByArray(
 				this.getScriptTemplate(opacity),
-				`document.body.style.backgroundImage='url("data:image/${image.extension};base64,${image.toBase64()}")';`
+				`document.body.style.backgroundImage='url("${image}")';`
 			);
 		}
 
@@ -163,7 +178,7 @@ export class Wallpaper {
 	private getScriptTemplate(opacity: number): string {
 		let result = `
 /*${this.extensionKey}-start*/
-/*${this.extensionKey}.ver.${Constant.version}*/
+/*${this.extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{`;
 		result     += `if(document.querySelector("body > #process-list")){return;};`;
 		result     += `document.body.style.opacity=${opacity};`;

@@ -1,9 +1,9 @@
 import * as assert          from "assert";
 import * as sinon           from "sinon";
+import { env }              from "vscode";
 import * as testTarget      from "../../../includes/installer";
 import { Wallpaper }        from "../../../includes/wallpaper";
 import { ExtensionSetting } from "../../../includes/settings/extension";
-import { Optional }         from "../../../includes/utils/base/optional";
 
 suite('Installer Test Suite', async () => {
 	test('getInstance', async () => {
@@ -11,8 +11,7 @@ suite('Installer Test Suite', async () => {
 	});
 
 	test('getInstance - Entry Point Acquisition Error', async () => {
-		const stub = sinon.stub(new Optional(require.main?.filename), "orElseThrow");
-		stub.throws();
+		const stub = sinon.stub(env, "appRoot").throws();
 
 		try {
 			testTarget.getInstance(new ExtensionSetting());

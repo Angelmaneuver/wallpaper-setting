@@ -3,6 +3,7 @@ import {
 	commands,
 	ExtensionContext
 } from "vscode";
+import { ContextManager }    from "./utils/base/context";
 import { MultiStepInput }    from "./utils/multiStepInput";
 import { State }             from "./guide/base/base";
 import { GuideFactory }      from "./guide/factory/base";
@@ -13,6 +14,7 @@ export async function guidance(context: ExtensionContext): Promise<void> {
 
 	try {
 		Installer.isInstallable();
+		ContextManager.setContext(context);
 		const menu = GuideFactory.create("StartMenuGuide", state, context);
 		await MultiStepInput.run((input: MultiStepInput) => menu.start(input));
 	} catch (e) {

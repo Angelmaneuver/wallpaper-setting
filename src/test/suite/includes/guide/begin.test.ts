@@ -6,6 +6,7 @@ import { QuickPickItem, ExtensionContext } from "vscode";
 import { MultiStepInput }                  from "../../../../includes/utils/multiStepInput";
 import { State }                           from "../../../../includes/guide/base/base";
 import { ExtensionSetting }                from "../../../../includes/settings/extension";
+import { SettingSync }                     from "../../../../includes/settings/sync";
 import { VSCodePreset }                    from "../../../../includes/utils/base/vscodePreset"
 import { Wallpaper }                       from "../../../../includes/wallpaper";
 import * as WallpaperSelecter              from "../../../../includes/guide/select/wallpaper";
@@ -13,6 +14,7 @@ import { SelectParameterType }             from "../../../../includes/guide/sele
 import { SelectFavoriteProcess }           from "../../../../includes/guide/select/favorite";
 import { ImageFilePathGuide }              from "../../../../includes/guide/image";
 import { SlideFilePathsGuide }             from "../../../../includes/guide/slide";
+import { SelectSyncProcess }               from "../../../../includes/guide/select/sync";
 
 suite('Guide - Begin Test Suite', async () => {
 	const itemchecker = (assumption: Array<QuickPickItem>, result: Array<QuickPickItem>) => {
@@ -38,6 +40,7 @@ suite('Guide - Begin Test Suite', async () => {
 		Favorite:     VSCodePreset.create(VSCodePreset.Icons.repo,         "Favorite",    "Configure settings related to favorites."),
 		Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
 		SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,       "Setup Slide", "Set an image slide to wallpaper."),
+		Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,         "Sync",        "Configure settings related to Sync."),
 		Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,     "Uninstall",   "Remove all parameters for this extension."),
 		Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
 		Yes:          VSCodePreset.create(VSCodePreset.Icons.check,        "Yes",         "Uninstall."),
@@ -49,13 +52,25 @@ suite('Guide - Begin Test Suite', async () => {
 		const isInstallStub           = sinon.stub(Wallpaper.prototype, "isInstall");
 		const isReadyStub             = sinon.stub(Wallpaper.prototype, "isReady");
 		const isFavoriteRegisterdStub = sinon.stub(ExtensionSetting.prototype, "isFavoriteRegisterd");
-		const state                   = { title: "Test Suite", resultSet: {} } as State;
-		const instance                = new testTarget.StartMenuGuide(state);
+		let   state                   = { title: "Test Suite", resultSet: {} } as State;
+		const setting                 = new ExtensionSetting();
+		let   instance                = new testTarget.StartMenuGuide(state);
 
 		isInstallStub.get(() => false);
 		isReadyStub.get(() => undefined);
 		isFavoriteRegisterdStub.get(() => undefined);
 		instance.init(); await MultiStepInput.run((input: MultiStepInput) => instance.show(input));
+
+		await setting.set(ExtensionSetting.propertyIds.enableSync, true);
+		isInstallStub.get(() => false);
+		isReadyStub.get(() => undefined);
+		isFavoriteRegisterdStub.get(() => undefined);
+		state    = { title: "Test Suite", resultSet: {} } as State;
+		instance = new testTarget.StartMenuGuide(state);
+		instance.init(); await MultiStepInput.run((input: MultiStepInput) => instance.show(input));
+		await setting.set(ExtensionSetting.propertyIds.enableSync, false);
+		state    = { title: "Test Suite", resultSet: {} } as State;
+		instance = new testTarget.StartMenuGuide(state);
 
 		isInstallStub.get(() => false);
 		isReadyStub.get(() => { return { image: true, slide: true }});
@@ -74,16 +89,20 @@ suite('Guide - Begin Test Suite', async () => {
 			pickStub.getCall(0).args[0].items
 		);
 		itemchecker(
-			[items.Set, items.Setting, items.Favorite, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			[items.Setup, items.SetUpAsSlide, items.Sync, items.Uninstall, items.Exit],
 			pickStub.getCall(1).args[0].items
 		);
 		itemchecker(
-			[items.Reset, items.Crear, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			[items.Set, items.Setting, items.Favorite, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
 			pickStub.getCall(2).args[0].items
 		);
 		itemchecker(
-			[items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			[items.Reset, items.Crear, items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
 			pickStub.getCall(3).args[0].items
+		);
+		itemchecker(
+			[items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit],
+			pickStub.getCall(4).args[0].items
 		);
 
 		pickStub.restore();
@@ -96,12 +115,16 @@ suite('Guide - Begin Test Suite', async () => {
 		const stateCreater          = () => ({ title: "Test Suite", resultSet: {} } as State);
 		const pickStub              = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
 		const wallpaperSelecterStub = sinon.stub(WallpaperSelecter,               "delegation2Transition");
+		const sync                  = sinon.createStubInstance(SettingSync);
+		const syncUninstallStub     = sinon.stub(SettingSync.prototype,           "uninstall");
 		const wallpaperStub         = sinon.stub(Wallpaper.prototype,             "uninstall");
 		const selectParameterStub   = sinon.stub(SelectParameterType.prototype,   "start");
 		const selectFavoriteStub    = sinon.stub(SelectFavoriteProcess.prototype, "start");
 		const imageStub             = sinon.stub(ImageFilePathGuide.prototype,    "start");
 		const slideStub             = sinon.stub(SlideFilePathsGuide.prototype,   "start");
 		const settingStub           = sinon.stub(ExtensionSetting.prototype,      "uninstall");
+		const syncStartStub         = sinon.stub(SelectSyncProcess.prototype,     "start");
+		const syncInitStub          = sinon.stub(SelectSyncProcess.prototype,     "init");
 		const context               = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 		let   state                 = stateCreater();
 
@@ -128,6 +151,9 @@ suite('Guide - Begin Test Suite', async () => {
 		pickStub.resolves(items.SetUpAsSlide);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
+		pickStub.resolves(items.Sync);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
+
 		pickStub.reset();
 		pickStub.onCall(0).resolves(items.Uninstall)
 				.onCall(1).resolves(items.No)
@@ -137,6 +163,7 @@ suite('Guide - Begin Test Suite', async () => {
 		pickStub.reset();
 		pickStub.onCall(0).resolves(items.Uninstall)
 				.onCall(1).resolves(items.Yes)
+		state["sync"] = sync;
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(state, context).start(input));
 
 		pickStub.reset();
@@ -150,14 +177,18 @@ suite('Guide - Begin Test Suite', async () => {
 		assert.strictEqual(imageStub.calledOnce,              true);
 		assert.strictEqual(slideStub.calledOnce,              true);
 		assert.strictEqual(settingStub.calledOnce,            true);
+		assert.strictEqual(syncStartStub.calledOnce,          true);
 
 		pickStub.restore();
+		syncUninstallStub.restore();
 		wallpaperStub.restore();
 		selectParameterStub.restore();
 		selectFavoriteStub.restore();
 		imageStub.restore();
 		slideStub.restore();
 		settingStub.restore();
+		syncInitStub.restore();
+		syncStartStub.restore();
 		wallpaperSelecterStub.restore();
 	});
 });

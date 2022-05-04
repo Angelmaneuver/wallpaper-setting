@@ -27,6 +27,15 @@ import {
 	FavoriteRandomSetGuide,
 	FavoriteRandomSetFilterGuide
 } from "../favorite";
+import {
+	SelectSyncProcess
+} from "../select/sync";
+import {
+	SyncImageFilePathGuide,
+	SyncPasswordInputGuide,
+	SyncEncryptSaltInputGuide,
+	SyncDecryptSaltInputGuide,
+} from "../sync";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Constructable<T> extends Function { new (...args: Array<any>): T; }
@@ -52,24 +61,29 @@ export abstract class GuideFactory {
 	private static init(): void {
 		/* eslint-disable @typescript-eslint/naming-convention */
 		this.guides = {
-			StartMenuGuide:               StartMenuGuide,
-			BaseInputGuide:               BaseInputGuide,
-			BaseQuickPickGuide:           BaseQuickPickGuide,
-			BaseConfirmGuide:             BaseConfirmGuide,
-			ImageFilePathGuide:           ImageFilePathGuide,
-			OpacityGuide:                 OpacityGuide,
-			SlideFilePathsGuide:          SlideFilePathsGuide,
-			SlideIntervalGuide:           SlideIntervalGuide,
-			SlideRandomPlayGuide:         SlideRandomPlayGuide,
-			SelectSetupType:              SelectSetupType,
-			SelectParameterType:          SelectParameterType,
-			SelectFavoriteProcess:        SelectFavoriteProcess,
-			SelectFavoriteOperationType:  SelectFavoriteOperationType,
-			RegisterFavoriteGuide:        RegisterFavoriteGuide,
-			UnRegisterFavoriteGuide:      UnRegisterFavoriteGuide,
-			LoadFavoriteGuide:            LoadFavoriteGuide,
-			FavoriteRandomSetGuide:       FavoriteRandomSetGuide,
-			FavoriteRandomSetFilterGuide: FavoriteRandomSetFilterGuide
+			StartMenuGuide:                StartMenuGuide,
+			BaseInputGuide:                BaseInputGuide,
+			BaseQuickPickGuide:            BaseQuickPickGuide,
+			BaseConfirmGuide:              BaseConfirmGuide,
+			ImageFilePathGuide:            ImageFilePathGuide,
+			OpacityGuide:                  OpacityGuide,
+			SlideFilePathsGuide:           SlideFilePathsGuide,
+			SlideIntervalGuide:            SlideIntervalGuide,
+			SlideRandomPlayGuide:          SlideRandomPlayGuide,
+			SelectSetupType:               SelectSetupType,
+			SelectParameterType:           SelectParameterType,
+			SelectFavoriteProcess:         SelectFavoriteProcess,
+			SelectFavoriteOperationType:   SelectFavoriteOperationType,
+			RegisterFavoriteGuide:         RegisterFavoriteGuide,
+			UnRegisterFavoriteGuide:       UnRegisterFavoriteGuide,
+			LoadFavoriteGuide:             LoadFavoriteGuide,
+			FavoriteRandomSetGuide:        FavoriteRandomSetGuide,
+			FavoriteRandomSetFilterGuide:  FavoriteRandomSetFilterGuide,
+			SelectSyncProcess:             SelectSyncProcess,
+			SyncImageFilePathGuide:        SyncImageFilePathGuide,
+			SyncPasswordInputGuide:        SyncPasswordInputGuide,
+			SyncEncryptSaltInputGuide:     SyncEncryptSaltInputGuide,
+			SyncDecryptSaltInputGuide:     SyncDecryptSaltInputGuide,
 		}
 		/* eslint-enable @typescript-eslint/naming-convention */
 	}

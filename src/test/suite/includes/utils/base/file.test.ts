@@ -127,6 +127,28 @@ suite('File Utility Test Suite', () => {
 		assert.strictEqual(testTarget.File.getExtension(targetPath2), "");
 	});
 
+	test('getFilesize', () => {
+		const fsMock      = sinon.mock(fs);
+		const fsStats     = new fs.Stats();
+		const fsStatsMock = sinon.mock(fsStats);
+		const extension   = "txt;"
+		const targetPath  = path.join(__dirname, "tmp", `test.${extension}`);
+
+		fsStats.size = 1024;
+
+		fsMock.expects("statSync").thrice().withArgs(targetPath).returns(fsStats);
+		fsStatsMock.expects("isFile").once().returns(false);
+		fsStatsMock.expects("isFile").once().returns(true);
+
+		assert.strictEqual(testTarget.File.getFilesize(targetPath), false);
+		assert.strictEqual(testTarget.File.getFilesize(targetPath), 1024);
+
+		fsMock.verify();
+		fsStatsMock.verify();
+		fsMock.restore();
+		fsStatsMock.restore();
+	});
+
 	test('getChildrens', () => {
 		const rootDir     = path.join(__dirname, "tmp");
 		const extension1  = `txt`;

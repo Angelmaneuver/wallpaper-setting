@@ -1,7 +1,6 @@
 import { QuickPickItem } from "vscode";
 import { VSCodePreset }  from "./utils/base/vscodePreset";
 
-export const version    = "0.6.0";
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
 	let items: Array<QuickPickItem> = [];
@@ -46,3 +45,5 @@ export const favoriteRandomSetFilter                  = [
 ].concat(
 	itemsCreat(ItemType.Wallpaper, { item1:  "Images only.", item2:  "Slides only.", return: "Return without saving any changes." })
 );
+export const syncImageSize                            = 500 * 1024;
+export const syncImageSize4Display                    = "500KB";

@@ -1,4 +1,5 @@
 import { AbstractQuickPickSelectGuide } from "./base/pick";
+import { ExtensionSetting }             from "../settings/extension";
 import { VSCodePreset }                 from "../utils/base/vscodePreset";
 import * as Wallpaper                   from "./select/wallpaper";
 import * as Slide                       from "./slide";
@@ -11,6 +12,7 @@ const items = {
 	Favorite:     VSCodePreset.create(VSCodePreset.Icons.repo,         "Favorite",    "Configure settings related to favorites."),
 	Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
 	SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,       "Setup Slide", "Set an image slide to wallpaper."),
+	Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,         "Sync",        "Configure settings related to Sync."),
 	Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,     "Uninstall",   "Remove all parameters for this extension."),
 	Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
 };
@@ -22,11 +24,13 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 		this.placeholder   = "Select the item you want to do.";
 		this.items         =
 			this.items
-			.concat(!this.installer.isInstall && this.installer.isReady ? [items.Set]                : [])
-			.concat(this.installer.isInstall                            ? [items.Reset, items.Crear] : [])
-			.concat(this.installer.isReady                              ? [items.Setting]            : [])
-			.concat(this.installer.isReady                              ? [items.Favorite]           : [])
-			.concat([items.Setup, items.SetUpAsSlide, items.Uninstall, items.Exit]);
+			.concat(!this.installer.isInstall && this.installer.isReady                       ? [items.Set]                : [])
+			.concat(this.installer.isInstall                                                  ? [items.Reset, items.Crear] : [])
+			.concat(this.installer.isReady                                                    ? [items.Setting]            : [])
+			.concat(this.installer.isReady                                                    ? [items.Favorite]           : [])
+			.concat([items.Setup, items.SetUpAsSlide])
+			.concat(this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]               : [])
+			.concat([items.Uninstall, items.Exit]);
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
@@ -44,6 +48,8 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 				return this.setup();
 			case items.SetUpAsSlide.label:
 				return this.setupAsSlide();
+			case items.Sync.label:
+				return async () => { this.setNextSteps([{ key: "SelectSyncProcess",     state: this.createBaseState(" - Sync",                "sync", 0) }]); };
 			case items.Uninstall.label:
 				return this.uninstall();
 			default:
@@ -82,7 +88,7 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 				state: { title: this.title },
 				args:  [
 					{ yes: "Uninstall.", no: "Back to previous." },
-					( async () => { this.installer.uninstall(); this.state.reload = true; await this.settings.uninstall(); } )
+					( async () => { this.installer.uninstall(); this.state.reload = true; await this.settings.uninstall(); await this.sync.uninstall(); } )
 				]
 			}]);
 		}
