@@ -124,6 +124,7 @@ If you try to share an image file over MB (maybe even KB) with Settings Sync, **
 
 this is the reason why it is disabled by default and why limit is set.
 
+### About image data to be uploaded
 The Base64 string uploaded to Settings Sync is encrypted in AES256 CTR mode.
 
 Therefore, there is no fear of prying eye.
