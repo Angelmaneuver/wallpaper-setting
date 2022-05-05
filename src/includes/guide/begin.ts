@@ -1,3 +1,4 @@
+import { Guide }                        from "./base/abc";
 import { AbstractQuickPickSelectGuide } from "./base/pick";
 import { ExtensionSetting }             from "../settings/extension";
 import { VSCodePreset }                 from "../utils/base/vscodePreset";
@@ -41,15 +42,15 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 			case items.Crear.label:
 				return async () => { this.installer.uninstall(); this.state.reload = true; };
 			case items.Setting.label:
-				return async () => { this.setNextSteps([{ key: "SelectParameterType",   state: this.createBaseState(" - Individual Settings", "setting",  0) }]); };
+				return async () => { this.setNextSteps([this.getGuideParameter("SelectParameterType",   " - Individual Settings", "setting",  0)]); };
 			case items.Favorite.label:
-				return async () => { this.setNextSteps([{ key: "SelectFavoriteProcess", state: this.createBaseState(" - Favorite Settings",   "favorite", 0) }]); };
+				return async () => { this.setNextSteps([this.getGuideParameter("SelectFavoriteProcess", " - Favorite Settings",   "favorite", 0)]); };
 			case items.Setup.label:
 				return this.setup();
 			case items.SetUpAsSlide.label:
 				return this.setupAsSlide();
 			case items.Sync.label:
-				return async () => { this.setNextSteps([{ key: "SelectSyncProcess",     state: this.createBaseState(" - Sync",                "sync", 0) }]); };
+				return async () => { this.setNextSteps([this.getGuideParameter("SelectSyncProcess",     " - Sync",                "sync",     0)]); };
 			case items.Uninstall.label:
 				return this.uninstall();
 			default:
@@ -91,6 +92,19 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 					( async () => { this.installer.uninstall(); this.state.reload = true; await this.settings.uninstall(); await this.sync.uninstall(); } )
 				]
 			}]);
+		}
+	}
+
+	private getGuideParameter(
+		key:             string,
+		additionalTitle: string,
+		guideGroupId:    string,
+		totalStep?:      number,
+		itemId?:         string
+	): Guide {
+		return {
+			key:   key,
+			state: this.createBaseState(additionalTitle, guideGroupId, totalStep, itemId)
 		}
 	}
 }
