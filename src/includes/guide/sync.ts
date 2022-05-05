@@ -69,17 +69,18 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 	}
 }
 
-export class SyncEncryptSaltInputGuide extends BaseInputGuide {
+export class BaseSyncSaltInputGuide extends BaseInputGuide {
 	constructor(
 		state: State,
 	) {
 		super(state);
 
 		this.itemId         = "salt";
-		this.prompt         = "Please note the displayed salt or enter the salt.";
 		this.state.validate = BaseValidator.validateRequired;
 	}
+}
 
+export class SyncEncryptSaltInputGuide extends BaseSyncSaltInputGuide {
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
 		this.setResultSet(Encrypt.randomBytes(16).toString('base64'));
 
@@ -109,19 +110,9 @@ export class SyncEncryptSaltInputGuide extends BaseInputGuide {
 	}
 }
 
-export class SyncDecryptSaltInputGuide extends BaseInputGuide {
+export class SyncDecryptSaltInputGuide extends BaseSyncSaltInputGuide {
 	private data:    string | undefined = undefined;
 	private opacity: number | undefined = undefined;
-
-	constructor(
-		state: State,
-	) {
-		super(state);
-
-		this.itemId         = "salt";
-		this.prompt         = "Enter the salt used to decrypt the image data.";
-		this.state.validate = BaseValidator.validateRequired;
-	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
 		do {

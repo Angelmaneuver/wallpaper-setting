@@ -44,10 +44,10 @@ export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
 			const state = this.createBaseState(" - Upload", "upload", 4);
 
 			this.setNextSteps([
-				{ key: "SyncImageFilePathGuide",   state: state },
+				{ key: "SyncImageFilePathGuide",    state: state },
 				{ key: "OpacityGuide" },
 				this.getSyncPasswordInputGuide({ prompt: "Enter the password used to encrypt the image data." }),
-				{ key: "SyncEncryptSaltInputGuide" },
+				{ key: "SyncEncryptSaltInputGuide", state: { prompt: "Please note the displayed salt or enter the salt." }},
 			]);
 		}
 	}
@@ -63,7 +63,7 @@ export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
 						{ prompt: "Enter the password used to decrypt the image data." }
 					)
 				),
-				{ key: "SyncDecryptSaltInputGuide" },
+				{ key: "SyncDecryptSaltInputGuide", state: { prompt: "Enter the salt used to decrypt the image data." } as Partial<State>},
 			]);
 		}
 	}
