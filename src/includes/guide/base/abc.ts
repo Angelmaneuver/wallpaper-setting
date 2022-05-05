@@ -18,7 +18,7 @@ export interface AbstractState{
 	resultSet:     Record<string, unknown>,
 }
 
-interface Guide{ key: string, state?: Partial<AbstractState>, args?: Array<unknown>}
+export interface Guide{ key: string, state?: Partial<AbstractState>, args?: Array<unknown>}
 
 const initialFields = [
 	"guideGroupId", "itemId", "title", "step", "totalSteps", "initailValue", "inputResult", "validate", "shouldResume"

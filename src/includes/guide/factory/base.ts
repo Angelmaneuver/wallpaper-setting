@@ -32,7 +32,6 @@ import {
 } from "../select/sync";
 import {
 	SyncImageFilePathGuide,
-	SyncPasswordInputGuide,
 	SyncEncryptSaltInputGuide,
 	SyncDecryptSaltInputGuide,
 } from "../sync";
@@ -81,7 +80,6 @@ export abstract class GuideFactory {
 			FavoriteRandomSetFilterGuide:  FavoriteRandomSetFilterGuide,
 			SelectSyncProcess:             SelectSyncProcess,
 			SyncImageFilePathGuide:        SyncImageFilePathGuide,
-			SyncPasswordInputGuide:        SyncPasswordInputGuide,
 			SyncEncryptSaltInputGuide:     SyncEncryptSaltInputGuide,
 			SyncDecryptSaltInputGuide:     SyncDecryptSaltInputGuide,
 		}

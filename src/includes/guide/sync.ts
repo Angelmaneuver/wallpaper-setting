@@ -69,17 +69,6 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 	}
 }
 
-export class SyncPasswordInputGuide extends BaseInputGuide {
-	constructor(
-		state: State,
-	) {
-		super(state);
-
-		this.itemId         = "password";
-		this.state.validate = BaseValidator.validateRequired;
-	}
-}
-
 export class SyncEncryptSaltInputGuide extends BaseInputGuide {
 	constructor(
 		state: State,

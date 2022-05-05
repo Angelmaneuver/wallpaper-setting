@@ -1,5 +1,8 @@
+import { Guide }                        from "../base/abc";
+import { State }                        from "../base/base";
 import { AbstractQuickPickSelectGuide } from "../base/pick";
 import { QuickPickItem }                from "vscode";
+import { BaseValidator }                from "../validator/base";
 import { VSCodePreset }                 from "../../utils/base/vscodePreset";
 
 export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
@@ -43,7 +46,7 @@ export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
 			this.setNextSteps([
 				{ key: "SyncImageFilePathGuide",   state: state },
 				{ key: "OpacityGuide" },
-				{ key: "SyncPasswordInputGuide",   state: { prompt: "Enter the password used to encrypt the image data." }},
+				this.getSyncPasswordInputGuide({ prompt: "Enter the password used to encrypt the image data." }),
 				{ key: "SyncEncryptSaltInputGuide" },
 			]);
 		}
@@ -54,7 +57,12 @@ export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
 			const state = this.createBaseState(" - Download", "download", 2);
 
 			this.setNextSteps([
-				{ key: "SyncPasswordInputGuide",   state: Object.assign(state, { prompt: "Enter the password used to encrypt the image data." })},
+				this.getSyncPasswordInputGuide(
+					Object.assign(
+						state,
+						{ prompt: "Enter the password used to decrypt the image data." }
+					)
+				),
 				{ key: "SyncDecryptSaltInputGuide" },
 			]);
 		}
@@ -72,5 +80,15 @@ export class SelectSyncProcess extends AbstractQuickPickSelectGuide {
 				]
 			}]);
 		}
+	}
+
+	private getSyncPasswordInputGuide(state: Partial<State>): Guide {
+		return {
+			key:   "BaseInputGuide",
+			state: Object.assign(
+				state,
+				{ itemId: "password", validate: BaseValidator.validateRequired }
+			)
+		};
 	}
 }
