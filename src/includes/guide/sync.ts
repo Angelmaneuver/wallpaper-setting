@@ -11,6 +11,7 @@ import {
 }                           from "./base/input";
 import { BaseValidator }    from "./validator/base";
 import { File }             from "../utils/base/file";
+import { Optional }         from "../utils/base/optional";
 import * as Encrypt         from "../utils/base/encrypt";
 import * as Constant        from "../constant";
 
@@ -97,10 +98,12 @@ export class SyncEncryptSaltInputGuide extends BaseInputGuide {
 	}
 
 	protected async lastInputStepExecute(): Promise<void> {
-		const [iv, data] = this.getSyncData;
+		const [iv, data]   = this.getSyncData;
+		const inputOpacity = Optional.ofNullable(this.guideGroupResultSet[this.itemIds.opacity]).orElseNonNullable("") as string;
+		const opacity      = inputOpacity ? parseFloat(inputOpacity) : 0.75
 
 		await this.sync.setData(iv.toString("base64"), data.toString("base64"));
-		await this.sync.setOpacity(parseFloat(this.guideGroupResultSet[this.itemIds.opacity] as string));
+		await this.sync.setOpacity(opacity);
 
 		this.state.message = "Wallpaper settings uploaded!"
 	}
