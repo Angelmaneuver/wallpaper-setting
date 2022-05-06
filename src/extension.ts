@@ -1,6 +1,7 @@
 import { commands, ExtensionContext } from "vscode";
 import { guidance }                   from "./includes/guidance";
 import * as Favorite                  from "./includes/favorite";
+import { ContextManager }             from "./includes/utils/base/context";
 
 export function activate(context: ExtensionContext): void {
 	context.subscriptions.push(
@@ -8,6 +9,8 @@ export function activate(context: ExtensionContext): void {
 			guidance(context);
 		})
 	);
+
+	ContextManager.setContext(context);
 
 	Favorite.randomSet();
 }

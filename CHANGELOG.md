@@ -1,7 +1,10 @@
 # Change Log
 
+## 0.7.2
+ - Fixed a bug that prevented the function to set at random from favorites at start up working
+
 ## 0.7.1
- - Fixed a bug that caused an anomaly in downloading when uploading with a blank input for opacity used for sync.
+ - Fixed a bug that caused an anomaly in downloading when uploading with a blank input for opacity used for sync
 
 ## 0.7.0
  - Added the Sync function to share wallpaper settings between multiple machines
