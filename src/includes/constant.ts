@@ -27,6 +27,7 @@ export const itemsCreat = (type: number, description: { item1: string, item2: st
 export const wallpaperType: { [key: string]: number } = { Image: 0, Slide: 1 };
 export const applyImageFile                           = ["png", "jpg", "jpeg", "gif", "webp"];
 export const maximumOpacity                           = 0.5;
+export const maximumOpacityWithAdvancedMode           = 0;
 export const minimumOpacity                           = 1;
 export const minimumSlideInterval                     = 0.1;
 export const slideIntervalUnit                        = ["Hour", "Minute", "Second", "MilliSecond"].map((label) => ({ label }));

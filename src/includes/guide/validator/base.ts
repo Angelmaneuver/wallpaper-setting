@@ -1,10 +1,11 @@
 import { File }      from "../../utils/base/file";
-import * as Constant from "../../constant";
 import { Optional }  from "../../utils/base/optional";
 
 export class BaseValidator {
+	public static filters: Array<string> | undefined = undefined;
+
 	public static async validateFileExist(filePath: string): Promise<string | undefined> {
-		if (!File.isFile(filePath, Constant.applyImageFile)) {
+		if (!File.isFile(filePath, BaseValidator.filters)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
 				resolve("Invalid path.");

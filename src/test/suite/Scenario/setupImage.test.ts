@@ -10,12 +10,12 @@ import { VSCodePreset }     from "../../../includes/utils/base/vscodePreset";
 import { Wallpaper }        from "../../../includes/wallpaper";
 
 suite('Scenario - Setup Image Test Suite', async () => {
-	const items = {
+	const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
+	const items         = {
 		Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
 	};
 
 	test('Begin -> Image -> Opacity', async () => {
-		const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = "0.55";
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
@@ -33,6 +33,33 @@ suite('Scenario - Setup Image Test Suite', async () => {
 		assert.strictEqual(setting.getItemValue(ExtensionSetting.propertyIds.opacity),  Number(opacity));
 		assert.strictEqual(pickStub.calledOnce,                                         true);
 		assert.strictEqual(inputStub.calledTwice,                                       true);
+		assert.strictEqual(wallpaperStub.calledOnce,                                    true);
+
+		inputStub.restore();
+		pickStub.restore();
+		wallpaperStub.restore();
+
+		await setting.uninstall();
+	}).timeout(30 * 1000);
+
+	test('Begin -> Image - Advanced Mode', async () => {
+		const filePath      = path.join(__dirname, "testDir", "test.png");
+		const opacity       = "0.75";
+		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
+		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
+		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "install");
+		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
+
+		await new ExtensionSetting().set(ExtensionSetting.propertyIds.advancedMode, true);
+
+		pickStub.resolves(items.Setup);
+		inputStub.onFirstCall().resolves(filePath);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(stateCreater(), context).start(input));
+
+		const setting       = new ExtensionSetting();
+		assert.strictEqual(setting.getItemValue(ExtensionSetting.propertyIds.filePath), filePath);
+		assert.strictEqual(setting.getItemValue(ExtensionSetting.propertyIds.opacity),  Number(opacity));
+		assert.strictEqual(pickStub.calledOnce,                                         true);
 		assert.strictEqual(wallpaperStub.calledOnce,                                    true);
 
 		inputStub.restore();

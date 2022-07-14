@@ -1,21 +1,23 @@
 import { Guide }                        from "./base/abc";
 import { AbstractQuickPickSelectGuide } from "./base/pick";
 import { ExtensionSetting }             from "../settings/extension";
+import { WorkbenchSetting }             from "../settings/workbench";
 import { VSCodePreset }                 from "../utils/base/vscodePreset";
 import * as Wallpaper                   from "./select/wallpaper";
 import * as Slide                       from "./slide";
 
 const items = {
-	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
-	Reset:        VSCodePreset.create(VSCodePreset.Icons.debugRerun,   "Reset",       "Reset wallpaper with current settings."),
-	Crear:        VSCodePreset.create(VSCodePreset.Icons.debugStop,    "Clear",       "Erase the wallpaper."),
-	Setting:      VSCodePreset.create(VSCodePreset.Icons.settingsGear, "Setting",     "Set Parameters individually."),
-	Favorite:     VSCodePreset.create(VSCodePreset.Icons.repo,         "Favorite",    "Configure settings related to favorites."),
-	Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
-	SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,       "Setup Slide", "Set an image slide to wallpaper."),
-	Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,         "Sync",        "Configure settings related to Sync."),
-	Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,     "Uninstall",   "Remove all parameters for this extension."),
-	Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
+	Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,      "Set",         "Set wallpaper with current settings."),
+	Reset:        VSCodePreset.create(VSCodePreset.Icons.debugRerun,      "Reset",       "Reset wallpaper with current settings."),
+	Crear:        VSCodePreset.create(VSCodePreset.Icons.debugStop,       "Clear",       "Erase the wallpaper."),
+	Setting:      VSCodePreset.create(VSCodePreset.Icons.settingsGear,    "Setting",     "Set Parameters individually."),
+	Favorite:     VSCodePreset.create(VSCodePreset.Icons.repo,            "Favorite",    "Configure settings related to favorites."),
+	Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,       "Setup Image", "Set an image to wallpaper."),
+	SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,          "Setup Slide", "Set an image slide to wallpaper."),
+	Optimize:     VSCodePreset.create(VSCodePreset.Icons.desktopDownload, "Optimize",    "Optimize the color theme you are using."),
+	Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,            "Sync",        "Configure settings related to Sync."),
+	Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,        "Uninstall",   "Remove all parameters for this extension."),
+	Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,         "Exit",        "Exit without saving any changes."),
 };
 
 export class StartMenuGuide extends AbstractQuickPickSelectGuide {
@@ -25,12 +27,13 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 		this.placeholder   = "Select the item you want to do.";
 		this.items         =
 			this.items
-			.concat(!this.installer.isInstall && this.installer.isReady                       ? [items.Set]                : [])
-			.concat(this.installer.isInstall                                                  ? [items.Reset, items.Crear] : [])
-			.concat(this.installer.isReady                                                    ? [items.Setting]            : [])
-			.concat(this.installer.isReady                                                    ? [items.Favorite]           : [])
+			.concat(!this.installer.isInstall && this.installer.isReady                         ? [items.Set]                : [])
+			.concat(this.installer.isInstall                                                    ? [items.Reset, items.Crear] : [])
+			.concat(this.installer.isReady                                                      ? [items.Setting]            : [])
+			.concat(this.installer.isReady                                                      ? [items.Favorite]           : [])
 			.concat([items.Setup, items.SetUpAsSlide])
-			.concat(this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]               : [])
+			.concat(this.settings.getItem(ExtensionSetting.propertyIds.advancedMode).validValue ? [items.Optimize]           : [])
+			.concat(this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue   ? [items.Sync]               : [])
 			.concat([items.Uninstall, items.Exit]);
 	}
 
@@ -49,6 +52,8 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 				return this.setup();
 			case items.SetUpAsSlide.label:
 				return this.setupAsSlide();
+			case items.Optimize.label:
+				return this.optimize();
 			case items.Sync.label:
 				return async () => { this.setNextSteps([this.getGuideParameter("SelectSyncProcess",     " - Sync",                "sync",     0)]); };
 			case items.Uninstall.label:
@@ -60,24 +65,54 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 
 	private setup(): () => Promise<void> {
 		return async () => {
-			this.setNextSteps([
-				{ key: "ImageFilePathGuide", state: this.createBaseState(" - Image Setup", "setup", 2, this.itemIds.filePath)},
-				{ key: "OpacityGuide" }
-			]);
+			const nexts: Array<Guide> = [
+				{ key: "ImageFilePathGuide", state: this.createBaseState(" - Image Setup", "setup", this.settings.isAdvancedMode ? 1 : 2, this.itemIds.filePath)},
+			];
+
+			if (!this.settings.isAdvancedMode) {
+				nexts.push({ key: "OpacityGuide" });
+			}
+
+			nexts.push({ key: "SetupImageGuideEnd" });
+
+			this.setNextSteps(nexts);
 		}
 	}
 
 	private setupAsSlide(): () => Promise<void> {
 		return async () => {
-			const state = this.createBaseState(" - Slide Setup", "setupAsSlide", 5, this.itemIds.slideFilePaths);
-
-			this.setNextSteps([
+			const state               = this.createBaseState(" - Slide Setup", "setupAsSlide", this.settings.isAdvancedMode ? 4 : 5, this.itemIds.slideFilePaths);
+			let   nexts: Array<Guide> = [
 				{ key: "SlideFilePathsGuide",  state: Object.assign(state, Slide.getDefaultState(this.itemIds.slideFilePaths)) },
-				{ key: "OpacityGuide" },
+			];
+
+			if (!this.settings.isAdvancedMode) {
+				nexts.push({ key: "OpacityGuide" });
+			}
+
+			nexts = nexts.concat([
 				{ key: "BaseQuickPickGuide",   state: Slide.getDefaultState(this.itemIds.slideIntervalUnit) },
 				{ key: "SlideIntervalGuide",   state: Slide.getDefaultState(this.itemIds.slideInterval) },
-				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.itemIds.slideRandomPlay) }
+				{ key: "SlideRandomPlayGuide", state: Slide.getDefaultState(this.itemIds.slideRandomPlay) },
 			]);
+
+			this.setNextSteps(nexts);
+		}
+	}
+
+	private optimize(): () => Promise<void> {
+		return async () => {
+			const workbench = new WorkbenchSetting();
+
+			this.state.initailValue = workbench.colorTheme;
+			this.state.prompt       = "Please enter the name of the color theme you are using.";
+			this.setNextSteps([
+				{ key: "BaseInputGuide",        state: this.createBaseState(" - Color Optimize", "optimize", 5, "name") },
+				{ key: "OpacityGuide",          state: { itemId: "basic",     prompt: "Please enter the opacity. * Used in basic areas." } },
+				{ key: "OpacityGuide",          state: { itemId: "overlap",   prompt: "Please enter the high opacity. * Used in overlap areas." } },
+				{ key: "OpacityGuide",          state: { itemId: "selection", prompt: "Please enter the low opacity. * Used in selection areas." } },
+				{ key: "InputJsonFilePathGuide" },
+			])
 		}
 	}
 

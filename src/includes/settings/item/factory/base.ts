@@ -50,6 +50,7 @@ export abstract class SettingItemFactory {
 			favoriteWallpaperRandomSet:       { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.favoriteRandomSet[0].label, falseValue: Constant.favoriteRandomSet[1].label } },
 			favoriteWallpaperRandomSetFilter: { className: BaseSettingItem.name,    args: { default: "All" } },
 			enableSync:                       { className: BooleanSettingItem.name, args: { default: false, trueValue: "",                                  falseValue: "" } },
+			advancedMode:                     { className: BooleanSettingItem.name, args: { default: false, trueValue: "",                                  falseValue: "" } },
 		};
 
 		this.classes.push(BaseSettingItem, NumberSettingItem, BooleanSettingItem);

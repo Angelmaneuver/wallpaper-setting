@@ -93,7 +93,7 @@ suite('Wallpaper Test Suite', async () => {
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
@@ -120,6 +120,38 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		ctxStub.restore();
 	}).timeout(30 * 1000);
 
+	test('install - Advanced', async () => {
+		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
+		const filePath      = path.join(__dirname, "testDir", "test.png");
+		const opacity       = 0.55;
+		const readData      = `test.png Data`;
+		const read2Base64   = `dGVzdC5wbmcgRGF0YQ==`;
+		const writeData     = `/*bootstrap-window.js - Data*/
+/*${extensionKey}-start*/
+/*${extensionKey}.ver.${ContextManager.version}*/
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body > div#process-list {height:100vh; background-color:rgba(0,0,0,0.75) !important;}body {background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+/*${extensionKey}-end*/`;
+
+		const setupInstance = new ExtensionSetting();
+		const fsReaderStub  = sinon.stub(fs, "readFileSync");
+		let   fsWriterMock  = sinon.mock(fs);
+
+		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsReaderStub.withArgs(filePath       ).returns(`${readData}`);
+		fsWriterMock        = sinon.mock(fs);
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
+
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath,     filePath);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,      opacity);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.advancedMode, true);
+		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install();
+
+		fsReaderStub.restore();
+		fsWriterMock.restore();
+		await setupInstance.uninstall();
+		ctxStub.restore();
+	}).timeout(30 * 1000);
+
 	test('install - Sync', async () => {
 		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
 		const opacity       = 0.55;
@@ -127,7 +159,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("${readData}")';}
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("${readData}")';}
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
@@ -167,7 +199,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		let   writeData         = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{document.body.style.backgroundImage=imageData;});`;
 		writeData               += `let i=0;const choice=(min,max)=>{i++; return i===max?min:i;};const after=(index)=>{return;};document.body.style.backgroundImage=images[i];setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -190,7 +222,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		writeData               = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";`;
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;document.body.style.backgroundImage=imageData;await feedin(${opacity},0.01,50);});`;
 		writeData               += `let played=new Array();let i=0;const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};i=choice(0,images.length-1);document.body.style.backgroundImage=images[i];after(i);setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -216,7 +248,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};d
 		const Data          = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};document.body.style.opacity=${opacity};document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="Center";document.body.style.backgroundRepeat="no-repeat";document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");

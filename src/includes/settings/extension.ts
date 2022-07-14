@@ -34,6 +34,7 @@ export class ExtensionSetting extends SettingBase {
 		favoriteRandomSet:       "favoriteWallpaperRandomSet",
 		favoriteRandomSetFilter: "favoriteWallpaperRandomSetFilter",
 		enableSync:              "enableSync",
+		advancedMode:            "advancedMode",
 	};
 
 	private _items:               AbstractSettingItem[]       = [];
@@ -168,5 +169,9 @@ export class ExtensionSetting extends SettingBase {
 
 	public get favoriteRandomSetFilter(): AbstractSettingItem {
 		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSetFilter);
+	}
+
+	public get isAdvancedMode(): boolean {
+		return this.getItem(ExtensionSetting.propertyIds.advancedMode).validValue;
 	}
 }

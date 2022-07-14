@@ -60,27 +60,28 @@ interface Options{
 	canSelectFiles?:   boolean,
 	canSelectMany?:    boolean,
 	openLabel?:        boolean,
-	filters?:          { [key: string]: Array<string> },	
+	filters?:          Record<string, Array<string>>,	
 }
 
-export class InputResourceGuide extends BaseInputGuide {
+export class BaseInputResourceGuide extends BaseInputGuide {
 	private type:    number;
 	private options: Options;
 
 	constructor(
-		state: State,
-		type:  number,
+		state:   State,
+		type:    number,
+		filters: Record<string, Array<string>>
 	) {
 		super(state);
 
 		this.type    = type;
 		this.options =
 			this.type === Type.File
-				? { filters: { Images: Constant.applyImageFile } }
+				? { filters }
 				: {
 					canSelectFolders: true,
 					canSelectMany:    true,
-					filters:          { Images: Constant.applyImageFile },
+					filters:          filters,
 				};
 		this.state.buttons = [
 			new GuideButton(
@@ -92,6 +93,8 @@ export class InputResourceGuide extends BaseInputGuide {
 			)
 		];
 		this.state.validate = this.type === Type.File ? BaseValidator.validateFileExist : BaseValidator.validateDirectoryExist;
+
+		BaseValidator.filters = filters[Object.keys(filters)[0]];
 	}
 
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
@@ -125,5 +128,14 @@ export class InputResourceGuide extends BaseInputGuide {
 			this._inputValue = this.type === Type.File ? selected.path : selected.paths;
 			this.setResultSet(this._inputValue);
 		}
+	}
+}
+
+export class InputResourceGuide extends BaseInputResourceGuide {
+	constructor(
+		state: State,
+		type:  number,
+	) {
+		super(state, type, { Images: Constant.applyImageFile });
 	}
 }

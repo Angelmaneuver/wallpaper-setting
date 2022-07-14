@@ -1,15 +1,16 @@
-import { AbstractGuide }      from "../base/abc";
-import { StartMenuGuide }     from "../begin";
-import { BaseInputGuide }     from "../base/input";
-import { BaseQuickPickGuide } from "../base/pick";
-import { BaseConfirmGuide }   from "../confirm";
-import { ImageFilePathGuide } from "../image";
-import { OpacityGuide }       from "../opacity";
+import { AbstractGuide }          from "../base/abc";
+import { StartMenuGuide }         from "../begin";
+import { BaseInputGuide }         from "../base/input";
+import { BaseQuickPickGuide }     from "../base/pick";
+import { BaseConfirmGuide }       from "../confirm";
+import { ImageFilePathGuide }     from "../image";
+import { OpacityGuide }           from "../opacity";
 import {
 	SlideFilePathsGuide,
 	SlideIntervalGuide,
 	SlideRandomPlayGuide,
- } from "../slide";
+} from "../slide";
+import { SetupImageGuideEnd }     from "../image";
 import {
 	SelectSetupType
 } from "../select/wallpaper";
@@ -35,6 +36,7 @@ import {
 	SyncEncryptSaltInputGuide,
 	SyncDecryptSaltInputGuide,
 } from "../sync";
+import { InputJsonFilePathGuide } from "../optimize";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Constructable<T> extends Function { new (...args: Array<any>): T; }
@@ -65,6 +67,7 @@ export abstract class GuideFactory {
 			BaseQuickPickGuide:            BaseQuickPickGuide,
 			BaseConfirmGuide:              BaseConfirmGuide,
 			ImageFilePathGuide:            ImageFilePathGuide,
+			SetupImageGuideEnd:            SetupImageGuideEnd,
 			OpacityGuide:                  OpacityGuide,
 			SlideFilePathsGuide:           SlideFilePathsGuide,
 			SlideIntervalGuide:            SlideIntervalGuide,
@@ -82,6 +85,7 @@ export abstract class GuideFactory {
 			SyncImageFilePathGuide:        SyncImageFilePathGuide,
 			SyncEncryptSaltInputGuide:     SyncEncryptSaltInputGuide,
 			SyncDecryptSaltInputGuide:     SyncDecryptSaltInputGuide,
+			InputJsonFilePathGuide:        InputJsonFilePathGuide,
 		}
 		/* eslint-enable @typescript-eslint/naming-convention */
 	}

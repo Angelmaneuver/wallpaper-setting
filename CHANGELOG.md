@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.8.0
+ - Added the Advanced Mode function
+
 ## 0.7.2
  - Fixed a bug that prevented the function to set at random from favorites at start up working
 

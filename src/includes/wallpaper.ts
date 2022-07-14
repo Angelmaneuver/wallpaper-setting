@@ -19,6 +19,7 @@ export class Wallpaper {
 	private installPath:     string;
 	private settings:        ExtensionSetting;
 	private extensionKey:    string;
+	private isAdvancedMode:  boolean;
 	private _isInstall:      boolean;
 	private _isReady:        undefined | Ready;
 	private _isAutoSet:      undefined | AutoSet;
@@ -34,6 +35,7 @@ export class Wallpaper {
 		this.installPath     = path.join(this.installLocation, this.installFilaName);
 		this.settings        = settings;
 		this.extensionKey    = extensionKey;
+		this.isAdvancedMode  = this.settings.isAdvancedMode;
 		this._isInstall      = this.checkIsInstall();
 		this._isReady        = this.checkIsReady();
 		this._isAutoSet      = this.checkIsAutoSet();
@@ -180,16 +182,29 @@ export class Wallpaper {
 /*${this.extensionKey}-start*/
 /*${this.extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{`;
-		result     += `if(document.querySelector("body > #process-list")){return;};`;
-		result     += `document.body.style.opacity=${opacity};`;
-		result     += `document.body.style.backgroundSize="cover";`;
-		result     += `document.body.style.backgroundPosition="Center";`;
-		result     += `document.body.style.backgroundRepeat="no-repeat";`;
+		result     += this.isAdvancedMode ? `` : `if(document.querySelector("body > #process-list")){return;};`;
+		result     += `const style=document.createElement("style");`;
+		result     += `style.appendChild(document.createTextNode("` + this.getBasicStyle(opacity) + `"));`
+		result     += `document.head.appendChild(style);`;
 		result     += `{0}`;
 		result     += `}
 /*${this.extensionKey}-end*/`;
 
 		return result;
+	}
+
+	private getBasicStyle(opacity: number): string {
+		let style = ``;
+		style += `body > div {background-color:transparent !important;}`;
+		style += this.isAdvancedMode ? `body > div#process-list {height:100vh; background-color:rgba(0,0,0,0.75) !important;}` : ``;
+		style += `body {`;
+		style += this.isAdvancedMode ? `` : `opacity:${opacity};`
+		style += `background-size:cover;`
+		style += `background-position:center;`;
+		style += `background-repeat:no-repeat;`;
+		style += `}`;
+
+		return style;
 	}
 
 	private clearWallpaperScript(content: string): string {
