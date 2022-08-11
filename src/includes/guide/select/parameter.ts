@@ -41,13 +41,14 @@ export class SelectParameterType extends AbstractQuickPickSelectGuide {
 	public async show(input: MultiStepInput): Promise<void | InputStep> {
 		this.items = [
 			SelectParameterType.templateItems[0],
-			SelectParameterType.templateItems[1],
-			SelectParameterType.templateItems[2],
+			SelectParameterType.templateItems[1]
+		].concat(this.settings.isAdvancedMode ? [] : SelectParameterType.templateItems[2],
+		).concat(
 			SelectParameterType.templateItems[3],
 			SelectParameterType.templateItems[4],
 			SelectParameterType.templateItems[5],
 			SelectParameterType.templateItems[6]
-		].concat(Object.keys(this.guideGroupResultSet).length > 0 ? SelectParameterType.templateItems[7] : []
+		).concat(Object.keys(this.guideGroupResultSet).length > 0 ? SelectParameterType.templateItems[7] : []
 		).concat(SelectParameterType.templateItems[8]);
 
 		await super.show(input);

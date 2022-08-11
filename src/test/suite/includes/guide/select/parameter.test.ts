@@ -133,4 +133,22 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 
 		await new ExtensionSetting().uninstall();
 	}).timeout(30 * 1000);
+
+	test('SelectParameterType - Advanced mode', async () => {
+		const pickStub = sinon.stub(MultiStepInput.prototype,      "showQuickPick");
+
+		await new ExtensionSetting().setItemValue(ExtensionSetting.propertyIds.advancedMode, true);
+
+		const state    = stateCreater(new ExtensionSetting());
+
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state).start(input));
+		itemChecker(
+			[items[0], items[1], items[3], items[4], items[5], items[6], items[8]],
+			pickStub.getCall(0).args[0].items
+		);
+
+		pickStub.restore();
+
+		await new ExtensionSetting().uninstall();
+	}).timeout(30 * 1000);
 });
