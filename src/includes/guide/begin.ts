@@ -24,16 +24,9 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
-		const set        = !this.installer.isInstall && this.installer.isReady                       ? [items.Set]                     : [];
-		const installed  = this.installer.isInstall                                                  ? [items.Reset, items.Crear]      : [];
-		const ready      = this.installer.isReady                                                    ? [items.Setting, items.Favorite] : [];
-		const setup      = [items.Setup, items.SetUpAsSlide];
-		const optimize   = this.settings.isAdvancedMode                                              ? [items.Optimize]                : [];
-		const sync       = this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]                    : [];
-		const other      = [items.Uninstall, items.Exit];
+		this.setItems();
 
 		this.placeholder = "Select the item you want to do.";
-		this.items       = this.items.concat(set, installed, ready, setup, optimize, sync, other);
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
@@ -127,6 +120,17 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 				]
 			}]);
 		}
+	}
+
+	private setItems(): void {
+		const set       = !this.installer.isInstall && this.installer.isReady                       ? [items.Set]                     : [];
+		const installed = this.installer.isInstall                                                  ? [items.Reset, items.Crear]      : [];
+		const ready     = this.installer.isReady                                                    ? [items.Setting, items.Favorite] : [];
+		const setup     = [items.Setup, items.SetUpAsSlide];
+		const optimize  = this.settings.isAdvancedMode                                              ? [items.Optimize]                : [];
+		const sync      = this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]                    : [];
+
+		this.items      = this.items.concat(set, installed, ready, setup, optimize, sync, [items.Uninstall, items.Exit]);
 	}
 
 	private getGuideParameter(
