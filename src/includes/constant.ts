@@ -33,15 +33,15 @@ export const back2Previous                            = VSCodePreset.create(VSCo
 export const slideRandomPlay                          = itemsCreat(ItemType.Confirm, { item1: "Random",          item2: "Not random." });
 export const slideEffectFadeIn                        = itemsCreat(ItemType.Confirm, { item1: "Fade in effect.", item2: "Not effect." });
 export const favoriteProcess                          = [
-	VSCodePreset.create(VSCodePreset.Icons.repoPush,    "Register",    "Register the current settings to favorite."),
-	VSCodePreset.create(VSCodePreset.Icons.repoPull,    "Open",        "Open the favorite list."),
-	VSCodePreset.create(VSCodePreset.Icons.merge,       "Start Up",    "Start up settings."),
+	{ label: `${VSCodePreset.Icons.repoPush.label} Register`, description: "Register the current settings to favorite." },
+	{ label: `${VSCodePreset.Icons.repoPull.label} Open`,     description: "Open the favorite list." },
+	{ label: `${VSCodePreset.Icons.merge.label} Start Up`,    description: "Start up settings." },
 	back2Previous,
 ];
 export const favoriteOperationExecute                 = [
-	VSCodePreset.create(VSCodePreset.Icons.debugStart,  "Set",         "Set wallpaper with this setting."),
-	VSCodePreset.create(VSCodePreset.Icons.emptyWindow, "Window Open", "Open a new window with this setting."),
-	VSCodePreset.create(VSCodePreset.Icons.trashcan,    "Delete",      "Delete this setting."),
+	{ label: `${VSCodePreset.Icons.debugStart.label} Set`,          description: "Set wallpaper with this setting." },
+	{ label: `${VSCodePreset.Icons.emptyWindow.label} Window Open`, description: "Open a new window with this setting." },
+	{ label: `${VSCodePreset.Icons.trashcan.label} Delete`,         description: "Delete this setting." },
 	back2Previous,
 ];
 export const favoriteRandomSet                        = itemsCreat(ItemType.Confirm, { item1: "Random wallpaper at start up.", item2: "Not random.", return: "Return without saving any changes." });
