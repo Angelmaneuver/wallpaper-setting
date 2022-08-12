@@ -24,17 +24,16 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
-		this.placeholder   = "Select the item you want to do.";
-		this.items         =
-			this.items
-			.concat(!this.installer.isInstall && this.installer.isReady                         ? [items.Set]                : [])
-			.concat(this.installer.isInstall                                                    ? [items.Reset, items.Crear] : [])
-			.concat(this.installer.isReady                                                      ? [items.Setting]            : [])
-			.concat(this.installer.isReady                                                      ? [items.Favorite]           : [])
-			.concat([items.Setup, items.SetUpAsSlide])
-			.concat(this.settings.getItem(ExtensionSetting.propertyIds.advancedMode).validValue ? [items.Optimize]           : [])
-			.concat(this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue   ? [items.Sync]               : [])
-			.concat([items.Uninstall, items.Exit]);
+		const set        = !this.installer.isInstall && this.installer.isReady                       ? [items.Set]                     : [];
+		const installed  = this.installer.isInstall                                                  ? [items.Reset, items.Crear]      : [];
+		const ready      = this.installer.isReady                                                    ? [items.Setting, items.Favorite] : [];
+		const setup      = [items.Setup, items.SetUpAsSlide];
+		const optimize   = this.settings.isAdvancedMode                                              ? [items.Optimize]                : [];
+		const sync       = this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]                    : [];
+		const other      = [items.Uninstall, items.Exit];
+
+		this.placeholder = "Select the item you want to do.";
+		this.items       = this.items.concat(set, installed, ready, setup, optimize, sync, other);
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
