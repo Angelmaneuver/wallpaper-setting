@@ -1,6 +1,5 @@
 import { Guide }                        from "./base/abc";
 import { AbstractQuickPickSelectGuide } from "./base/pick";
-import { ExtensionSetting }             from "../settings/extension";
 import { WorkbenchSetting }             from "../settings/workbench";
 import { VSCodePreset }                 from "../utils/base/vscodePreset";
 import * as Wallpaper                   from "./select/wallpaper";
