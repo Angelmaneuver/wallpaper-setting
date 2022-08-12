@@ -119,15 +119,9 @@ abstract class AbstractRegistedFavoriteOperationGuide extends AbstractQuickPickG
 	public init(): void {
 		super.init();
 
-		if (this.type === Constant.wallpaperType.Image) {
-			this.itemId = this.itemIds.favoriteImageSet;
-			this.items  = this.favorites2Items(this.settings.favoriteImageSet.value);
-		} else {
-			this.itemId = this.itemIds.favoriteSlideSet;
-			this.items  = this.favorites2Items(this.settings.favoriteSlideSet.value);
-		}
-
-		this.items = this.items.concat([this.returnItem]);
+		this.itemId = Constant.wallpaperType.Image === this.type ? this.itemIds.favoriteImageSet                              : this.itemIds.favoriteSlideSet;
+		this.items  = Constant.wallpaperType.Image === this.type ? this.favorites2Items(this.settings.favoriteImageSet.value) : this.favorites2Items(this.settings.favoriteSlideSet.value);
+		this.items  = this.items.concat([this.returnItem]);
 	}
 
 	public async after(): Promise<void> {
