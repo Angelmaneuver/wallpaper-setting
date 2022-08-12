@@ -1,4 +1,8 @@
-import { QuickPickItem }         from "vscode";
+import {
+	window,
+	commands,
+	QuickPickItem,
+}                                from "vscode";
 import { State }                 from "./base/base";
 import { BaseInputGuide }        from "./base/input";
 import {
@@ -8,6 +12,7 @@ import {
 import { BaseValidator }         from "./validator/base";
 import { Favorite }              from "../settings/extension";
 import * as StartUp              from "../favorite";
+import { ExtensionSetting }      from "../settings/extension";
 import { VSCodePreset }          from "../utils/base/vscodePreset";
 import * as Constant             from "../constant";
 
@@ -78,19 +83,21 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		if (this.type === Constant.wallpaperType.Image) {
 			favorite[this.inputValueAsString] = {
 				filePath: this.settings.filePath.value,
-				opacity:  this.settings.opacity.validValue
 			};
 			registered = this.settings.favoriteImageSet.value;
 		} else {
 			favorite[this.inputValueAsString] = {
 				slideFilePaths:    this.settings.slideFilePaths.value,
-				opacity:           this.settings.opacity.validValue,
 				slideInterval:     this.settings.slideInterval.validValue,
 				slideIntervalUnit: this.settings.slideIntervalUnit.value,
 				slideRandomPlay:   this.settings.slideRandomPlay.validValue,
 				slideEffectFadeIn: this.settings.slideEffectFadeIn.validValue
 			}
 			registered = this.settings.favoriteSlideSet.value;
+		}
+
+		if (!this.settings.isAdvancedMode) {
+			(favorite[this.inputValueAsString] as Record<string, unknown>)["opacity"] = this.settings.opacity.validValue;
 		}
 
 		return [favorite, registered];
@@ -136,18 +143,18 @@ abstract class AbstractRegistedFavoriteOperationGuide extends AbstractQuickPickG
 	}
 }
 
-export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
+export class OpenFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 	constructor(
 		state: State,
 		type:  number
 	) {
-		super(state, type, { returnItem: "Return without unregister." });
+		super(state, type, { returnItem: "Back to previous." });
 	}
 
 	public init(): void {
 		super.init();
 
-		this.placeholder = "Select the favorite settings to unregister.";
+		this.placeholder = "Select the favorite.";
 	}
 
 	public async after(): Promise<void> {
@@ -159,10 +166,76 @@ export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGu
 	}
 
 	private setupNextStep(): void {
-		const name     = this.activeItemLabel;
-		const message  = `UnRegistered ${name} from my favorites!`;
+		this.setNextSteps([{
+			key:   "SelectExecuteOperationFavoriteGuide",
+			state: { title: `${this.title} - ${this.activeItemLabel}`, itemId: this.itemId, guideGroupId: this.guideGroupId },
+			args:  [this.type, this.activeItemLabel],
+		}]);
+	}
+}
 
-		const favorite = this.removedFavorite(this.type, name);
+export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelectGuide {
+	protected type: number;
+	protected name: string;
+
+	constructor(
+		state: State,
+		type:  number,
+		name:  string
+	) {
+		super(state);
+
+		this.type = type;
+		this.name = name;
+	}
+
+	public init(): void {
+		super.init();
+
+		this.placeholder = "Select what you want to execute with this favorite.";
+		this.items       = Constant.favoriteOperationExecute;
+	}
+
+	public getExecute(label: string): () => Promise<void> {
+		switch (label) {
+			case this.items[0].label:
+				return async () => { await this.set(); };
+			case this.items[1].label:
+				return async () => { await this.newWindow(); };
+			case this.items[2].label:
+				return async () => { this.delete(); }
+			default:
+				return async () => { this.prev(); }
+		}
+	}
+
+	private async set(): Promise<void> {
+		await this.loadFavorite();
+
+		this.state.reload = true;
+	}
+
+	private async newWindow(): Promise<void> {
+		const backup = new ExtensionSetting();
+
+		this.installer.holdScriptData();
+
+		await this.loadFavorite();
+
+		commands.executeCommand('workbench.action.newWindow');
+			
+		window.showInformationMessage(
+			`After confirming that a new window has been lunched, please click 'OK' or close this message. * Restore the wallpaper settings.`,
+			'OK'
+		).then(() => {
+			this.installer.installWithPrevious();
+			backup.batchInstall();
+		});
+	}
+
+	private delete(): void {
+		const message  = `UnRegistered ${this.name} from my favorites!`;
+		const favorite = this.removedFavorite();
 
 		this.state.placeholder = "Do you want to unregister it?";
 		this.setNextSteps([{
@@ -179,55 +252,13 @@ export class UnRegisterFavoriteGuide extends AbstractRegistedFavoriteOperationGu
 		}]);
 	}
 
-	private removedFavorite(type: number, removeFavoriteName: string): Partial<Favorite> {
-		let   registered: Favorite = {};
-		const favorite:   Favorite = {};
-
-		if (this.type === Constant.wallpaperType.Image) {
-			registered = this.settings.favoriteImageSet.value;
-		} else {
-			registered = this.settings.favoriteSlideSet.value;
-		}
-
-		Object.keys(registered).map(
-			(key) => {
-				if (removeFavoriteName !== key) { favorite[key] = registered[key]; }
-			}
-		);
-
-		return favorite;
-	}
-}
-
-export class LoadFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
-	constructor(
-		state: State,
-		type:  number
-	) {
-		super(state, type, { returnItem: "Return without loading any changes." });
-	}
-
-	public init(): void {
-		super.init();
-
-		this.placeholder = "Select the favorite settings to load.";
-	}
-
-	public async after(): Promise<void> {
-		if (this.activeItem === this.returnItem) {
-			await super.after();
-		} else {
-			await this.loadFavorite(this.activeItemLabel);
-		}
-	}
-
-	private async loadFavorite(favoriteName: string) {
+	private async loadFavorite(): Promise<void> {
 		let favorite: Partial<Favorite> = {};
 
 		if (this.type === Constant.wallpaperType.Image) {
-			favorite = this.settings.favoriteImageSet.value[favoriteName] as Partial<Favorite>;
+			favorite = this.settings.favoriteImageSet.value[this.name] as Partial<Favorite>;
 		} else {
-			favorite = this.settings.favoriteSlideSet.value[favoriteName] as Partial<Favorite>;
+			favorite = this.settings.favoriteSlideSet.value[this.name] as Partial<Favorite>;
 		}
 
 		for (const key of Object.keys(favorite)) {
@@ -239,8 +270,25 @@ export class LoadFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 		} else {
 			this.installer.installAsSlide();
 		}
+	}
 
-		this.state.reload = true;
+	private removedFavorite(): Partial<Favorite> {
+		let   registered: Favorite = {};
+		const favorite:   Favorite = {};
+
+		if (this.type === Constant.wallpaperType.Image) {
+			registered = this.settings.favoriteImageSet.value;
+		} else {
+			registered = this.settings.favoriteSlideSet.value;
+		}
+
+		Object.keys(registered).map(
+			(key) => {
+				if (this.name !== key) { favorite[key] = registered[key]; }
+			}
+		);
+
+		return favorite;
 	}
 }
 

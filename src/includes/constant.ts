@@ -34,15 +34,20 @@ export const slideIntervalUnit                        = ["Hour", "Minute", "Seco
 export const slideRandomPlay                          = itemsCreat(ItemType.Confirm, { item1: "Random",          item2: "Not random." });
 export const slideEffectFadeIn                        = itemsCreat(ItemType.Confirm, { item1: "Fade in effect.", item2: "Not effect." });
 export const favoriteProcess                          = [
-	VSCodePreset.create(VSCodePreset.Icons.repoPush,   "Register",   "Register the current settings to favorite."),
-	VSCodePreset.create(VSCodePreset.Icons.repoDelete, "UnRegister", "UnRegister favorite settings."),
-	VSCodePreset.create(VSCodePreset.Icons.repoPull,   "Load",       "Load favorite settings."),
-	VSCodePreset.create(VSCodePreset.Icons.merge,      "Start Up",   "Start up settings."),
-	VSCodePreset.create(VSCodePreset.Icons.reply,      "Return",     "Return without saving any changes."),
+	VSCodePreset.create(VSCodePreset.Icons.repoPush,    "Register",    "Register the current settings to favorite."),
+	VSCodePreset.create(VSCodePreset.Icons.repoPull,    "Open",        "Open the favorite list."),
+	VSCodePreset.create(VSCodePreset.Icons.merge,       "Start Up",    "Start up settings."),
+	VSCodePreset.create(VSCodePreset.Icons.reply,       "Return",      "Back to previous."),
+];
+export const favoriteOperationExecute                 = [
+	VSCodePreset.create(VSCodePreset.Icons.debugStart,  "Set",         "Set wallpaper with this setting."),
+	VSCodePreset.create(VSCodePreset.Icons.emptyWindow, "Window Open", "Open a new window with this setting."),
+	VSCodePreset.create(VSCodePreset.Icons.trashcan,    "Delete",      "Delete this setting."),
+	VSCodePreset.create(VSCodePreset.Icons.reply,       "Return",      "Back to previous."),
 ];
 export const favoriteRandomSet                        = itemsCreat(ItemType.Confirm, { item1: "Random wallpaper at start up.", item2: "Not random.", return: "Return without saving any changes." });
 export const favoriteRandomSetFilter                  = [
-	VSCodePreset.create(VSCodePreset.Icons.checkAll,   "All",        "Target all images and slides.")
+	VSCodePreset.create(VSCodePreset.Icons.checkAll,    "All",         "Target all images and slides.")
 ].concat(
 	itemsCreat(ItemType.Wallpaper, { item1:  "Images only.", item2:  "Slides only.", return: "Return without saving any changes." })
 );

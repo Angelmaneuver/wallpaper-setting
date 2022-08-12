@@ -19,6 +19,7 @@ export class Wallpaper {
 	private installPath:     string;
 	private settings:        ExtensionSetting;
 	private extensionKey:    string;
+	private previous:        string;
 	private isAdvancedMode:  boolean;
 	private _isInstall:      boolean;
 	private _isReady:        undefined | Ready;
@@ -35,6 +36,7 @@ export class Wallpaper {
 		this.installPath     = path.join(this.installLocation, this.installFilaName);
 		this.settings        = settings;
 		this.extensionKey    = extensionKey;
+		this.previous        = '';
 		this.isAdvancedMode  = this.settings.isAdvancedMode;
 		this._isInstall      = this.checkIsInstall();
 		this._isReady        = this.checkIsReady();
@@ -42,9 +44,7 @@ export class Wallpaper {
 	}
 
 	private checkIsInstall(): boolean {
-		const script =  new File(this.installPath).toString().match(this.getScriptMatch());
-
-		return script ? true : false;
+		return this.getCurrentScript() ? true : false;
 	}
 
 	private checkIsReady(): undefined | Ready {
@@ -126,12 +126,31 @@ export class Wallpaper {
 		editFile.write();
 	}
 
+	public installWithPrevious(): void {
+		const editFile   = new File(this.installPath);
+
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + `
+` + this.previous;
+
+		editFile.write();
+	}
+
 	public uninstall(): void {
 		const editFile   = new File(this.installPath);
 
 		editFile.content = this.clearWallpaperScript(editFile.toString());
 
 		editFile.write();
+	}
+
+	public holdScriptData(): void {
+		this.previous = this.getCurrentScript();
+	}
+
+	private getCurrentScript(): string {
+		const data = new File(this.installPath).toString().match(this.getScriptMatch());
+
+		return data ? data[0] : "";
 	}
 
 	private getWallpaperScript(image: string, opacity: number): string {

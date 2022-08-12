@@ -1,7 +1,6 @@
 import { State }                        from "../base/base";
 import { AbstractQuickPickSelectGuide } from "../base/pick";
 import * as Constant                    from "../../constant";
-import { formatByArray }                from "../../utils/base/string";
 
 export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	public init(): void {
@@ -10,8 +9,8 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 		this.placeholder = "Select the process you want to perform.";
 		this.items       =
 			[Constant.favoriteProcess[0]]
-			.concat(this.settings.isFavoriteRegisterd ? [Constant.favoriteProcess[1], Constant.favoriteProcess[2], Constant.favoriteProcess[3]] : [])
-			.concat([Constant.favoriteProcess[4]]);
+			.concat(this.settings.isFavoriteRegisterd ? [Constant.favoriteProcess[1], Constant.favoriteProcess[2]] : [])
+			.concat([Constant.favoriteProcess[3]]);
 	}
 
 	protected getExecute(label: string | undefined): (() => Promise<void>) | undefined {
@@ -19,10 +18,8 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 			case Constant.favoriteProcess[0].label:
 				return this.setTransition(operation.Register);
 			case Constant.favoriteProcess[1].label:
-				return this.setTransition(operation.UnRegister);
+				return this.setTransition(operation.Open);
 			case Constant.favoriteProcess[2].label:
-				return this.setTransition(operation.Load);
-			case Constant.favoriteProcess[3].label:
 				return this.startUp();
 			default:
 				return async () => { this.prev(); };
@@ -30,16 +27,18 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	}
 
 	private setTransition(key: string): () => Promise<void> {
-		const autoSet = key === operation.Register ? this.installer.isAutoSet : this.settings.FavoriteAutoset;
+		const autoSet                      = key === operation.Register ? this.installer.isAutoSet : this.settings.FavoriteAutoset;
+		let   className                    = '';
+		let   title                        = '';
+		let   guideGroupId                 = '';
+		const args: Array<string | number> = [];
 
 		if (autoSet === undefined) {
-			return async() => {
-				this.setNextSteps([{
-					key:   `SelectFavoriteOperationType`,
-					state: this.createBaseState(` - ${key}`, `${this.guideGroupId}${key}`),
-					args:  [key]
-				}]);
-			};
+			className    = `SelectFavoriteOperationType`;
+			title        = key === operation.Register ? ` - ${key}` : ``;
+			guideGroupId = `${this.guideGroupId}${key}`;
+
+			args.push(key);
 		} else {
 			const typeName = Object.keys(Constant.wallpaperType).filter(
 				(key) => {
@@ -47,14 +46,20 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 				}
 			)[0];
 
-			return async () => {
-				this.setNextSteps([{
-					key:   `${key}FavoriteGuide`,
-					state: this.createBaseState(` - ${key} - ${typeName} wallpaper`, `${this.guideGroupId}${key}${typeName}`),
-					args:  [autoSet]
-				}]);
-			};
+			className    = `${key}FavoriteGuide`;
+			title        = key === operation.Register ? ` - ${key} - ${typeName} wallpaper` : ``;
+			guideGroupId = `${this.guideGroupId}${key}${typeName}`;
+
+			args.push(autoSet);
 		}
+
+		return async() => {
+			this.setNextSteps([{
+				key:   className,
+				state: this.createBaseState(title, guideGroupId),
+				args:  args,
+			}]);
+		};
 	}
 
 	private startUp(): () => Promise<void> {
@@ -69,7 +74,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 	}
 }
 
-const operation = { Register: "Register", UnRegister: "UnRegister", Load: "Load" };
+const operation = { Register: "Register", Open: "Open" };
 
 export class SelectFavoriteOperationType extends AbstractQuickPickSelectGuide {
 	private operationType: string;
@@ -86,22 +91,19 @@ export class SelectFavoriteOperationType extends AbstractQuickPickSelectGuide {
 	public init(): void {
 		super.init();
 
-		if (this.operationType === operation.Register || this.operationType === operation.UnRegister) {
-			this.placeholder = formatByArray(
-				"Select the type of wallpaper you want to {0} for favorite.",
-				this.operationType === operation.Register ? "register" : "unregister"
-			);
+		if (this.operationType === operation.Register) {
+			this.placeholder = "Select the type of wallpaper you want to register for favorite.",
 			this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
-				item1:  formatByArray("{0} to favorite the current wallpaper image settings.", this.operationType),
-				item2:  formatByArray("{0} to favorite the current wallpaper slide settings.", this.operationType),
-				return: "Return without saving any changes."
+				item1:  "register favorite the current wallpaper image settings.",
+				item2:  "register favorite the current wallpaper slide settings.",
+				return: "Back to previous."
 			});
 		} else {
-			this.placeholder = "Select the type of wallpaper you want to load.";
+			this.placeholder = "Select the type of wallpaper you want to Open.";
 			this.items       = Constant.itemsCreat(Constant.ItemType.Wallpaper, {
-				item1:  "Load wallpaper image settings from favorites.",
-				item2:  "Load wallpaper slide settings from favorites.",
-				return: "Return without loading any changes."
+				item1:  "Open wallpaper image settings from favorites.",
+				item2:  "Open wallpaper slide settings from favorites.",
+				return: "Back to previous."
 			});
 		}
 	}

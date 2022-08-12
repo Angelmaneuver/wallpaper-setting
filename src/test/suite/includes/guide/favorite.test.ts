@@ -22,6 +22,17 @@ interface QuickPickParameters<T extends QuickPickItem> {
 suite('Guide - Favorite Test Suite', async () => {
 	const stateCreater   = () => ({ title: "Test Suite", guideGroupId: "test", resultSet: {} } as State);
 
+	test('SelectExecuteOperationFavoriteGuide', async () => {
+		const pickStub                = sinon.stub(MultiStepInput.prototype,   "showQuickPick");
+		const state                   = stateCreater();
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[3]; })
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectExecuteOperationFavoriteGuide(state, Constant.wallpaperType.Image, "test").start(input));
+
+		pickStub.restore();
+	});
+
 	test('FavoriteRandomSetGuide', async () => {
 		const pickStub                = sinon.stub(MultiStepInput.prototype,   "showQuickPick");
 		const favoriteStub            = sinon.stub(Favorite,                   "randomSet");

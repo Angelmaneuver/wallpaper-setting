@@ -263,4 +263,40 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		fsWriterMock.restore();
 		ctxStub.restore();
 	}).timeout(30 * 1000);
+
+	test('holdScriptData -> installWithPrevious', async () => {
+		const setting      = new ExtensionSetting();
+		const fsReaderStub = sinon.stub(fs, "readFileSync");
+		const fsWriterMock = sinon.mock(fs);
+		const ctxStub      = sinon.stub(ContextManager, "version").value("9.9.9");
+		const filePath     = path.join(__dirname, "testDir", "test.png");
+		const opacity      = 0.55;
+		const previous     = `/* bootstrap-window.js - Data */
+/*${extensionKey}-start*/
+/*${extensionKey}.ver.${ContextManager.version}*/
+/*${extensionKey}-end*/`;
+
+		fsReaderStub.withArgs(installFilePath).returns(previous);
+
+		const instance = new testTarget.Wallpaper(installLocation, installFileName, setting, extensionKey);
+		instance.holdScriptData();
+
+		fsReaderStub.reset();
+
+		fsReaderStub.withArgs(installFilePath).returns(`/* bootstrap-window.js - Data */
+/*${extensionKey}-start*/
+/*${extensionKey}.ver.${ContextManager.version}*/
+window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
+/*${extensionKey}-end*/`
+		);
+		fsWriterMock.expects("writeFileSync").withArgs(installFilePath, previous);
+
+		instance.installWithPrevious();
+
+		fsWriterMock.verify();
+
+		fsReaderStub.restore();
+		fsWriterMock.restore();
+		ctxStub.restore();
+	}).timeout(30 * 1000);
 });
