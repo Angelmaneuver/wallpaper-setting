@@ -34,17 +34,21 @@ const targetWithSelection = [
 ];
 const matchColorCode      = /^#[A-Fa-f0-9]{6}$/;
 
+interface Opacity {
+	base:      string,
+	overlap:   string,
+	selection: string,
+}
+
 export async function theme2transparancy(
 	name:       string,
 	sourcePath: string,
-	base:       string,
-	overlap:    string,
-	selection:  string
+	opacity:    Opacity,
 ): Promise<void> {
 	const workbenchSetting               = new WorkbenchSetting();
-	const baseAa                         = decimal2hex(base);
-	const overlapAa                      = decimal2hex(overlap);
-	const selectionAa                    = decimal2hex(selection);
+	const baseAa                         = decimal2hex(opacity.base);
+	const overlapAa                      = decimal2hex(opacity.overlap);
+	const selectionAa                    = decimal2hex(opacity.selection);
 	const theme                          = JSON.parse(new File(sourcePath).content.toString());
 	const colors: Record<string, string> = {};
 

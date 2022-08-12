@@ -38,9 +38,7 @@ suite('Scenario - Optimze With Advanced Mode Test Suite', async () => {
 
 		assert.strictEqual(convertStub.getCall(0).args[0], themeName);
 		assert.strictEqual(convertStub.getCall(0).args[1], filePath);
-		assert.strictEqual(convertStub.getCall(0).args[2], "0.75");
-		assert.strictEqual(convertStub.getCall(0).args[3], "0.75");
-		assert.strictEqual(convertStub.getCall(0).args[4], "0.75");
+		assert.notStrictEqual(convertStub.getCall(0).args[2], { base: "0.75", overlap: "0.75", selection: "0.75" });
 
 		assert.strictEqual(pickStub.calledOnce,    true);
 		assert.strictEqual(convertStub.calledOnce, true);
@@ -59,9 +57,7 @@ suite('Scenario - Optimze With Advanced Mode Test Suite', async () => {
 
 		assert.strictEqual(convertStub.getCall(0).args[0], themeName);
 		assert.strictEqual(convertStub.getCall(0).args[1], filePath);
-		assert.strictEqual(convertStub.getCall(0).args[2], base);
-		assert.strictEqual(convertStub.getCall(0).args[3], overlap);
-		assert.strictEqual(convertStub.getCall(0).args[4], selection);
+		assert.notStrictEqual(convertStub.getCall(0).args[2], { base: base, overlap: overlap, selection: selection });
 
 		assert.strictEqual(pickStub.calledOnce,    true);
 		assert.strictEqual(convertStub.calledOnce, true);

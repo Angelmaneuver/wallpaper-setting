@@ -15,11 +15,13 @@ export class InputJsonFilePathGuide extends BaseInputResourceGuide {
 
 	protected async lastInputStepExecute(): Promise<void> {
 		Convert.theme2transparancy(
-			this.guideGroupResultSet["name"]                            as string,
-			this.guideGroupResultSet["json"]                            as string,
-			this.getValidOpacity(this.guideGroupResultSet["basic"]),
-			this.getValidOpacity(this.guideGroupResultSet["overlap"]),
-			this.getValidOpacity(this.guideGroupResultSet["selection"])
+			this.guideGroupResultSet["name"] as string,
+			this.guideGroupResultSet["json"] as string,
+			{
+				base:      this.getValidOpacity(this.guideGroupResultSet["basic"]),
+				overlap:   this.getValidOpacity(this.guideGroupResultSet["overlap"]),
+				selection: this.getValidOpacity(this.guideGroupResultSet["selection"])
+			}
 		);
 
 		this.state.message = "Optimized some color information for color theme.";

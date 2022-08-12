@@ -20,7 +20,7 @@ suite('Convert Test Suite', async () => {
 
 		fsStub.withArgs(jsonFileFullPath).returns("{}");
 
-		testTarget.theme2transparancy(name, jsonFileFullPath, base, overlap, selection);
+		testTarget.theme2transparancy(name, jsonFileFullPath, { base: base, overlap: overlap, selection: selection });
 
 		assert.deepStrictEqual(new WorkbenchSetting().get("colorCustomizations"), {});
 
@@ -41,7 +41,7 @@ suite('Convert Test Suite', async () => {
 	}
 }`);
 
-		await testTarget.theme2transparancy(name, jsonFileFullPath, base, overlap, selection);
+		await testTarget.theme2transparancy(name, jsonFileFullPath, { base: base, overlap: overlap, selection: selection });
 
 		const data: Record<string, Record<string, string>> = {};
 		data[`[${name}]`]                                  = {}
