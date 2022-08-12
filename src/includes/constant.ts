@@ -3,24 +3,27 @@ import { VSCodePreset }  from "./utils/base/vscodePreset";
 
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
-	let items: Array<QuickPickItem> = [];
-
-	switch (type) {
-		case ItemType.Confirm:
-			items = [
-				VSCodePreset.create(VSCodePreset.Icons.check,     "Yes",   description.item1),
-				VSCodePreset.create(VSCodePreset.Icons.x,         "No",    description.item2)
+	const parameters = () => {
+		if (ItemType.Confirm === type) {
+			return [
+				{ baseIcon: VSCodePreset.Icons.check,     label: "Yes",   description: description.item1 },
+				{ baseIcon: VSCodePreset.Icons.x,         label: "No",    description: description.item2 },
 			];
-			break;
-		case ItemType.Wallpaper:
-			items = [
-				VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image", description.item1),
-				VSCodePreset.create(VSCodePreset.Icons.folder,    "Slide", description.item2),
+		} else if (ItemType.Wallpaper === type) {
+			return [
+				{ baseIcon: VSCodePreset.Icons.fileMedia, label: "Image", description: description.item1 },
+				{ baseIcon: VSCodePreset.Icons.folder,    label: "Slide", description: description.item2 },
 			];
-			break;
-		default:
+		} else {
 			throw new ReferenceError("Requested parameter type " + type + " not support with this method...");
+		}
 	}
+
+	const items: Array<QuickPickItem> = [];
+
+	parameters().forEach((value) => {
+		items.push(VSCodePreset.create(value.baseIcon, value.label, value.description));
+	});
 
 	return items.concat(description.return ? VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.return) : []);
 }
