@@ -171,6 +171,10 @@ export class ExtensionSetting extends SettingBase {
 		return this.getItem(ExtensionSetting.propertyIds.favoriteRandomSetFilter);
 	}
 
+	public get isSyncMode(): boolean {
+		return this.getItem(ExtensionSetting.propertyIds.enableSync).validValue;
+	}
+
 	public get isAdvancedMode(): boolean {
 		return this.getItem(ExtensionSetting.propertyIds.advancedMode).validValue;
 	}

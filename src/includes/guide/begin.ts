@@ -123,14 +123,13 @@ export class StartMenuGuide extends AbstractQuickPickSelectGuide {
 	}
 
 	private setItems(): void {
-		const set       = !this.installer.isInstall && this.installer.isReady                       ? [items.Set]                     : [];
-		const installed = this.installer.isInstall                                                  ? [items.Reset, items.Crear]      : [];
-		const ready     = this.installer.isReady                                                    ? [items.Setting, items.Favorite] : [];
-		const setup     = [items.Setup, items.SetUpAsSlide];
-		const optimize  = this.settings.isAdvancedMode                                              ? [items.Optimize]                : [];
-		const sync      = this.settings.getItem(ExtensionSetting.propertyIds.enableSync).validValue ? [items.Sync]                    : [];
+		const set       = !this.installer.isInstall && this.installer.isReady ? [items.Set]                     : [];
+		const installed = this.installer.isInstall                            ? [items.Reset, items.Crear]      : [];
+		const ready     = this.installer.isReady                              ? [items.Setting, items.Favorite] : [];
+		const optimize  = this.settings.isAdvancedMode                        ? [items.Optimize]                : [];
+		const sync      = this.settings.isSyncMode                            ? [items.Sync]                    : [];
 
-		this.items      = this.items.concat(set, installed, ready, setup, optimize, sync, [items.Uninstall, items.Exit]);
+		this.items      = this.items.concat(set, installed, ready, [items.Setup, items.SetUpAsSlide], optimize, sync, [items.Uninstall, items.Exit]);
 	}
 
 	private getGuideParameter(
