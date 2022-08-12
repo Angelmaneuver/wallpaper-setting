@@ -3,25 +3,20 @@ import { VSCodePreset }  from "./utils/base/vscodePreset";
 
 export const ItemType   = { Confirm: 0, Wallpaper: 1 };
 export const itemsCreat = (type: number, description: { item1: string, item2: string, return?: string }): Array<QuickPickItem> => {
-	const parameters = () => {
-		if (ItemType.Confirm === type) {
-			return [
+	const parameter = (
+		ItemType.Confirm === type
+			? [
 				{ baseIcon: VSCodePreset.Icons.check,     label: "Yes",   description: description.item1 },
 				{ baseIcon: VSCodePreset.Icons.x,         label: "No",    description: description.item2 },
-			];
-		} else if (ItemType.Wallpaper === type) {
-			return [
+			] : [
 				{ baseIcon: VSCodePreset.Icons.fileMedia, label: "Image", description: description.item1 },
 				{ baseIcon: VSCodePreset.Icons.folder,    label: "Slide", description: description.item2 },
-			];
-		} else {
-			throw new ReferenceError("Requested parameter type " + type + " not support with this method...");
-		}
-	}
+			]
+	);
 
 	const items: Array<QuickPickItem> = [];
 
-	parameters().forEach((value) => {
+	parameter.forEach((value) => {
 		items.push(VSCodePreset.create(value.baseIcon, value.label, value.description));
 	});
 
