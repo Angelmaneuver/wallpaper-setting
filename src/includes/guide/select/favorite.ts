@@ -54,11 +54,7 @@ export class SelectFavoriteProcess extends AbstractQuickPickSelectGuide {
 		}
 
 		return async() => {
-			this.setNextSteps([{
-				key:   className,
-				state: this.createBaseState(title, guideGroupId),
-				args:  args,
-			}]);
+			this.setNextSteps([{ key: className, state: this.createBaseState(title, guideGroupId), args: args }]);
 		};
 	}
 
