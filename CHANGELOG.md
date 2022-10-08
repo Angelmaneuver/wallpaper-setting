@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.8.2
+ - Deprecated announce
+
 ## 0.8.1
  - Opacity is no longer displayed as a setting item in Advanced mode
  - Revised the UI of the favorites function and added the function to open a new window with favorite wallpaper settings

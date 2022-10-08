@@ -1,9 +1,9 @@
 {
 	"name": "wallpaper-setting",
-	"displayName": "Wallpaper Setting",
+	"displayName": "[Deprecated]Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.8.1",
+	"version": "0.8.2",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",

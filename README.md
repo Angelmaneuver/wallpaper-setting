@@ -1,7 +1,20 @@
-# Wallpaper Setting
+# **[Deprecated]** Wallpaper Setting
 
 ![GitHub package.json dynamic](https://img.shields.io/github/package-json/categories/angelmaneuver/wallpaper-setting?color=green) ![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/angelmaneuver.wallpaper-setting) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/angelmaneuver/wallpaper-setting/Wallpaper%20Setting%20CI) [![Maintainability](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage) [![License](https://img.shields.io/github/license/Angelmaneuver/wallpaper-setting)](LICENSE)
 
+---
+**This extenison does not work with the latest 1.72 or later.**
+---
+**It has a problem that will take some time to address. (In advanced mode, the Process Explore display is blurred.)**
+--
+
+**Because of the time it takes to respond, we recommend that those who have installed this extension stop setting the wallpaper or run the uninstall command to use a similar extension.**
+---
+
+**Thank you for your patronage.**
+---
+
+---
 Set an image as the VSCode background.
 
 ## Usage
