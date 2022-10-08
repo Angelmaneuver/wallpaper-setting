@@ -4,15 +4,12 @@
 
 ---
 **This extenison does not work with the latest 1.72 or later.**
----
+
 **It has a problem that will take some time to address. (In advanced mode, the Process Explore display is blurred.)**
---
 
 **Because of the time it takes to respond, we recommend that those who have installed this extension stop setting the wallpaper or run the uninstall command to use a similar extension.**
----
 
 **Thank you for your patronage.**
----
 
 ---
 Set an image as the VSCode background.
