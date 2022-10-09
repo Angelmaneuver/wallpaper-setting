@@ -24,7 +24,7 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--disable-extensions",
+				"--profile-temp",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
 			],
@@ -38,7 +38,7 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--disable-extensions",
+				"--profile-temp",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
 			],

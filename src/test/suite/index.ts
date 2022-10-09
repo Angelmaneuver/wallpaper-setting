@@ -43,6 +43,7 @@ export async function run(): Promise<void> {
 	});
 
 	// Backup of settings.json and clear
+	/**
 	const { ExtensionSetting } = require('../../includes/settings/extension');
 	const { WorkbenchSetting } = require('../../includes/settings/workbench');
 	const backup               = new ExtensionSetting();
@@ -50,6 +51,7 @@ export async function run(): Promise<void> {
 
 	await new ExtensionSetting().uninstall();
 	await new WorkbenchSetting().uninstall();
+	 */
 
 	// eslint-disable-next-line no-async-promise-executor
 	return new Promise(async (c, e) => {
@@ -64,8 +66,10 @@ export async function run(): Promise<void> {
 			try {
 				// Run the mocha test
 				mocha.run(async failures => {
+					/**
 					await backup.batchInstall();
 					await backup4workbench.install();
+					 */
 
 					if (failures > 0) {
 						e(new Error(`${failures} tests failed.`));
