@@ -13,8 +13,6 @@ export class ImageFilePathGuide extends InputResourceGuide {
 		this.itemId = this.itemIds.filePath;
 		this.prompt = "Enter the path of the image file you want to set as the wallpaper, or select it from the file dialog that appears by clicking the button on the upper right.";
 	}
-
-	protected async after(): Promise<void> { return; }
 }
 
 export class SetupImageGuideEnd extends BaseGuideEnd {
