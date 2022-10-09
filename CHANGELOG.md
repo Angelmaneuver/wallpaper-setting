@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.9.0
+ - Response to VSCode 1.72 (No additional functions or fixes)
+
 ## 0.8.2
  - Deprecated announce
 

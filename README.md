@@ -1,17 +1,7 @@
-# **[Deprecated]** Wallpaper Setting
+# Wallpaper Setting
 
 ![GitHub package.json dynamic](https://img.shields.io/github/package-json/categories/angelmaneuver/wallpaper-setting?color=green) ![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/angelmaneuver.wallpaper-setting) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/angelmaneuver/wallpaper-setting/Wallpaper%20Setting%20CI) [![Maintainability](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage) [![License](https://img.shields.io/github/license/Angelmaneuver/wallpaper-setting)](LICENSE)
 
----
-**This extenison does not work with the latest 1.72 or later.**
-
-**It has a problem that will take some time to address. (In advanced mode, the Process Explore display is blurred.)**
-
-**Because of the time it takes to respond, we recommend that those who have installed this extension stop setting the wallpaper or run the uninstall command to use a similar extension.**
-
-**Thank you for your patronage.**
-
----
 Set an image as the VSCode background.
 
 ## Usage
@@ -36,19 +26,25 @@ You can set an image as the VSCode background.
 
 ![Wallpaper - Image image](resource/readme/demo2.png)
 
-Setting items
- - Opacity
+#### Setting items
+| Name | Required | Description | Remark |
+| :--- | :------: | :---------- | :----- |
+| Opacity | △ | Transparency, Can be set to a value between 0.5 and 1. | In Normal mode, transparency is set all elements, including text and images, as well as the background.
 
 ### Wallpaper - Slide
 You can set a slide image as the VSCode background.
 
 ![Wallpaper - Slide image](resource/readme/demo3.gif)
 
-Setting items
- - Opacity
- - Slide Interval Time (Hour, Minute, Second, MilliSecond)
- - Random Play
- - Fade-in Effect
+#### Setting items
+| Name | Required | Description | Remark |
+| :--- | :------: | :---------- | :----- |
+| Opacity | *1 | *1 | *1 |
+| Slide Interval Time | ○ | Image switching time. (Hour, Minute, Second, MilliSecond) | |
+| Randome Play | - | Randomize image switching. | Default False. |
+| Effect Fade in | - | Display Fade in effect when switching images. | Default True. |
+
+*1 Same as the Wallpaper - Image.
 
 ### Favorite
 Do you have many favorite images or slides?
@@ -59,8 +55,10 @@ You can easily switch between them using the Favorite Setting.
 
 ![Favorite image](resource/readme/demo4.gif)
 
-Setting items
- - Set wallpaper from favorite settings randomly when starting VSCode
+#### Setting items
+| Name | Required | Description | Remark |
+| :--- | :------: | :---------- | :----- |
+| Start Up | - | Set a random background from the favorite settings when VSCode starts up. | |
 
 ### Sync
 Are you developing on multiple machines?
@@ -117,43 +115,48 @@ Also maybe it will not work.
 
 Only those who understand this should use this feature.
 
+![Usage Advanced mode image1](resource/readme/advanced1.png)
+
 ## Step1.
 Advanced Mode requires the json file of the color theme you are using.
 
-If it is a color theme installed from extension, it is quicker to change the file extension of the vsxi file download from marketplace to zip, unzip it, and get it from the theme folder.
+If it is a color theme installed from extension, it is quicker to change the file extension of the vsix file download from marketplace to zip, unzip it, and get it from the theme folder.
 
 We are not sure about the default theme is, so please investigate on your own.
 
 ## Step2.
-![Usage Advanced mode image1](resource/readme/advanced1.png)
-
 From the VSCode settings screen, check the "Advanced Mode" checkbox in the Wallpaper Setting to enable the feature.
 
-## Step3.
-### Calling Wallpaper Setting
 ![Usage Advanced mode image2](resource/readme/advanced2.png)
 
+## Step3.
+### Calling Wallpaper Setting and select `Optimize`
 Invoke Wallpaper Setting from the command palette and select the `Optimize`.
 
-### Enter the Color Theme name
 ![Usage Advanced mode image3](resource/readme/advanced3.png)
 
+### Enter the Color Theme name
 First, the name of color theme you are using will be displayed, so please make sure it is the same. If it is different, please enter the corrent name.
 
-### Enter the transparency
 ![Usage Advanced mode image4](resource/readme/advanced4.png)
 
+### Enter the transparency
 Next, enter the three types of transparency.
- - Base : Transparency used in basic areas
- - Overlap : Transparency used in overlapping areas
- - Selection : Transparency used in areas that shoud not be transparent
 
-### Enter the Color Theme json file path
 ![Usage Advanced mode image5](resource/readme/advanced5.png)
 
+| Name      | Description                                              |
+| :-------- | :------------------------------------------------------- |
+| Base      | Transparency used in basic areas.                        |
+| Overlap   | Transparency used in overlapping areas.                  |
+| Selection | Transparency used in areas that shoud not be transparet. |
+
+### Enter the Color Theme json file path
 Finally, enter the json file path of the Color Theme you prepared.
 
-### About Optimize
+![Usage Advanced mode image6](resource/readme/advanced6.png)
+
+#### About Optimize
  - This process is required once per Color Theme unit
  - Optimized Color Theme information will be added to settings.json
 
@@ -162,18 +165,28 @@ After that, please proceed as usual setting from the menu.
 
 In Advanced Mode, transparency settings can only be set when `Optimize`.
 
-![Usage Advanced mode image6](resource/readme/advanced6.png)
-
 ## Cautions
+### `Installation appears to be corrupt [Unsupported]` message appears.
+Prior to VSCode 1.72, the relevant message was not displayed.
+In fact, it is more correct to display.
+
+[The official explanation of this message is roughly as follows.](https://code.visualstudio.com/docs/supporting/faq#_installation-appears-to-be-corrupt-unsupported)
+
+ > We are not trying to block VS Code patching, but we want to raise awareness that patching VS Code means you are running an unsupported version.
+
+Respecting this assertion, this extension makes no attempt to prevent such messages from being displayed.
+
+Even if we were to prevent it from being displayed, I believe the officials will block it.
+
 ### How will this extension affect your environment?
 This extension will make changes to the following three files.
 
-1. "VSCode installation directory" /resources/app/out/bootstrap-window.js
+1. "VSCode installation directory" /Resources/app/out/vs/workbench/workbench.desktop.main.js
 1. settings.json
 1. extensions.json (Only when using the Sync feature)
 
-"bootstrap-window.js" requires write permission.
-Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be granted).
+"workbench.desktop.main.js" requires write permission.
+Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be obtained).
 
 ### About Sync Feature
 You probably have the following questions about Sync feature.
@@ -200,7 +213,6 @@ Therefore, there is no fear of prying eye.
 Unless you use poor values for password and salt, or I have made a mistake in the implementation of the cryptographic call.
 
 ### If use the Sync feature with an understanding of the risks
-
 ![Usage Sync enable image](resource/readme/usage3.png)
 
 From the VSCode settings screen, check the "Enable Sync" checkbox in the Wallpaper Setting to enable the feature.
