@@ -3,12 +3,12 @@ import * as path                      from "path";
 import * as sinon                     from "sinon";
 import * as testTarget                from "../../../includes/favorite";
 import { ExtensionSetting, Favorite } from "../../../includes/settings/extension";
-import { Wallpaper }                  from "../../../includes/wallpaper";
+import { InstallManager }             from "../../../includes/installer";
 
 suite('Favorite Test Suite', async () => {
 	test('Image Only', async () => {
-		const installStub               = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub        = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const installStub               = sinon.stub(InstallManager.prototype, "install");
+		const installAsSlideStub        = sinon.stub(InstallManager.prototype, "installAsSlide");
 
 		const setupInstance             = new ExtensionSetting();
 		const imageFavorite             = {} as Favorite;
@@ -23,7 +23,7 @@ suite('Favorite Test Suite', async () => {
 		assert.strictEqual(installAsSlideStub.notCalled, true);
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.favoriteRandomSet, true);
-		await testTarget.randomSet()
+		await testTarget.randomSet();
 		assert.strictEqual(installStub.calledOnce,       true);
 		assert.strictEqual(installAsSlideStub.notCalled, true);
 
@@ -33,8 +33,8 @@ suite('Favorite Test Suite', async () => {
 	}).timeout(30 * 1000);
 
 	test('Slide Only', async () => {
-		const installStub               = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub        = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const installStub               = sinon.stub(InstallManager.prototype, "install");
+		const installAsSlideStub        = sinon.stub(InstallManager.prototype, "installAsSlide");
 
 		const setupInstance             = new ExtensionSetting();
 		const slideFavorite             = {} as Favorite;
@@ -63,8 +63,8 @@ suite('Favorite Test Suite', async () => {
 	}).timeout(30 * 1000);
 
 	test('Image and Slide', async () => {
-		const installStub               = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub        = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const installStub               = sinon.stub(InstallManager.prototype, "install");
+		const installAsSlideStub        = sinon.stub(InstallManager.prototype, "installAsSlide");
 
 		const setupInstance             = new ExtensionSetting();
 		const imageFavorite             = {} as Favorite;
@@ -98,8 +98,8 @@ suite('Favorite Test Suite', async () => {
 	}).timeout(30 * 1000);
 
 	test('Image and Slide - Filtering Image Only', async () => {
-		const installStub               = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub        = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const installStub               = sinon.stub(InstallManager.prototype, "install");
+		const installAsSlideStub        = sinon.stub(InstallManager.prototype, "installAsSlide");
 
 		const setupInstance             = new ExtensionSetting();
 		const imageFavorite             = {} as Favorite;
@@ -135,8 +135,8 @@ suite('Favorite Test Suite', async () => {
 	}).timeout(30 * 1000);
 
 	test('Image and Slide - Filtering Slide Only', async () => {
-		const installStub               = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub        = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const installStub               = sinon.stub(InstallManager.prototype, "install");
+		const installAsSlideStub        = sinon.stub(InstallManager.prototype, "installAsSlide");
 
 		const setupInstance             = new ExtensionSetting();
 		const imageFavorite             = {} as Favorite;

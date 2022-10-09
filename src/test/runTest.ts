@@ -23,7 +23,6 @@ async function main() {
 			// vscodeExecutablePath:     vscodeExecutablePath,
 			extensionDevelopmentPath: extensionDevelopmentPath,
 			extensionTestsPath:       extensionTestsPath,
-			launchArgs:               ["--disable-extensions"],
 		});
 	} catch (err) {
 		console.error('Failed to run tests');

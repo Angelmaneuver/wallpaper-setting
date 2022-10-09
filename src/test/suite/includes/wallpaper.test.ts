@@ -2,7 +2,7 @@ import * as assert                    from "assert";
 import * as path            from "path";
 import * as fs              from "fs";
 import * as sinon           from "sinon";
-import * as testTarget      from "../../../includes/wallpaper";
+import * as testTarget      from "../../../includes/wallpaper/main";
 import { ExtensionSetting } from "../../../includes/settings/extension";
 import { ContextManager }   from "../../../includes/utils/base/context";
 import * as Constant        from "../../../includes/constant";
@@ -22,7 +22,7 @@ suite('Wallpaper Test Suite', async () => {
 		fsStub.withArgs(installFilePath).returns(
 			"/*bootstrap-window.js - Data*/"
 		);
-		let instance  = new testTarget.Wallpaper(installLocation, installFileName, setting, extensionKey);
+		let instance  = new testTarget.MainWallpaper(installFilePath, setting, extensionKey);
 		assert.strictEqual(instance.isInstall, false);
 
 		fsStub.withArgs(installFilePath).returns(
@@ -32,7 +32,7 @@ suite('Wallpaper Test Suite', async () => {
 /*${extensionKey}-end*/`
 		);
 
-		instance      = new testTarget.Wallpaper(installLocation, installFileName, setting, extensionKey);
+		instance      = new testTarget.MainWallpaper(installFilePath, setting, extensionKey);
 		assert.strictEqual(instance.isInstall, true);
 		fsStub.restore();
 		ctxStub.restore();
@@ -44,13 +44,13 @@ suite('Wallpaper Test Suite', async () => {
 			"/*bootstrap-window.js - Data*/"
 		);
 		const setupInstance = new ExtensionSetting();
-		let   instance      = new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey);
+		let   instance      = new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey);
 
 		assert.strictEqual(instance.isReady,   undefined);
 		assert.strictEqual(instance.isAutoSet, undefined);
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, path.join(__dirname, "testDir", "test.png"));
-		instance            = new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey);
+		instance            = new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey);
 		if (instance.isReady) {
 			assert.strictEqual(instance.isReady.image, true);
 			assert.strictEqual(instance.isReady.slide, false);
@@ -61,7 +61,7 @@ suite('Wallpaper Test Suite', async () => {
 		await setupInstance.uninstall();
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideFilePaths, [path.join(__dirname, "testDir", "test.png")]);
-		instance            = new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey);
+		instance            = new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey);
 		if (instance.isReady) {
 			assert.strictEqual(instance.isReady.image, false);
 			assert.strictEqual(instance.isReady.slide, true);
@@ -71,7 +71,7 @@ suite('Wallpaper Test Suite', async () => {
 		}
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, path.join(__dirname, "testDir", "test.png"));
-		instance            = new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey);
+		instance            = new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey);
 		if (instance.isReady) {
 			assert.strictEqual(instance.isReady.image, true);
 			assert.strictEqual(instance.isReady.slide, true);
@@ -93,18 +93,20 @@ suite('Wallpaper Test Suite', async () => {
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
 		let   fsWriterMock  = sinon.mock(fs);
 
-		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
+`);
 		fsReaderStub.withArgs(filePath       ).returns(`${readData}`);
-		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/`);
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/
+`);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install();
 
 		fsWriterMock.restore();
 		fsWriterMock        = sinon.mock(fs);
@@ -112,7 +114,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, filePath);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,  opacity);
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install();
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -129,14 +131,15 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body > div#process-list {height:100vh; background-color:rgba(0,0,0,0.75) !important;}body {background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
 		let   fsWriterMock  = sinon.mock(fs);
 
-		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
+`);
 		fsReaderStub.withArgs(filePath       ).returns(`${readData}`);
 		fsWriterMock        = sinon.mock(fs);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
@@ -144,7 +147,7 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath,     filePath);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,      opacity);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.advancedMode, true);
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install();
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -159,16 +162,17 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("${readData}")';}
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("${readData}")';}
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
 		const fsWriterMock  = sinon.mock(fs);
 
-		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
+`);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).install(true, readData, opacity);
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install(true, readData, opacity);
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -186,12 +190,14 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		let   fsWriterMock      = sinon.mock(fs);
 		const ctxStub           = sinon.stub(ContextManager, "version").value("9.9.9");
 
-		fsReaderStub.withArgs(installFilePath).returns("/*bootstrap-window.js - Data*/");
+		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
+`);
 		fsReaderStub.withArgs(filePaths[0]).returns(`${readDatas[0]}`);
 		fsReaderStub.withArgs(filePaths[1]).returns(`${readDatas[1]}`);
-		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/`);
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/
+`);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).installAsSlide();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).installAsSlide();
 
 		fsWriterMock.restore();
 		fsWriterMock            = sinon.mock(fs);
@@ -199,7 +205,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		let   writeData         = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{document.body.style.backgroundImage=imageData;});`;
 		writeData               += `let i=0;const choice=(min,max)=>{i++; return i===max?min:i;};const after=(index)=>{return;};document.body.style.backgroundImage=images[i];setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -215,14 +221,14 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn, false);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).installAsSlide();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).installAsSlide();
 
 		fsWriterMock.restore();
 		fsWriterMock            = sinon.mock(fs);
 		writeData               = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
 		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
 		writeData               += `const changeImage=(async(imageData)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;document.body.style.backgroundImage=imageData;await feedin(${opacity},0.01,50);});`;
 		writeData               += `let played=new Array();let i=0;const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};i=choice(0,images.length-1);document.body.style.backgroundImage=images[i];after(i);setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
@@ -233,7 +239,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,   true);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn, true);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).installAsSlide();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).installAsSlide();
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -248,16 +254,17 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		const Data          = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{if(document.querySelector("body > #process-list")){return;};const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${filePath}:base64Data")';}
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
 		const fsWriterMock  = sinon.mock(fs);
 
 		fsReaderStub.withArgs(path.resolve(installFilePath)).returns(Data);
-		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/`);
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/
+`);
 
-		new testTarget.Wallpaper(installLocation, installFileName, new ExtensionSetting(), extensionKey).uninstall();
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).uninstall();
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -278,7 +285,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 
 		fsReaderStub.withArgs(installFilePath).returns(previous);
 
-		const instance = new testTarget.Wallpaper(installLocation, installFileName, setting, extensionKey);
+		const instance = new testTarget.MainWallpaper(installFilePath, setting, extensionKey);
 		instance.holdScriptData();
 
 		fsReaderStub.reset();

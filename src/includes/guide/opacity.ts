@@ -27,8 +27,6 @@ export class OpacityGuide extends BaseInputGuide {
 		this.validate = OpacityGuide.validateOpacity;
 	}
 
-	protected async after(): Promise<void> { return; }
-
 	public static async validateOpacity(opacity: string): Promise<string | undefined> {
 		return await BaseValidator.validateNumber(
 			ExtensionSetting.propertyIds.opacity,

@@ -1,65 +1,59 @@
-import * as path            from "path";
-import { ExtensionSetting } from "./settings/extension";
-import { ContextManager }   from "./utils/base/context";
-import * as Constant        from "./constant";
-import { formatByArray }    from "./utils/base/string";
-import { File }             from "./utils/base/file";
+import { ExtensionSetting } from "../settings/extension";
+import { ContextManager }   from "../utils/base/context";
+import * as Constant        from "../constant";
+import { formatByArray }    from "../utils/base/string";
+import { File }             from "../utils/base/file";
 
-const imageChangeScript = `const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`;
-const feedInScript1     = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
-const feedInScript2     = `await feedin({0},0.01,50);`;
-
-type Ready = { image: boolean, slide: boolean };
-
+type Ready   = { image: boolean, slide: boolean };
 type AutoSet = number;
 
-export class Wallpaper {
-	private installLocation: string;
-	private installFilaName: string;
-	private installPath:     string;
-	private settings:        ExtensionSetting;
-	private extensionKey:    string;
-	private previous:        string;
-	private isAdvancedMode:  boolean;
-	private _isInstall:      boolean;
-	private _isReady:        undefined | Ready;
-	private _isAutoSet:      undefined | AutoSet;
+const imageChangeScript         = `const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`;
+const feedInScript1             = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
+const feedInScript2             = `await feedin({0},0.01,50);`;
+const feedInScript1WithAdvanced = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(start,increment,ms)=>{let current=start;while(current<1){current+=increment;document.body.style.backdropFilter="brightness("+current+")";await sleep(ms);}});`;
+const feedInScript2WithAdvanced = `await feedin(0,0.01,50);`;
+
+export abstract class AbstractWallpaper {
+	private destination:    string;
+	private settings:       ExtensionSetting;
+	private extensionKey:   string;
+	private previous:       string;
+	private isAdvancedMode: boolean;
+	private _isInstall:     boolean;
+	private _isReady:       undefined | Ready;
+	private _isAutoSet:     undefined | AutoSet;
 
 	constructor(
-		locationPath: string,
-		fileName:     string,
+		destination:  string,
 		settings:     ExtensionSetting,
 		extensionKey: string
 	) {
-		this.installLocation = locationPath;
-		this.installFilaName = fileName,
-		this.installPath     = path.join(this.installLocation, this.installFilaName);
-		this.settings        = settings;
-		this.extensionKey    = extensionKey;
-		this.previous        = '';
-		this.isAdvancedMode  = this.settings.isAdvancedMode;
-		this._isInstall      = this.checkIsInstall();
-		this._isReady        = this.checkIsReady();
-		this._isAutoSet      = this.checkIsAutoSet();
+		this.destination    = destination;
+		this.settings       = settings;
+		this.extensionKey   = extensionKey;
+		this.previous       = '';
+		this.isAdvancedMode = this.settings.isAdvancedMode;
+		this._isInstall     = this.checkIsInstall();
+		this._isReady       = this.checkIsReady();
+		this._isAutoSet     = this.checkIsAutoSet();
 	}
 
-	private checkIsInstall(): boolean {
+	protected checkIsInstall(): boolean {
 		return this.getCurrentScript() ? true : false;
 	}
 
-	private checkIsReady(): undefined | Ready {
-		let checkResult: undefined | Ready = undefined;
-		const image: boolean               = this.settings.filePath.value.length > 0;
-		const slide: boolean               = this.settings.slideFilePaths.value.length > 0;
+	protected checkIsReady(): undefined | Ready {
+		const image = this.settings.filePath.value.length > 0;
+		const slide = this.settings.slideFilePaths.value.length > 0;
 
 		if (image || slide) {
-			checkResult =  { "image": image, "slide": slide };
+			return { "image": image, "slide": slide };
+		} else {
+			return undefined;
 		}
-
-		return checkResult;
 	}
 
-	private checkIsAutoSet(): undefined | AutoSet {
+	protected checkIsAutoSet(): undefined | AutoSet {
 		let checkResult: undefined | AutoSet = undefined;
 
 		if (this.isReady) {
@@ -86,7 +80,7 @@ export class Wallpaper {
 	}
 
 	public install(fromSync?: boolean, syncData?: string, syncOpacity?: number): void {
-		const editFile   = new File(this.installPath);
+		const editFile   = new File(this.destination);
 		let   image      = "";
 		let   opacity    = undefined;
 
@@ -103,15 +97,13 @@ export class Wallpaper {
 			opacity      = this.settings.opacity.validValue;
 		}
 
-		editFile.content =
-			this.clearWallpaperScript(editFile.toString()) +
-			this.getWallpaperScript(image, opacity);
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + this.getWallpaperScript(image, opacity);
 
 		editFile.write();
 	}
 
 	public installAsSlide(): void {
-		const editFile   = new File(this.installPath);
+		const editFile   = new File(this.destination);
 
 		editFile.content =
 			this.clearWallpaperScript(editFile.toString()) +
@@ -127,16 +119,15 @@ export class Wallpaper {
 	}
 
 	public installWithPrevious(): void {
-		const editFile   = new File(this.installPath);
+		const editFile   = new File(this.destination);
 
-		editFile.content = this.clearWallpaperScript(editFile.toString()) + `
-` + this.previous;
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + this.previous;
 
 		editFile.write();
 	}
 
 	public uninstall(): void {
-		const editFile   = new File(this.installPath);
+		const editFile   = new File(this.destination);
 
 		editFile.content = this.clearWallpaperScript(editFile.toString());
 
@@ -147,13 +138,13 @@ export class Wallpaper {
 		this.previous = this.getCurrentScript();
 	}
 
-	private getCurrentScript(): string {
-		const data = new File(this.installPath).toString().match(this.getScriptMatch());
+	protected getCurrentScript(): string {
+		const data = new File(this.destination).toString().match(this.getScriptMatch());
 
 		return data ? data[0] : "";
 	}
 
-	private getWallpaperScript(image: string, opacity: number): string {
+	protected getWallpaperScript(image: string, opacity: number): string {
 		let result = "";
 
 		if (image && opacity) {
@@ -166,7 +157,7 @@ export class Wallpaper {
 		return result;
 	}
 
-	private getSlideScript(
+	protected getSlideScript(
 		filePaths: Array<string>,
 		opacity:   number,
 		interval:  number,
@@ -176,32 +167,43 @@ export class Wallpaper {
 		let result = "";
 
 		if (filePaths.length > 0 && opacity && interval) {
-			const script1 = feedin ? formatByArray(feedInScript1, opacity.toString()) : ``;
-			const script2 = feedin ? formatByArray(feedInScript2, opacity.toString()) : ``;
+			const [script1, script2] = feedin ? this.getFeedInScript(opacity) : [``, ``];
 
-			let temp      = `let images=new Array();`;
+			let   temp               = `let images=new Array();`;
 
 			filePaths.forEach((filePath) => {
 				const image = new File(filePath);
 				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
 			});
 
-			temp          += formatByArray(imageChangeScript, script1, script2);
-			temp          += this.getRandomOrNormalScript(random);
-			temp          += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
+			temp    += formatByArray(imageChangeScript, script1, script2);
+			temp    += this.getRandomOrNormalScript(random);
+			temp    += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
 
-			result        = formatByArray(this.getScriptTemplate(opacity), temp);
+			result  =  formatByArray(this.getScriptTemplate(opacity), temp);
 		}
 
 		return result;
 	}
 
-	private getScriptTemplate(opacity: number): string {
-		let result = `
-/*${this.extensionKey}-start*/
+	private getFeedInScript(opacity: number): [script1: string, script2: string] {
+		if (this.isAdvancedMode) {
+			return [
+				feedInScript1WithAdvanced,
+				feedInScript2WithAdvanced,
+			];
+		} else {
+			return [
+				formatByArray(feedInScript1, opacity.toString()),
+				formatByArray(feedInScript2, opacity.toString()),
+			];
+		}
+	}
+
+	protected getScriptTemplate(opacity: number): string {
+		let result = `/*${this.extensionKey}-start*/
 /*${this.extensionKey}.ver.${ContextManager.version}*/
 window.onload=()=>{`;
-		result     += this.isAdvancedMode ? `` : `if(document.querySelector("body > #process-list")){return;};`;
 		result     += `const style=document.createElement("style");`;
 		result     += `style.appendChild(document.createTextNode("` + this.getBasicStyle(opacity) + `"));`
 		result     += `document.head.appendChild(style);`;
@@ -212,10 +214,9 @@ window.onload=()=>{`;
 		return result;
 	}
 
-	private getBasicStyle(opacity: number): string {
+	protected getBasicStyle(opacity: number): string {
 		let style = ``;
 		style += `body > div {background-color:transparent !important;}`;
-		style += this.isAdvancedMode ? `body > div#process-list {height:100vh; background-color:rgba(0,0,0,0.75) !important;}` : ``;
 		style += `body {`;
 		style += this.isAdvancedMode ? `` : `opacity:${opacity};`
 		style += `background-size:cover;`
@@ -226,18 +227,18 @@ window.onload=()=>{`;
 		return style;
 	}
 
-	private clearWallpaperScript(content: string): string {
-		return content.replace(this.getScriptMatch(), "").replace(/\s*$/, "");
+	protected clearWallpaperScript(content: string): string {
+		return content.replace(this.getScriptMatch(), "");
 	}
 
-	private getScriptMatch(): RegExp {
+	protected getScriptMatch(): RegExp {
 		return new RegExp(
 			"\\/\\*" + this.extensionKey + "-start\\*\\/[\\s\\S]*?\\/\\*" + this.extensionKey + "-end\\*\\/",
 			"g"
 		);
 	}
 
-	private getRandomOrNormalScript(random: boolean): string {
+	protected getRandomOrNormalScript(random: boolean): string {
 		let result = "";
 		if (random) {
 			result += `let played=new Array();let i=0;`;

@@ -6,7 +6,7 @@ import { ExtensionContext }   from "vscode";
 import { MultiStepInput }     from "../../../includes/utils/multiStepInput";
 import { State }              from "../../../includes/guide/base/base";
 import { ExtensionSetting }   from "../../../includes/settings/extension";
-import { Wallpaper }          from "../../../includes/wallpaper";
+import { MainWallpaper }      from "../../../includes/wallpaper/main";
 import * as Constant          from "../../../includes/constant";
 import { VSCodePreset }       from "../../../includes/utils/base/vscodePreset";
 import { File }               from "../../../includes/utils/base/file";
@@ -30,7 +30,7 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const fileStub      = sinon.stub(File,                            "getChildrens");
 		const fileCheckStub = sinon.stub(File,                            "isFile");
 		const dirCheckStub  = sinon.stub(File,                            "isDirectory")
-		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "installAsSlide");
+		const wallpaperStub = sinon.stub(MainWallpaper.prototype,         "installAsSlide");
 		const state         = stateCreater();
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 
@@ -97,7 +97,7 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const fileStub      = sinon.stub(File,                            "getChildrens");
 		const fileCheckStub = sinon.stub(File,                            "isFile");
 		const dirCheckStub  = sinon.stub(File,                            "isDirectory")
-		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "installAsSlide");
+		const wallpaperStub = sinon.stub(MainWallpaper.prototype,         "installAsSlide");
 		const state         = stateCreater();
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 

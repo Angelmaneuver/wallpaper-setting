@@ -7,7 +7,7 @@ import { MultiStepInput }                  from "../../../includes/utils/multiSt
 import { State }                           from "../../../includes/guide/base/base";
 import { ExtensionSetting }                from "../../../includes/settings/extension";
 import * as Constant                       from "../../../includes/constant";
-import { Wallpaper }                       from "../../../includes/wallpaper";
+import { MainWallpaper }                   from "../../../includes/wallpaper/main";
 
 interface QuickPickParameters<T extends QuickPickItem> {
 	title:        string;
@@ -215,8 +215,8 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 
 	test('Set', async () => {
 		const pickStub                      = sinon.stub(MultiStepInput.prototype, "showQuickPick");
-		const installStub                   = sinon.stub(Wallpaper.prototype,      "install");
-		const installAsSlideStub            = sinon.stub(Wallpaper.prototype,      "installAsSlide");
+		const installStub                   = sinon.stub(MainWallpaper.prototype,  "install");
+		const installAsSlideStub            = sinon.stub(MainWallpaper.prototype,  "installAsSlide");
 		let   state                         = stateCreater();
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,7 +6,7 @@ import { MultiStepInput }                  from "../../../../../includes/utils/m
 import { BaseInputGuide }                  from "../../../../../includes/guide/base/input";
 import * as Installer                      from "../../../../../includes/installer";
 import { State }                           from "../../../../../includes/guide/base/base";
-import { Wallpaper }                       from "../../../../../includes/wallpaper";
+import { MainWallpaper }                   from "../../../../../includes/wallpaper/main";
 import { ExtensionSetting }                from "../../../../../includes/settings/extension";
 import * as Constant                       from "../../../../../includes/constant";
 
@@ -27,9 +27,9 @@ suite('Guide - Wallpaper Operation Test Suite', async () => {
 	test('delegation2Transition, autoSetByFavorite, installByType', async () => {
 		await new ExtensionSetting().setItemValue(ExtensionSetting.propertyIds.favoriteRandomSet, true);
 
-		const isAutoSetStub      = sinon.stub(Wallpaper.prototype, "isAutoSet");
-		const installStub        = sinon.stub(Wallpaper.prototype, "install");
-		const installAsSlideStub = sinon.stub(Wallpaper.prototype, "installAsSlide");
+		const isAutoSetStub      = sinon.stub(MainWallpaper.prototype, "isAutoSet");
+		const installStub        = sinon.stub(MainWallpaper.prototype, "install");
+		const installAsSlideStub = sinon.stub(MainWallpaper.prototype, "installAsSlide");
 		const setting            = new ExtensionSetting();
 		let   state              = stateCreater(setting);
 
@@ -69,8 +69,8 @@ suite('Guide - Wallpaper Operation Test Suite', async () => {
 
 	test('SelectSetupType - getExecute', async () => {
 		const pickStub           = sinon.stub(MultiStepInput.prototype, "showQuickPick");
-		const installStub        = sinon.stub(Wallpaper.prototype,      "install");
-		const installAsSlideStub = sinon.stub(Wallpaper.prototype,      "installAsSlide");
+		const installStub        = sinon.stub(MainWallpaper.prototype,      "install");
+		const installAsSlideStub = sinon.stub(MainWallpaper.prototype,      "installAsSlide");
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })

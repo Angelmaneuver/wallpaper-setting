@@ -8,7 +8,7 @@ import { State }                           from "../../../../includes/guide/base
 import { ExtensionSetting }                from "../../../../includes/settings/extension";
 import { SettingSync }                     from "../../../../includes/settings/sync";
 import { VSCodePreset }                    from "../../../../includes/utils/base/vscodePreset"
-import { Wallpaper }                       from "../../../../includes/wallpaper";
+import { MainWallpaper }                   from "../../../../includes/wallpaper/main";
 import * as WallpaperSelecter              from "../../../../includes/guide/select/wallpaper";
 import { SelectParameterType }             from "../../../../includes/guide/select/parameter";
 import { SelectFavoriteProcess }           from "../../../../includes/guide/select/favorite";
@@ -48,9 +48,9 @@ suite('Guide - Begin Test Suite', async () => {
 	};
 
 	test('constructor', async () => {
-		const pickStub                = sinon.stub(MultiStepInput.prototype, "showQuickPick");
-		const isInstallStub           = sinon.stub(Wallpaper.prototype, "isInstall");
-		const isReadyStub             = sinon.stub(Wallpaper.prototype, "isReady");
+		const pickStub                = sinon.stub(MultiStepInput.prototype,   "showQuickPick");
+		const isInstallStub           = sinon.stub(MainWallpaper.prototype,    "isInstall");
+		const isReadyStub             = sinon.stub(MainWallpaper.prototype,    "isReady");
 		const isFavoriteRegisterdStub = sinon.stub(ExtensionSetting.prototype, "isFavoriteRegisterd");
 		let   state                   = { title: "Test Suite", resultSet: {} } as State;
 		const setting                 = new ExtensionSetting();
@@ -117,7 +117,7 @@ suite('Guide - Begin Test Suite', async () => {
 		const wallpaperSelecterStub = sinon.stub(WallpaperSelecter,               "delegation2Transition");
 		const sync                  = sinon.createStubInstance(SettingSync);
 		const syncUninstallStub     = sinon.stub(SettingSync.prototype,           "uninstall");
-		const wallpaperStub         = sinon.stub(Wallpaper.prototype,             "uninstall");
+		const wallpaperStub         = sinon.stub(MainWallpaper.prototype,         "uninstall");
 		const selectParameterStub   = sinon.stub(SelectParameterType.prototype,   "start");
 		const selectFavoriteStub    = sinon.stub(SelectFavoriteProcess.prototype, "start");
 		const imageStub             = sinon.stub(ImageFilePathGuide.prototype,    "start");

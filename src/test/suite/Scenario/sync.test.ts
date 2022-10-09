@@ -10,7 +10,7 @@ import { ExtensionSetting } from "../../../includes/settings/extension";
 import { VSCodePreset }     from "../../../includes/utils/base/vscodePreset";
 import { File }             from "../../../includes/utils/base/file";
 import * as Encrypt         from "../../../includes/utils/base/encrypt";
-import { Wallpaper }        from "../../../includes/wallpaper";
+import { MainWallpaper }    from "../../../includes/wallpaper/main";
 import { SettingSync } from "../../../includes/settings/sync";
 
 suite('Scenario - Sync Test Suite', async () => {
@@ -77,7 +77,7 @@ suite('Scenario - Sync Test Suite', async () => {
 		const isAvailableStub = sinon.stub(SettingSync.prototype,    "isAvailable");
 		const getDataStub     = sinon.stub(SettingSync.prototype,    "getData");
 		const getOpacityStub  = sinon.stub(SettingSync.prototype,    "getOpacity");
-		const wallpaperStub   = sinon.stub(Wallpaper.prototype,      "install");
+		const wallpaperStub   = sinon.stub(MainWallpaper.prototype,  "install");
 		const decryptStub     = sinon.stub(Encrypt,                  "decrypt");
 		const context         = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 		const setting         = new ExtensionSetting();

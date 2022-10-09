@@ -11,7 +11,7 @@ import {
 import * as Installer                      from "../../../../../includes/installer";
 import { State }                           from "../../../../../includes/guide/base/base";
 import { ExtensionSetting }                from "../../../../../includes/settings/extension";
-import { Wallpaper }                       from "../../../../../includes/wallpaper";
+import { MainWallpaper }                   from "../../../../../includes/wallpaper/main";
 import * as Constant                       from "../../../../../includes/constant";
 
 interface QuickPickParameters<T extends QuickPickItem> {
@@ -47,7 +47,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		const pickStub                = sinon.stub(MultiStepInput.prototype,                         "showQuickPick");
 		const isFavoriteRegisterdStub = sinon.stub(ExtensionSetting.prototype,                       "isFavoriteRegisterd");
 		const favoriteAutoSetStub     = sinon.stub(ExtensionSetting.prototype,                       "FavoriteAutoset")
-		const isAutoSetStub           = sinon.stub(Wallpaper.prototype,                              "isAutoSet");
+		const isAutoSetStub           = sinon.stub(MainWallpaper.prototype,                          "isAutoSet");
 		const favoriteOperationStub   = sinon.stub(testTarget.SelectFavoriteOperationType.prototype, "start");
 		const favoriteRegisterStub    = sinon.stub(RegisterFavoriteGuide.prototype,                  "start");
 		const favoriteOpenGuideStub   = sinon.stub(OpenFavoriteGuide.prototype,                      "start");

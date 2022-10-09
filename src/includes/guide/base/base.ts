@@ -11,12 +11,14 @@ import { ExtensionSetting } from "../../settings/extension";
 import { SettingSync }      from "../../settings/sync";
 import * as Constant        from "../../constant";
 import { File }             from "../../utils/base/file";
-import { Wallpaper }        from "../../wallpaper";
-import * as Installer       from "../../installer";
+import {
+	getInstance,
+	InstallManager
+}                           from "../../installer";
 
 export interface State extends AbstractState {
 	context:      ExtensionContext,
-	installer:    Wallpaper,
+	installer:    InstallManager,
 	settings:     ExtensionSetting,
 	sync:         SettingSync,
 	message?:     string                  | undefined,
@@ -62,9 +64,9 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 		}
 	}
 
-	protected get installer(): Wallpaper {
+	protected get installer(): InstallManager {
 		if (!this.state.installer) {
-			this.state.installer = Installer.getInstance(this.settings);
+			this.state.installer = getInstance(this.settings);
 		}
 
 		return this.state.installer;

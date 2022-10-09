@@ -7,7 +7,7 @@ import { MultiStepInput }   from "../../../includes/utils/multiStepInput";
 import { State }            from "../../../includes/guide/base/base";
 import { ExtensionSetting } from "../../../includes/settings/extension";
 import { VSCodePreset }     from "../../../includes/utils/base/vscodePreset";
-import { Wallpaper }        from "../../../includes/wallpaper";
+import { MainWallpaper }    from "../../../includes/wallpaper/main";
 
 suite('Scenario - Setup Image Test Suite', async () => {
 	const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
@@ -20,7 +20,7 @@ suite('Scenario - Setup Image Test Suite', async () => {
 		const opacity       = "0.55";
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
-		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "install");
+		const wallpaperStub = sinon.stub(MainWallpaper.prototype,         "install");
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 
 		pickStub.resolves(items.Setup);
@@ -47,7 +47,7 @@ suite('Scenario - Setup Image Test Suite', async () => {
 		const opacity       = "0.75";
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
-		const wallpaperStub = sinon.stub(Wallpaper.prototype,             "install");
+		const wallpaperStub = sinon.stub(MainWallpaper.prototype,         "install");
 		const context       = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 
 		await new ExtensionSetting().set(ExtensionSetting.propertyIds.advancedMode, true);
