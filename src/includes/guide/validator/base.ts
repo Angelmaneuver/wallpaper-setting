@@ -1,6 +1,8 @@
 import { File }      from "../../utils/base/file";
 import { Optional }  from "../../utils/base/optional";
 
+const HEX_COLOR_CODE_MATCHER = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+
 export class BaseValidator {
 	public static filters: Array<string> | undefined = undefined;
 
@@ -53,6 +55,17 @@ export class BaseValidator {
 			});
 		} else {
 			return undefined;
+		}
+	}
+
+	public static async validateHexColorCode(value: string): Promise<string | undefined> {
+		if (HEX_COLOR_CODE_MATCHER.test(value)) {
+			return undefined;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			return new Promise<string>((resolve, reject) => {
+				resolve("Invalid value.");
+			});
 		}
 	}
 }

@@ -3,6 +3,7 @@ import * as path            from "path";
 import * as fs              from "fs";
 import * as sinon           from "sinon";
 import * as testTarget      from "../../../includes/wallpaper/main";
+import * as testTargetPE    from "../../../includes/wallpaper/processExplorer";
 import { ExtensionSetting } from "../../../includes/settings/extension";
 import { ContextManager }   from "../../../includes/utils/base/context";
 import * as Constant        from "../../../includes/constant";
@@ -301,6 +302,44 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		instance.installWithPrevious();
 
 		fsWriterMock.verify();
+
+		fsReaderStub.restore();
+		fsWriterMock.restore();
+		ctxStub.restore();
+	}).timeout(30 * 1000);
+
+	test('isReady and isAutoSet - Process Explorer', async () => {
+		const instance = new testTargetPE.ProcessExplorer(installFilePath, new ExtensionSetting(), extensionKey);
+
+		assert.strictEqual(instance.isReady,   undefined);
+		assert.strictEqual(instance.isAutoSet, undefined);
+	}).timeout(30 * 1000);
+
+	test('install - Process Explorer', async () => {
+		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
+		const colorCode     = `#012345`;
+		const writeData     = `/*bootstrap-window.js - Data*/
+/*${extensionKey}-start*/
+/*${extensionKey}.ver.${ContextManager.version}*/
+window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body{background-color:${colorCode};}"));document.head.appendChild(style);}
+/*${extensionKey}-end*/`;
+
+		const fsReaderStub  = sinon.stub(fs, "readFileSync");
+		let   fsWriterMock  = sinon.mock(fs);
+
+		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
+`);
+
+		new testTargetPE.ProcessExplorer(installFilePath, new ExtensionSetting(), extensionKey).install();
+
+		fsWriterMock        = sinon.mock(fs);
+		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
+
+		const testTarget    = new testTargetPE.ProcessExplorer(installFilePath, new ExtensionSetting(), extensionKey);
+
+		testTarget.colorCode = colorCode;
+
+		testTarget.install();
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();

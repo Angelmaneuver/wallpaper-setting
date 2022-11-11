@@ -36,4 +36,8 @@ export class WorkbenchSetting extends SettingBase {
 	public get colorTheme(): string {
 		return Optional.ofNullable(this.get("colorTheme")).orElseNonNullable("") as string;
 	}
+
+	public get colorCustomizations() {
+		return this._colorCustomizations;
+	}
 }

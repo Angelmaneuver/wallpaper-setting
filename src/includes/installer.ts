@@ -2,6 +2,7 @@ import * as path            from "path";
 import { env }              from "vscode";
 import { ExtensionSetting } from "./settings/extension";
 import { MainWallpaper }    from "./wallpaper/main";
+import { ProcessExplorer }  from "./wallpaper/processExplorer";
 import { Optional }         from "./utils/base/optional";
 import { File }             from "./utils/base/file";
 
@@ -9,7 +10,7 @@ export function isInstallable(): void {
 	let   check   = "";
 	const targets = [
 		path.join(...getTargetMain()),
-	]
+	];
 
 	try {
 		targets.forEach(
@@ -37,15 +38,35 @@ function getTargetMain(): [location: string, name: string] {
 	];	
 }
 
+function getTargetProcessExplorer(): [location: string, name: string] {
+	return [
+		path.join(getAppRoot(), "out", "vs", "code", "electron-sandbox", "processExplorer"),
+		"processExplorer.js",
+	];	
+}
+
 function getAppRoot(): string {
 	return Optional.ofNullable(env.appRoot).orElseThrow(new URIError("App root not found..."));
 }
 
 export class InstallManager {
-	private main: MainWallpaper;
+	private static extensionKey = "wallpaper-setting";
+
+	private main:            MainWallpaper;
+	private processExplorer: ProcessExplorer;
 
 	constructor(setting: ExtensionSetting){
-		this.main = new MainWallpaper(path.join(...getTargetMain()), setting, "wallpaper-setting");
+		this.main            = new MainWallpaper(
+			path.join(...getTargetMain()),
+			setting,
+			InstallManager.extensionKey
+		);
+
+		this.processExplorer = new ProcessExplorer(
+			path.join(...getTargetProcessExplorer()),
+			setting,
+			InstallManager.extensionKey
+		);
 	}
 
 	public get isInstall() {
@@ -78,5 +99,20 @@ export class InstallManager {
 
 	public holdScriptData(): void {
 		this.main.holdScriptData();
+	}
+
+	public get isAddedProcessExplorerBackgroundColor(): boolean {
+		return this.processExplorer.isInstall;
+	}
+
+	public addProcessExplorerBackgroundColor(colorCode: string) {
+		this.processExplorer.colorCode = colorCode;
+		this.processExplorer.install();
+	}
+
+	public removeProcessExplorerBackgroundColor() {
+		if (this.isAddedProcessExplorerBackgroundColor) {
+			this.processExplorer.uninstall();
+		}
 	}
 }

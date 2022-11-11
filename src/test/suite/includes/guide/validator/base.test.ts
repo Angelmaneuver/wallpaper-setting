@@ -116,4 +116,30 @@ suite('Guide Validator Test Suite', async () => {
 			`Enter a number between 4.4 and 4.6 for ${name}.`
 		);
 	});
+
+	test('validateHexColorCode', async () => {
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#000000"), undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#999999"), undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#aaaaaa"), undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#ffffff"), undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#AAAAAA"), undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#FFFFFF"), undefined);
+
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#000"),    undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#999"),    undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#aaa"),    undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#fff"),    undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#AAA"),    undefined);
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#FFF"),    undefined);
+
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode(""),        "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("000000"),  "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("FFFFFF"),  "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("AAA"),     "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("999"),     "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#ggg"),    "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#GGG"),    "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#gggggg"), "Invalid value.");
+		assert.strictEqual(await testTarget.BaseValidator.validateHexColorCode("#GGGGGG"), "Invalid value.");
+	});
 });

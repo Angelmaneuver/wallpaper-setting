@@ -14,14 +14,14 @@ const feedInScript1WithAdvanced = `const sleep=(ms)=>{return new Promise((resolv
 const feedInScript2WithAdvanced = `await feedin(0,0.01,50);`;
 
 export abstract class AbstractWallpaper {
-	private destination:    string;
-	private settings:       ExtensionSetting;
-	private extensionKey:   string;
-	private previous:       string;
-	private isAdvancedMode: boolean;
-	private _isInstall:     boolean;
-	private _isReady:       undefined | Ready;
-	private _isAutoSet:     undefined | AutoSet;
+	protected destination:    string;
+	protected settings:       ExtensionSetting;
+	protected extensionKey:   string;
+	protected previous:       string;
+	protected isAdvancedMode: boolean;
+	protected _isInstall:     boolean;
+	protected _isReady:       undefined | Ready;
+	protected _isAutoSet:     undefined | AutoSet;
 
 	constructor(
 		destination:  string,

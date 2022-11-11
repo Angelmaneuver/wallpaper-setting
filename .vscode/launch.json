@@ -10,7 +10,6 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--profile-temp",
 				"--disable-extension=angelmaneuver.wallpaper-setting",
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
