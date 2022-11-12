@@ -182,6 +182,7 @@ Even if we were to prevent it from being displayed, I believe the officials will
 This extension will make changes to the following three files.
 
 1. "VSCode installation directory" /Resources/app/out/vs/workbench/workbench.desktop.main.js
+1. "VSCode installation directory" /Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)
 1. settings.json
 1. extensions.json (Only when using the Sync feature)
 
