@@ -12,6 +12,9 @@
 	"bugs": {
 		"url": "https://github.com/Angelmaneuver/wallpaper-setting/issues"
 	},
+	"sponsor": {
+		"url": "https://github.com/sponsors/Angelmaneuver"
+	},
 	"engines": {
 		"vscode": "^1.73.0"
 	},
