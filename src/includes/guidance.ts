@@ -42,12 +42,11 @@ function restart(): void {
 	const items = [yes, 'No']
 
 	window.showInformationMessage(
-		`VSCode must be restarted for the settings to take effect. Would you like to close this window and open a new one?`,
+		`VSCode must be reload window for the settings to take effect. Would you like to reload window now?`,
 		...items
 	).then(selectAction => {
 		if (selectAction === yes) {
-			commands.executeCommand('workbench.action.closeWindow');
-			commands.executeCommand('workbench.action.newWindow');
+			commands.executeCommand('workbench.action.reloadWindow');
 		}
 	});
 }

@@ -92,8 +92,7 @@ export abstract class AbstractWallpaper {
 			image        = syncData;
 			opacity      = syncOpacity;
 		} else if (this.settings.filePath.value) {
-			const file   = new File(this.settings.filePath.value,);
-			image        = `data:image/${file.extension};base64,${file.toBase64()}`
+			image        = this.settings.filePath.value
 			opacity      = this.settings.opacity.validValue;
 		}
 
@@ -144,13 +143,13 @@ export abstract class AbstractWallpaper {
 		return data ? data[0] : "";
 	}
 
-	protected getWallpaperScript(image: string, opacity: number): string {
+	protected getWallpaperScript(filePath: string, opacity: number): string {
 		let result = "";
 
-		if (image && opacity) {
+		if (filePath && opacity) {
 			result = formatByArray(
 				this.getScriptTemplate(opacity),
-				`document.body.style.backgroundImage='url("${image}")';`
+				`document.body.style.backgroundImage='url("vscode-file://vscode-app/${filePath.replace(/\\/g, "/")}")';`
 			);
 		}
 
@@ -172,8 +171,7 @@ export abstract class AbstractWallpaper {
 			let   temp               = `let images=new Array();`;
 
 			filePaths.forEach((filePath) => {
-				const image = new File(filePath);
-				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
+				temp        += `images.push('url("vscode-file://vscode-app/${filePath.replace(/\\/g, "/")}")');`;
 			});
 
 			temp    += formatByArray(imageChangeScript, script1, script2);
@@ -247,9 +245,10 @@ window.onload=()=>{`;
 			result += `i=choice(0,images.length-1);`;
 			result += `document.body.style.backgroundImage=images[i];after(i);`;
 		} else {
-			result += `let i=0;`;
-			result += `const choice=(min,max)=>{i++; return i===max?min:i;};`
+			result += `let realIndex=0;`
+			result += `const choice=(min,max)=>{let idx=window.localStorage.getItem("WallpaperIndex");if(idx!==null){idx=parseInt(idx);if(idx>realIndex){realIndex=idx}else{idx=realIndex}if(idx<max){idx++;idx=(idx>max?min:idx)}else{idx=0}}else{idx=0;}window.localStorage.setItem('WallpaperIndex',idx);realIndex=idx;return idx};`
 			result += `const after=(index)=>{return;};`;
+			result += `let i=choice(0,images.length-1);`;
 			result += `document.body.style.backgroundImage=images[i];`;
 		}
 
