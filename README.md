@@ -1,12 +1,29 @@
-# Wallpaper Setting
+<div style="text-align:center;">
+	<h1>Wallpaper Setting</h1>
+	Set an image as the VSCode background.
+	<div style="margin-top:1em;">
+		<img alt="Version" src="https://img.shields.io/github/package-json/version/angelmaneuver/wallpaper-setting?color=blue" />
+		<img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting" />
+		<a href="https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability"><img src="https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability" /></a>
+		<a href="https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage"><img src="https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage" /></a>
+		<a href="https://github.com/Angelmaneuver/wallpaper-setting/issues">
+			<img alt="Issues" src="https://img.shields.io/github/issues/Angelmaneuver/wallpaper-setting?color=#86D492" />
+		</a>
+	</div>
+</div>
 
-![GitHub package.json dynamic](https://img.shields.io/github/package-json/categories/angelmaneuver/wallpaper-setting?color=green) ![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/angelmaneuver.wallpaper-setting) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/angelmaneuver/wallpaper-setting/ci.yml?branch=main) [![Maintainability](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage)](https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage) [![License](https://img.shields.io/github/license/Angelmaneuver/wallpaper-setting)](LICENSE)
+--- 
 
-Set an image as the VSCode background.
+## Warning
+Since version 0.10.0, the management of settings has changed from profile to user settings.
+
+If necessary, manually move the setting values starting with `"wallpaper-setting."` from the profile's `setting.json` to user's `settings.json`.
+
+---
 
 ## Usage
 ### Step1.
-Press '`⇧⌘P`' to bring up the command pallete and enter '`Wallpaper Setting`'.
+Press `⇧⌘P` to bring up the command pallete and enter '`Wallpaper Setting`'.
 
 ![Usage Step1. image](resource/readme/usage1.png)
 
@@ -78,7 +95,7 @@ Next, download and setup the wallpaper settings on another machines.
 #### Delete
 Want to delete your uploaded wallpaper settings?
 
-Of course you can turn it delete. Just go to the menu and click on "Delete" or "Uninstall" and your uploaded wallpaper settings will be gone!
+Of course you can turn it delete. Just go to the menu and click on `Delete` or `Uninstall` and your uploaded wallpaper settings will be gone!
 
 ![Sync delete image](resource/readme/demo8.gif)
 
@@ -91,7 +108,7 @@ Of course you can turn it delete. Just go to the menu and click on "Delete" or "
 
 \* Image file size is less than 500KB, it can be used for Sync
 
-\* VSCode standard feature "Settings Sync" must be enable
+\* VSCode standard feature `Settings Sync` must be enable
 
 ### Uninstall
 Didn't like this extension?
@@ -125,7 +142,7 @@ If it is a color theme installed from extension, it is quicker to change the fil
 We are not sure about the default theme is, so please investigate on your own.
 
 ## Step2.
-From the VSCode settings screen, check the "Advanced Mode" checkbox in the Wallpaper Setting to enable the feature.
+From the VSCode settings screen, check the `Advanced Mode` checkbox in the Wallpaper Setting to enable the feature.
 
 ![Usage Advanced mode image2](resource/readme/advanced2.png)
 
@@ -145,11 +162,11 @@ Next, enter the three types of transparency.
 
 ![Usage Advanced mode image5](resource/readme/advanced5.png)
 
-| Name      | Description                                              |
-| :-------- | :------------------------------------------------------- |
-| Base      | Transparency used in basic areas.                        |
-| Overlap   | Transparency used in overlapping areas.                  |
-| Selection | Transparency used in areas that shoud not be transparet. |
+| Name      | Description                                               | Remark |
+| :-------- | :-------------------------------------------------------  | :----- |
+| Base      | Transparency used in basic areas.                         |        |
+| Overlap   | Transparency used in overlapping areas.                   |        |
+| Selection | Transparency used in areas that shoud not be transparent. |        |
 
 ### Enter the Color Theme json file path
 Finally, enter the json file path of the Color Theme you prepared.
@@ -157,8 +174,8 @@ Finally, enter the json file path of the Color Theme you prepared.
 ![Usage Advanced mode image6](resource/readme/advanced6.png)
 
 #### About Optimize
- - This process is required once per Color Theme unit
- - Optimized Color Theme information will be added to settings.json
+ - This process is required once per Profile
+ - Optimized Color Theme information will be added to profile's `settings.json`
 
 ## Step4.
 After that, please proceed as usual setting from the menu.
@@ -217,6 +234,3 @@ Unless you use poor values for password and salt, or I have made a mistake in th
 ![Usage Sync enable image](resource/readme/usage3.png)
 
 From the VSCode settings screen, check the "Enable Sync" checkbox in the Wallpaper Setting to enable the feature.
-
-## Support
-<a href="https://www.buymeacoffee.com/Angelmaneuver"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="Angelmaneuver" /></a>

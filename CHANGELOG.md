@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.10.0
+ - Settings are now managed by default profile
+
 ## 0.9.1
  - Added the function to set background color in Process Explorer (issue [#5](https://github.com/Angelmaneuver/wallpaper-setting/issues/5) have been supported)
 

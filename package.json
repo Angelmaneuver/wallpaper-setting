@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.9.1",
+	"version": "0.10.0",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -45,11 +45,13 @@
 			"properties": {
 				"wallpaper-setting.filePath": {
 					"type": "string",
+					"scope": "application",
 					"default": "",
 					"description": "The path of the background image."
 				},
 				"wallpaper-setting.opacity": {
 					"type": "number",
+					"scope": "application",
 					"maximum": 1,
 					"minimum": 0,
 					"default": 0.75,
@@ -57,11 +59,13 @@
 				},
 				"wallpaper-setting.slideFilePaths": {
 					"type": "array",
+					"scope": "application",
 					"default": [],
 					"description": "The path of the images to use in the slide."
 				},
 				"wallpaper-setting.slideInterval": {
 					"type": "number",
+					"scope": "application",
 					"maximum": 65555,
 					"minimum": 0,
 					"default": 25,
@@ -69,6 +73,7 @@
 				},
 				"wallpaper-setting.slideIntervalUnit": {
 					"type": "string",
+					"scope": "application",
 					"default": "Minute",
 					"enum": [
 						"Hour",
@@ -80,31 +85,37 @@
 				},
 				"wallpaper-setting.slideRandomPlay": {
 					"type": "boolean",
+					"scope": "application",
 					"default": false,
 					"description": "Randomize the order in which images slide."
 				},
 				"wallpaper-setting.slideEffectFadeIn": {
 					"type": "boolean",
+					"scope": "application",
 					"default": true,
 					"description": "Fade in when the slide image changes."
 				},
 				"wallpaper-setting.favoriteWallpaperImageSet": {
 					"type": "object",
+					"scope": "application",
 					"default": {},
 					"description": "Favorite wallpaper image settings."
 				},
 				"wallpaper-setting.favoriteWallpaperSlideSet": {
 					"type": "object",
+					"scope": "application",
 					"default": {},
 					"description": "Favorite wallpaper slide settings."
 				},
 				"wallpaper-setting.favoriteWallpaperRandomSet": {
 					"type": "boolean",
+					"scope": "application",
 					"default": false,
 					"description": "Random wallpaper from your favorite settings at start up."
 				},
 				"wallpaper-setting.favoriteWallpaperRandomSetFilter": {
 					"type": "string",
+					"scope": "application",
 					"default": "All",
 					"enum": [
 						"All",
@@ -115,11 +126,13 @@
 				},
 				"wallpaper-setting.enableSync": {
 					"type": "boolean",
+					"scope": "application",
 					"default": false,
 					"description": "Understand the risks and enable the Sync feature."
 				},
 				"wallpaper-setting.advancedMode": {
 					"type": "boolean",
+					"scope": "application",
 					"default": false,
 					"description": "Activate Advanced mode."
 				}
