@@ -1,7 +1,7 @@
-<div style="text-align:center;">
+<div align="center" style="text-align:center;">
 	<h1>Wallpaper Setting</h1>
-	Set an image as the VSCode background.
-	<div style="margin-top:1em;">
+	<p>Set an image as the VSCode background.</p>
+	<div>
 		<img alt="Version" src="https://img.shields.io/github/package-json/version/angelmaneuver/wallpaper-setting?color=blue" />
 		<img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting" />
 		<a href="https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability"><img src="https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability" /></a>
@@ -10,11 +10,9 @@
 			<img alt="Issues" src="https://img.shields.io/github/issues/Angelmaneuver/wallpaper-setting?color=#86D492" />
 		</a>
 	</div>
+	<h2>Warning</h2>
 </div>
 
---- 
-
-## Warning
 Since version 0.10.0, the management of settings has changed from profile to user settings.
 
 If necessary, manually move the setting values starting with `"wallpaper-setting."` from the profile's `setting.json` to user's `settings.json`.
