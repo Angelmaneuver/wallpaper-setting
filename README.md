@@ -15,7 +15,7 @@
 
 Since version 0.10.0, the management of settings has changed from profile to user settings.
 
-If necessary, manually move the setting values starting with `"wallpaper-setting."` from the profile's `setting.json` to user's `settings.json`.
+If necessary, manually move the setting values starting with `"wallpaper-setting."` from the profile's `settings.json` to user's `settings.json`.
 
 ---
 
