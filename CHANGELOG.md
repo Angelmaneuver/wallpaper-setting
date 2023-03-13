@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.10.1
+ - Run in VSCode's local extension host (Pull request [#6](https://github.com/Angelmaneuver/wallpaper-setting/pull/6))
+
 ## 0.10.0
  - Settings are now managed by default profile
 
