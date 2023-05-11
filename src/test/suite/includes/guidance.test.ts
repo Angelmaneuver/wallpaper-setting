@@ -36,7 +36,7 @@ suite('Guidance Test Suite', async () => {
 		appRootStub.value("");
 		accessSyncStub.reset();
 		accessSyncStub.onFirstCall().throws(new Error("Access Error"));
-		windowMock.expects("showWarningMessage").withArgs(`You don't have write permission to the file required to run this extension. Please check the permission on "` + path.join("out", "vs", "workbench", "workbench.desktop.main.js") + `".`).once();
+		windowMock.expects("showWarningMessage").withArgs(`You don't have write permission to the file required to run this extension. Please check the permission on "` + path.join("out", "vs", "code", "electron-sandbox", "workbench", "workbench.js") + `".`).once();
 		await testTarget.guidance(context);
 
 		windowMock.verify();

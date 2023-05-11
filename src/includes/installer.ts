@@ -33,16 +33,16 @@ export function getInstance(setting: ExtensionSetting): InstallManager {
 
 function getTargetMain(): [location: string, name: string] {
 	return [
-		path.join(getAppRoot(), "out", "vs", "workbench"),
-		"workbench.desktop.main.js",
-	];	
+		path.join(getAppRoot(), "out", "vs", "code", "electron-sandbox", "workbench"),
+		"workbench.js",
+	];
 }
 
 function getTargetProcessExplorer(): [location: string, name: string] {
 	return [
 		path.join(getAppRoot(), "out", "vs", "code", "electron-sandbox", "processExplorer"),
 		"processExplorer.js",
-	];	
+	];
 }
 
 function getAppRoot(): string {
