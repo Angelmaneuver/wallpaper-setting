@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.10.3
+ - Fixed a bug sync upload size was not checked
+ - Fixed color theme loading correctly for Optimize (Fix to use [jsonc-parser](https://github.com/microsoft/node-jsonc-parser))
+ - Fixed a bug that caused incorrect values when 0 was given for Optimize
+
 ## 0.10.2
  - Fixed a bug that the wallpaper is not displayed when reloading
 
