@@ -1,4 +1,5 @@
 import { WorkbenchSetting } from "./settings/workbench";
+import * as jsonc           from "jsonc-parser";
 import { File }             from "./utils/base/file";
 
 const id                  = "colors" as const;
@@ -49,7 +50,7 @@ export async function theme2transparancy(
 	const baseAa                         = decimal2hex(opacity.base);
 	const overlapAa                      = decimal2hex(opacity.overlap);
 	const selectionAa                    = decimal2hex(opacity.selection);
-	const theme                          = JSON.parse(new File(sourcePath).content.toString());
+	const theme                          = jsonc.parse(new File(sourcePath).content.toString());
 	const colors: Record<string, string> = {};
 
 	if (!(id in theme)) {
@@ -72,7 +73,7 @@ export async function theme2transparancy(
 }
 
 function decimal2hex(opacity: string): string {
-	return (Math.round(255 * parseFloat(opacity))).toString(16);
+	return (Math.round(255 * parseFloat(opacity))).toString(16).padStart(2, "0");
 }
 
 function convert(color: string, aa: string): string {

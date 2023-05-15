@@ -65,7 +65,7 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 	}
 
 	private static isNotApplyFileSize(size: number | boolean): boolean {
-		return (!size || (size && size > Constant.syncImageSize)) ? true : false;
+		return (typeof size === "boolean" || (typeof size === "number" && size > Constant.syncImageSize)) ? true : false;
 	}
 }
 
