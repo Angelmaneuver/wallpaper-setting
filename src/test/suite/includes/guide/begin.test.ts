@@ -15,6 +15,12 @@ import { SelectFavoriteProcess }           from "../../../../includes/guide/sele
 import { ImageFilePathGuide }              from "../../../../includes/guide/image";
 import { SlideFilePathsGuide }             from "../../../../includes/guide/slide";
 import { SelectSyncProcess }               from "../../../../includes/guide/select/sync";
+import {
+	messages,
+	quickpicks,
+	confirmItemType,
+	confirmItem,
+}                                          from "../../../../includes/constant";
 
 suite('Guide - Begin Test Suite', async () => {
 	const itemchecker = (assumption: Array<QuickPickItem>, result: Array<QuickPickItem>) => {
@@ -32,19 +38,22 @@ suite('Guide - Begin Test Suite', async () => {
 			}
 		});
 	};
+	const confirm     = confirmItem(confirmItemType.confirm, { item1: messages.placeholder.uninstall.confirm.yes, item2: messages.placeholder.uninstall.confirm.no });
 	const items       = {
-		Set:          VSCodePreset.create(VSCodePreset.Icons.debugStart,   "Set",         "Set wallpaper with current settings."),
-		Reset:        VSCodePreset.create(VSCodePreset.Icons.debugRerun,   "Reset",       "Reset wallpaper with current settings."),
-		Crear:        VSCodePreset.create(VSCodePreset.Icons.debugStop,    "Clear",       "Erase the wallpaper."),
-		Setting:      VSCodePreset.create(VSCodePreset.Icons.settingsGear, "Setting",     "Set Parameters individually."),
-		Favorite:     VSCodePreset.create(VSCodePreset.Icons.repo,         "Favorite",    "Configure settings related to favorites."),
-		Setup:        VSCodePreset.create(VSCodePreset.Icons.fileMedia,    "Setup Image", "Set an image to wallpaper."),
-		SetUpAsSlide: VSCodePreset.create(VSCodePreset.Icons.folder,       "Setup Slide", "Set an image slide to wallpaper."),
-		Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,         "Sync",        "Configure settings related to Sync."),
-		Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,     "Uninstall",   "Remove all parameters for this extension."),
-		Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,      "Exit",        "Exit without saving any changes."),
-		Yes:          VSCodePreset.create(VSCodePreset.Icons.check,        "Yes",         "Uninstall."),
-		No:           VSCodePreset.create(VSCodePreset.Icons.x,            "No",          "Back to previous."),
+		Set:             VSCodePreset.create(VSCodePreset.Icons.debugStart,      ...quickpicks.begin.set),
+		Reset:           VSCodePreset.create(VSCodePreset.Icons.debugRerun,      ...quickpicks.begin.reset),
+		Crear:           VSCodePreset.create(VSCodePreset.Icons.debugStop,       ...quickpicks.begin.clear),
+		Setting:         VSCodePreset.create(VSCodePreset.Icons.settingsGear,    ...quickpicks.begin.setting),
+		Favorite:        VSCodePreset.create(VSCodePreset.Icons.repo,            ...quickpicks.begin.favorite),
+		Setup:           VSCodePreset.create(VSCodePreset.Icons.fileMedia,       ...quickpicks.begin.setup),
+		SetUpAsSlide:    VSCodePreset.create(VSCodePreset.Icons.folder,          ...quickpicks.begin.setUpAsSlide),
+		Optimize:        VSCodePreset.create(VSCodePreset.Icons.desktopDownload, ...quickpicks.begin.optimize),
+		ProcessExplorer: VSCodePreset.create(VSCodePreset.Icons.window,          ...quickpicks.begin.processExplorer),
+		Sync:            VSCodePreset.create(VSCodePreset.Icons.sync,            ...quickpicks.begin.sync),
+		Uninstall:       VSCodePreset.create(VSCodePreset.Icons.trashcan,        ...quickpicks.begin.uninstall),
+		Exit:            VSCodePreset.create(VSCodePreset.Icons.signOut,         ...quickpicks.begin.exit),
+		Yes:             confirm[0],
+		No:              confirm[1],
 	};
 
 	test('constructor', async () => {

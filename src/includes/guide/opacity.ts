@@ -3,7 +3,7 @@ import { State }            from "./base/base";
 import { BaseInputGuide }   from "./base/input";
 import { BaseValidator }    from "./validator/base";
 import { ExtensionSetting } from "../settings/extension";
-import * as Constant        from "../constant";
+import { messages, values } from "../constant";
 
 export class OpacityGuide extends BaseInputGuide {
 	private static maximum: number;
@@ -15,15 +15,15 @@ export class OpacityGuide extends BaseInputGuide {
 	) {
 		super(state, context);
 
-		OpacityGuide.maximum = this.settings.isAdvancedMode ? Constant.maximumOpacityWithAdvancedMode : Constant.maximumOpacity;
-		OpacityGuide.minimum = Constant.minimumOpacity;
+		OpacityGuide.maximum = values.opacity.max;
+		OpacityGuide.minimum = values.opacity.min;
 	}
 
 	public init(): void {
 		super.init();
 
 		this.itemId   = this.itemId ? this.itemId : this.itemIds.opacity;
-		this.prompt   = this.prompt ? this.prompt : `Enter a number between ${OpacityGuide.maximum} and ${OpacityGuide.minimum} for opacity. (Default: 0.75)`;
+		this.prompt   = this.prompt ? this.prompt : messages.placeholder.opacity(OpacityGuide.minimum, OpacityGuide.maximum);
 		this.validate = OpacityGuide.validateOpacity;
 	}
 

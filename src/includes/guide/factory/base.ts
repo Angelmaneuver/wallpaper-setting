@@ -39,7 +39,7 @@ import {
 import { InputJsonFilePathGuide } from "../optimize";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Constructable<T> extends Function { new (...args: Array<any>): T; }
+interface Constructable<T> { new (...args: Array<any>): T; }
 
 export abstract class GuideFactory {
 	private static guides: Record<string, Constructable<AbstractGuide>> = {};

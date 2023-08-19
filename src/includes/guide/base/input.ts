@@ -3,7 +3,7 @@ import { AbstractBaseGuide, State }  from "./base";
 import { QuickInputButton, Uri }     from "vscode";
 import { BaseValidator }             from "../validator/base";
 import { Selecter }                  from "../../utils/selecter";
-import * as Constant                 from "../../constant";
+import { values }                    from "../../constant";
 
 export class BaseInputGuide extends AbstractBaseGuide {
 	protected prompt  = "";
@@ -136,6 +136,6 @@ export class InputResourceGuide extends BaseInputResourceGuide {
 		state: State,
 		type:  number,
 	) {
-		super(state, type, { Images: Constant.applyImageFile });
+		super(state, type, { Images: [...values.file.apply.image] });
 	}
 }

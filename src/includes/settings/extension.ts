@@ -3,17 +3,18 @@ import { SettingBase }         from "./base";
 import { AbstractSettingItem } from "./item/abc";
 import { BooleanSettingItem }  from "./item/base"
 import { SettingItemFactory }  from "./item/factory/base";
-import * as Constant           from "../constant";
+import { types }               from "../constant";
 
 export interface Favorite {
 	[key: string]: {
-		filePath?:          string,
-		slideFilePaths?:    string[],
-		opacity?:           number,
-		slideInterval?:     number,
-		slideIntervalUnit?: string,
-		slideRandomPlay?:   boolean,
-		slideEffectFadeIn?: boolean
+		filePath?:              string,
+		slideFilePaths?:        string[],
+		opacity?:               number,
+		slideInterval?:         number,
+		slideIntervalUnit?:     string,
+		slideRandomPlay?:       boolean,
+		slideEffectFadeIn?:     boolean,
+		slideLoadWaitComplete?: boolean,
 	}
 }
 
@@ -29,6 +30,7 @@ export class ExtensionSetting extends SettingBase {
 		slideIntervalUnit:       "slideIntervalUnit",
 		slideRandomPlay:         "slideRandomPlay",
 		slideEffectFadeIn:       "slideEffectFadeIn",
+		slideLoadWaitComplete:   "slide.load.waitComplete",
 		favoriteImageSet:        "favoriteWallpaperImageSet",
 		favoriteSlideSet:        "favoriteWallpaperSlideSet",
 		favoriteRandomSet:       "favoriteWallpaperRandomSet",
@@ -61,9 +63,9 @@ export class ExtensionSetting extends SettingBase {
 		this._isFavoriteRegisterd = image || slide ? { image: image, slide: slide } : undefined;
 
 		if (image && !slide) {
-			this._FavoriteAutoSet = Constant.wallpaperType.Image;
+			this._FavoriteAutoSet = types.wallpaper.image;
 		} else if (!image && slide) {
-			this._FavoriteAutoSet = Constant.wallpaperType.Slide;
+			this._FavoriteAutoSet = types.wallpaper.slide;
 		}
 	}
 
@@ -132,6 +134,10 @@ export class ExtensionSetting extends SettingBase {
 
 	public get slideEffectFadeIn(): BooleanSettingItem {
 		return this.getItem(ExtensionSetting.propertyIds.slideEffectFadeIn) as BooleanSettingItem;
+	}
+
+	public get slideLoadWaitComplete(): BooleanSettingItem {
+		return this.getItem(ExtensionSetting.propertyIds.slideLoadWaitComplete) as BooleanSettingItem;
 	}
 
 	public get favoriteImageSet(): AbstractSettingItem {

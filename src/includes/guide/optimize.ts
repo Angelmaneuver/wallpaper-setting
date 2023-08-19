@@ -4,13 +4,14 @@ import {
 	BaseInputResourceGuide,
 } from "./base/input";
 import * as Convert         from "../convert";
+import { messages }         from "../constant";
 
 export class InputJsonFilePathGuide extends BaseInputResourceGuide {
 	constructor(state: State) {
 		super(state, Type.File, { Json: ['json'] });
 
 		this.itemId = "json";
-		this.prompt = "Enter the path of the color theme json file, or select it from the file dialog that appears by clicking the button on the upper right.";
+		this.prompt = messages.placeholder.optimize.json;
 	}
 
 	protected async lastInputStepExecute(): Promise<void> {
@@ -25,10 +26,10 @@ export class InputJsonFilePathGuide extends BaseInputResourceGuide {
 				}
 			);
 	
-			this.state.message = "Optimized some color information for color theme.";
+			this.state.message = messages.showInformationMessage.optimize.success;
 		} catch (e) {
 			if (e instanceof Error) {
-				this.state.message = `json file could' not be parsed successfully. "${e}".`;
+				this.state.message = messages.showInformationMessage.optimize.error(e);
 			}
 		}
 	}

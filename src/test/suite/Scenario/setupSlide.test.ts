@@ -21,10 +21,13 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const directoryPath = path.join(__dirname, "testDir1");
 		const filePaths     = [path.join(__dirname, "testDir1", "test1.png"), path.join(__dirname, "testDir1", "testDir2", "test2.gif")];
 		const opacity       = "0.95";
-		const intervalUnit  = Constant.slideIntervalUnit[2];
-		const prompt        = `Enter a number between ${Constant.minimumSlideInterval} and 65555 in Second. (Default: 25)`;
+		const intervalUnit  = Constant.quickpicks.slide.interval.unit[2];
+		const prompt        = Constant.messages.placeholder.slide.interval.time(
+			Constant.values.slide.min,
+			intervalUnit.label,
+		);
 		const interval      = "60";
-		const randomPlay    = Constant.slideRandomPlay[0];
+		const randomPlay    = Constant.quickpicks.slide.randomPlay[0];
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
 		const fileStub      = sinon.stub(File,                            "getChildrens");
@@ -88,10 +91,13 @@ suite('Scenario - Setup Slide Test Suite', async () => {
 		const directoryPath = path.join(__dirname, "testDir1");
 		const filePaths     = [path.join(__dirname, "testDir1", "test1.png"), path.join(__dirname, "testDir1", "testDir2", "test2.gif")];
 		const opacity       = "0.75";
-		const intervalUnit  = Constant.slideIntervalUnit[2];
-		const prompt        = `Enter a number between ${Constant.minimumSlideInterval} and 65555 in Second. (Default: 25)`;
+		const intervalUnit  = Constant.quickpicks.slide.interval.unit[2];
+		const prompt        = Constant.messages.placeholder.slide.interval.time(
+			Constant.values.slide.min,
+			intervalUnit.label,
+		);
 		const interval      = "60";
-		const randomPlay    = Constant.slideRandomPlay[0];
+		const randomPlay    = Constant.quickpicks.slide.randomPlay[0];
 		const inputStub     = sinon.stub(MultiStepInput.prototype,        "showInputBox");
 		const pickStub      = sinon.stub(MultiStepInput.prototype,        "showQuickPick");
 		const fileStub      = sinon.stub(File,                            "getChildrens");

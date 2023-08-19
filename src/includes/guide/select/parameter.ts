@@ -5,20 +5,22 @@ import { QuickPickItem }                from "vscode";
 import { VSCodePreset }                 from "../../utils/base/vscodePreset";
 import * as Wallpaper                   from "../select/wallpaper";
 import * as Slide                       from "../slide";
+import { quickpicks, words }            from "../../constant";
 
 type optionState = { subState?: Partial<State>, initialValue?: string };
 
 export class SelectParameterType extends AbstractQuickPickSelectGuide {
 	private static templateItems: Array<QuickPickItem>     = [
-		VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image Path",            "Set the image to be used as the wallpaper."),
-		VSCodePreset.create(VSCodePreset.Icons.folder,    "Image Files Path",      "Set the images to be used as the slide."),
-		VSCodePreset.create(VSCodePreset.Icons.eye,       "Opacity",               "Set the opacity of the wallpaper."),
-		VSCodePreset.create(VSCodePreset.Icons.clock,     "Slide Interval",        "Set the slide interval."),
-		VSCodePreset.create(VSCodePreset.Icons.law,       "Slide Interval's Unit", "Set the slide interval's unit."),
-		VSCodePreset.create(VSCodePreset.Icons.merge,     "Slide Random Playback", "set whether to play the slides randomly."),
-		VSCodePreset.create(VSCodePreset.Icons.foldDown,  "Effect Fade in",        "set whether to use fade in effect."),
-		VSCodePreset.create(VSCodePreset.Icons.save,      "Save",                  "Save changes."),
-		VSCodePreset.create(VSCodePreset.Icons.reply,     "Return",                "Return without saving any changes."),
+		VSCodePreset.create(VSCodePreset.Icons.fileMedia,     ...quickpicks.parameter.image),
+		VSCodePreset.create(VSCodePreset.Icons.folder,        ...quickpicks.parameter.slide.filePaths),
+		VSCodePreset.create(VSCodePreset.Icons.eye,           ...quickpicks.parameter.opacity),
+		VSCodePreset.create(VSCodePreset.Icons.clock,         ...quickpicks.parameter.slide.interval.time),
+		VSCodePreset.create(VSCodePreset.Icons.law,           ...quickpicks.parameter.slide.interval.unit),
+		VSCodePreset.create(VSCodePreset.Icons.merge,         ...quickpicks.parameter.slide.random),
+		VSCodePreset.create(VSCodePreset.Icons.foldDown,      ...quickpicks.parameter.slide.effectFadeIn),
+		VSCodePreset.create(VSCodePreset.Icons.debugContinue, ...quickpicks.parameter.slide.loadWaitComplete),
+		VSCodePreset.create(VSCodePreset.Icons.save,          ...quickpicks.parameter.save),
+		VSCodePreset.create(VSCodePreset.Icons.reply,         ...quickpicks.parameter.return),
 	];
 
 	private guideParameters: { [key: number]: [string, string, string, optionState] } = {};
@@ -28,13 +30,14 @@ export class SelectParameterType extends AbstractQuickPickSelectGuide {
 
 		this.placeholder     = "Select the item you want to set.";
 		this.guideParameters = {
-			0: [this.itemIds.filePath,          "ImageFilePathGuide",   " - Image Path",            this.createOptionState(this.itemIds.filePath)],
-			1: [this.itemIds.slideFilePaths,    "SlideFilePathsGuide",  " - Image Files Path",      this.createOptionState(this.itemIds.slideFilePaths)],
-			2: [this.itemIds.opacity,           "OpacityGuide",         " - Opacity",               this.createOptionState(this.itemIds.opacity)],
-			3: [this.itemIds.slideInterval,     "SlideIntervalGuide",   " - Slide Interval",        this.createOptionState(this.itemIds.slideInterval)],
-			4: [this.itemIds.slideIntervalUnit, "BaseQuickPickGuide",   " - Slide Interval Unit",   this.createOptionState(this.itemIds.slideIntervalUnit)],
-			5: [this.itemIds.slideRandomPlay,   "SlideRandomPlayGuide", " - Slide Random Playback", this.createOptionState(this.itemIds.slideRandomPlay)],
-			6: [this.itemIds.slideEffectFadeIn, "BaseQuickPickGuide",   " - Slide Effect Fade In",  this.createOptionState(this.itemIds.slideEffectFadeIn)]
+			0: [this.itemIds.filePath,              "ImageFilePathGuide",   words.headline.image,                  this.createOptionState(this.itemIds.filePath)],
+			1: [this.itemIds.slideFilePaths,        "SlideFilePathsGuide",  words.headline.slide.filePaths,        this.createOptionState(this.itemIds.slideFilePaths)],
+			2: [this.itemIds.opacity,               "OpacityGuide",         words.headline.opacity,                this.createOptionState(this.itemIds.opacity)],
+			3: [this.itemIds.slideInterval,         "SlideIntervalGuide",   words.headline.slide.interval.time,    this.createOptionState(this.itemIds.slideInterval)],
+			4: [this.itemIds.slideIntervalUnit,     "BaseQuickPickGuide",   words.headline.slide.interval.unit,    this.createOptionState(this.itemIds.slideIntervalUnit)],
+			5: [this.itemIds.slideRandomPlay,       "SlideRandomPlayGuide", words.headline.slide.random,           this.createOptionState(this.itemIds.slideRandomPlay)],
+			6: [this.itemIds.slideEffectFadeIn,     "BaseQuickPickGuide",   words.headline.slide.effectFadeIn,     this.createOptionState(this.itemIds.slideEffectFadeIn)],
+			7: [this.itemIds.slideLoadWaitComplete, "BaseQuickPickGuide",   words.headline.slide.loadWaitComplete, this.createOptionState(this.itemIds.slideLoadWaitComplete)],
 		}
 	}
 
@@ -47,17 +50,18 @@ export class SelectParameterType extends AbstractQuickPickSelectGuide {
 			SelectParameterType.templateItems[3],
 			SelectParameterType.templateItems[4],
 			SelectParameterType.templateItems[5],
-			SelectParameterType.templateItems[6]
-		).concat(Object.keys(this.guideGroupResultSet).length > 0 ? SelectParameterType.templateItems[7] : []
-		).concat(SelectParameterType.templateItems[8]);
+			SelectParameterType.templateItems[6],
+			SelectParameterType.templateItems[7],
+		).concat(Object.keys(this.guideGroupResultSet).length > 0 ? SelectParameterType.templateItems[8] : []
+		).concat(SelectParameterType.templateItems[9]);
 
 		await super.show(input);
 	}
 
 	protected getExecute(): (() => Promise<void>) | undefined {
-		if (this.activeItem === SelectParameterType.templateItems[7]) {
+		if (this.activeItem === SelectParameterType.templateItems[8]) {
 			return async () => { await this.save(); };
-		} else if (this.activeItem === SelectParameterType.templateItems[8]) {
+		} else if (this.activeItem === SelectParameterType.templateItems[9]) {
 			return async () => { this.prev(); };
 		} else if (this.activeItem) {
 			return async () => {
@@ -81,10 +85,15 @@ export class SelectParameterType extends AbstractQuickPickSelectGuide {
 			case this.itemIds.slideIntervalUnit:
 			case this.itemIds.slideRandomPlay:
 			case this.itemIds.slideEffectFadeIn:
+			case this.itemIds.slideLoadWaitComplete:
 				result["subState"] = Slide.getDefaultState(itemId);
 		}
 
-		if (itemId === this.itemIds.slideRandomPlay || itemId === this.itemIds.slideEffectFadeIn) {
+		if (
+			itemId === this.itemIds.slideRandomPlay       ||
+			itemId === this.itemIds.slideEffectFadeIn     ||
+			itemId === this.itemIds.slideLoadWaitComplete
+		) {
 			result["initialValue"] = this.settings.getItem(itemId).value;
 		} else if (itemId !== this.itemIds.slideFilePaths) {
 			result["initialValue"] = this.validValue2initialValue(this.settings.getItem(itemId).validValue);

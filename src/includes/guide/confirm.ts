@@ -1,6 +1,6 @@
 import { State }                        from "./base/base";
 import { AbstractQuickPickSelectGuide } from "./base/pick";
-import * as Constant                    from "../constant";
+import { confirmItemType, confirmItem } from "../constant";
 
 export class BaseConfirmGuide extends AbstractQuickPickSelectGuide {
 	private callback: (...args: Array<unknown>) => Promise<void>;
@@ -17,7 +17,7 @@ export class BaseConfirmGuide extends AbstractQuickPickSelectGuide {
 		this.callback         = callback;
 		this.args             = args;
 
-		this.state.items      = Constant.itemsCreat(Constant.ItemType.Confirm, { item1: description.yes, item2: description.no });
+		this.state.items      = confirmItem(confirmItemType.confirm, { item1: description.yes, item2: description.no });
 		this.state.activeItem = this.state.items[1];
 	}
 

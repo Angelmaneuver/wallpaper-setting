@@ -12,7 +12,15 @@ import * as Installer                      from "../../../../../includes/install
 import { State }                           from "../../../../../includes/guide/base/base";
 import { ExtensionSetting }                from "../../../../../includes/settings/extension";
 import { MainWallpaper }                   from "../../../../../includes/wallpaper/main";
-import * as Constant                       from "../../../../../includes/constant";
+import { VSCodePreset }                    from "../../../../../includes/utils/base/vscodePreset";
+import { types, quickpicks }               from "../../../../../includes/constant";
+
+const items = [
+	VSCodePreset.create(VSCodePreset.Icons.repoPush, ...quickpicks.favorite.select.process.regisiter),
+	VSCodePreset.create(VSCodePreset.Icons.repoPull, ...quickpicks.favorite.select.process.open),
+	VSCodePreset.create(VSCodePreset.Icons.merge,    ...quickpicks.favorite.select.process.startUp),
+	quickpicks.backToPrevious,
+];
 
 interface QuickPickParameters<T extends QuickPickItem> {
 	title:        string;
@@ -59,12 +67,12 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		favoriteAutoSetStub.get(() => undefined);
 		isAutoSetStub.get(() => undefined);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker([Constant.favoriteProcess[0], Constant.favoriteProcess[3]], pickStub.getCall(0).args[0].items);
+		itemChecker([items[0], items[3]], pickStub.getCall(0).args[0].items);
 
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Slide);
-		isAutoSetStub.get(() => Constant.wallpaperType.Image);
+		favoriteAutoSetStub.get(() => types.wallpaper.slide);
+		isAutoSetStub.get(() => types.wallpaper.image);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker([Constant.favoriteProcess[0], Constant.favoriteProcess[3]], pickStub.getCall(1).args[0].items);
+		itemChecker([items[0], items[3]], pickStub.getCall(1).args[0].items);
 
 		isFavoriteRegisterdStub.get(() => { return { image: true, slide:true } } );
 
@@ -73,29 +81,29 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[1])
 		favoriteAutoSetStub.get(() => undefined);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker(Constant.favoriteProcess, pickStub.getCall(0).args[0].items);
+		itemChecker(items, pickStub.getCall(0).args[0].items);
 
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Image);
+		favoriteAutoSetStub.get(() => types.wallpaper.image);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker(Constant.favoriteProcess, pickStub.getCall(1).args[0].items);
+		itemChecker(items, pickStub.getCall(1).args[0].items);
 
 		pickStub.reset();
 		// eslint-disable-next-line
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[1])
 		favoriteAutoSetStub.get(() => undefined);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker(Constant.favoriteProcess, pickStub.getCall(0).args[0].items);
+		itemChecker(items, pickStub.getCall(0).args[0].items);
 
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Slide);
+		favoriteAutoSetStub.get(() => types.wallpaper.slide);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker(Constant.favoriteProcess, pickStub.getCall(1).args[0].items);
+		itemChecker(items, pickStub.getCall(1).args[0].items);
 
 		pickStub.reset();
 		// eslint-disable-next-line
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[2])
 		favoriteAutoSetStub.get(() => undefined);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectFavoriteProcess(stateCreater(new ExtensionSetting())).start(input));
-		itemChecker(Constant.favoriteProcess, pickStub.getCall(0).args[0].items);
+		itemChecker(items, pickStub.getCall(0).args[0].items);
 
 		pickStub.reset();
 		// eslint-disable-next-line

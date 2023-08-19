@@ -11,22 +11,28 @@ import { VSCodePreset }     from "../../../includes/utils/base/vscodePreset";
 import { File }             from "../../../includes/utils/base/file";
 import * as Encrypt         from "../../../includes/utils/base/encrypt";
 import { MainWallpaper }    from "../../../includes/wallpaper/main";
-import { SettingSync } from "../../../includes/settings/sync";
+import { SettingSync }      from "../../../includes/settings/sync";
+import { ContextManager }   from "../../../includes/utils/base/context";
+import {
+	quickpicks,
+	confirmItem,
+	confirmItemType,
+}                           from "../../../includes/constant";
 
 suite('Scenario - Sync Test Suite', async () => {
 	const stateCreater = (sync: SettingSync) => ({ title: "Test Suite", resultSet: {}, sync: sync } as State);
 	const password     = "password";
 	const salt         = "salt";
 	const items        = {
-		Sync:         VSCodePreset.create(VSCodePreset.Icons.sync,          "Sync",          "Configure settings related to Sync."),
-		Uninstall:    VSCodePreset.create(VSCodePreset.Icons.trashcan,      "Uninstall",     "Remove all parameters for this extension."),
-		Exit:         VSCodePreset.create(VSCodePreset.Icons.signOut,       "Exit",          "Exit without saving any changes."),
-		Upload:       VSCodePreset.create(VSCodePreset.Icons.debugStepOut,  "Sync Upload",   "Upload wallpaper settings."),
-		Download:     VSCodePreset.create(VSCodePreset.Icons.debugStepInto, "Sync Download", "Download wallpaper settings and set."),
-		Delete:       VSCodePreset.create(VSCodePreset.Icons.trashcan,      "Sync Delete",   "Delete wallpaper settings."),
-		Return:       VSCodePreset.create(VSCodePreset.Icons.reply,         "Return",        "Return without saving any changes."),
-		Yes:          VSCodePreset.create(VSCodePreset.Icons.check,         "Yes",           "Delete."),
-		No:           VSCodePreset.create(VSCodePreset.Icons.x,             "No",            "Back to previous."),
+		Sync:            VSCodePreset.create(VSCodePreset.Icons.sync,            ...quickpicks.begin.sync),
+		Uninstall:       VSCodePreset.create(VSCodePreset.Icons.trashcan,        ...quickpicks.begin.uninstall),
+		Exit:            VSCodePreset.create(VSCodePreset.Icons.signOut,         ...quickpicks.begin.exit),
+		Upload:          VSCodePreset.create(VSCodePreset.Icons.debugStepOut,    ...quickpicks.sync.upload),
+		Download:        VSCodePreset.create(VSCodePreset.Icons.debugStepInto,   ...quickpicks.sync.download),
+		Delete:          VSCodePreset.create(VSCodePreset.Icons.trashcan,        ...quickpicks.sync.delete),
+		Return:          VSCodePreset.create(VSCodePreset.Icons.reply,           ...quickpicks.sync.return),
+		Yes:             confirmItem(confirmItemType.confirm, { item1: "", item2: ""})[0],
+		No:              confirmItem(confirmItemType.confirm, { item1: "", item2: ""})[1],
 	};
 
 	test('Begin -> Sync -> Upload -> Image -> Opacity -> Password -> Salt', async () => {
@@ -77,8 +83,9 @@ suite('Scenario - Sync Test Suite', async () => {
 		const isAvailableStub = sinon.stub(SettingSync.prototype,    "isAvailable");
 		const getDataStub     = sinon.stub(SettingSync.prototype,    "getData");
 		const getOpacityStub  = sinon.stub(SettingSync.prototype,    "getOpacity");
-		const wallpaperStub   = sinon.stub(MainWallpaper.prototype,  "install");
+		const wallpaperStub   = sinon.stub(MainWallpaper.prototype,  "installFromSync");
 		const decryptStub     = sinon.stub(Encrypt,                  "decrypt");
+		const ctxStub         = sinon.stub(ContextManager, "version").value("9.9.9");
 		const context         = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
 		const setting         = new ExtensionSetting();
 
@@ -106,6 +113,7 @@ suite('Scenario - Sync Test Suite', async () => {
 		getOpacityStub.restore();
 		wallpaperStub.restore();
 		decryptStub.restore();
+		ctxStub.restore();
 
 		setting.uninstall();
 	}).timeout(30 * 1000);

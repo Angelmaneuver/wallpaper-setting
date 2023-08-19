@@ -1,3 +1,4 @@
+import * as os      from "os";
 import * as path    from "path";
 import * as fs      from "fs";
 import { Optional } from "./optional";
@@ -111,6 +112,41 @@ export class File {
 		} else {
 			return false;
 		}
+	}
+
+	public static normalize(filePath: string): string {
+		return this.normalizes([filePath])[0];
+	}
+
+	public static normalizes(paths: Array<string>): Array<string> {
+		const matther = /\$\{(.+)\}/gu;
+		const picker  = /\$\{(?<value>.+)\}/u;
+		const homedir = os.homedir();
+
+		return paths.map((str) => {
+			const variables = str.match(matther);
+
+			if (variables === null) {
+				return str;
+			}
+
+			return variables.reduce((prev, current) => {
+				const environment = current.match(picker);
+
+				if (environment === null || environment.groups === undefined) {
+					return prev;
+				} else if (environment.groups.value === "userHome") {
+					return prev.replaceAll(current, homedir);
+				} else if (
+					environment.groups.value in process.env                   &&
+					typeof process.env[environment.groups.value] === "string"
+				) {
+					return prev.replaceAll(current, process.env[environment.groups.value] as string);
+				} else {
+					return prev;
+				}
+			}, str);
+		});
 	}
 
 	public static getChildrens(

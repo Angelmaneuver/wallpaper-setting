@@ -78,20 +78,22 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 	} as Favorite;
 	const slideFavorite  = {
 		"Favorite Regist Test4": {
-			slideFilePaths:    [path.join(__dirname, "testDir1", "test.png"), path.join(__dirname, "testDir1", "testDir2", "test.gif")],
-			opacity:           0.65,
-			slideInterval:     60,
-			slideIntervalUnit: "Second",
-			slideRandomPlay:   false,
-			slideEffectFadeIn: true
+			slideFilePaths:        [path.join(__dirname, "testDir1", "test.png"), path.join(__dirname, "testDir1", "testDir2", "test.gif")],
+			opacity:               0.65,
+			slideInterval:         60,
+			slideIntervalUnit:     "Second",
+			slideRandomPlay:       false,
+			slideEffectFadeIn:     true,
+			slideLoadWaitComplete: false,
 		},
 		"Favorite Regist Test3": {
-			slideFilePaths:    [path.join(__dirname, "testDir1", "test.jpeg"), path.join(__dirname, "testDir1", "testDir2", "test.jpeg")],
-			opacity:           0.55,
-			slideInterval:     30,
-			slideIntervalUnit: "Hour",
-			slideRandomPlay:   true,
-			slideEffectFadeIn: false
+			slideFilePaths:        [path.join(__dirname, "testDir1", "test.jpeg"), path.join(__dirname, "testDir1", "testDir2", "test.jpeg")],
+			opacity:               0.55,
+			slideInterval:         30,
+			slideIntervalUnit:     "Hour",
+			slideRandomPlay:       true,
+			slideEffectFadeIn:     false,
+			slideLoadWaitComplete: true,
 		}
 	}
 
@@ -105,9 +107,9 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, assumption["Favorite Regist Test2"].filePath);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,  assumption["Favorite Regist Test2"].opacity);
 		inputStub.resolves("Favorite Regist Test2");
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
 
-		assert.strictEqual(state.message, `Registered Favorite Regist Test2 to my favorites!`);
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.register("Favorite Regist Test2"));
 		checkFavorite(assumption, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 
 		inputStub.restore();
@@ -120,14 +122,21 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		const pickStub                      = sinon.stub(MultiStepInput.prototype, "showQuickPick");
 		const state                         = stateCreater();
 		const setupInstance                 = new ExtensionSetting();
+		const confirmItems                  = Constant.confirmItem(
+			Constant.confirmItemType.confirm,
+			{
+				item1: Constant.messages.placeholder.favorite.register.override.confirm.yes,
+				item2: Constant.messages.placeholder.favorite.register.override.confirm.no,
+			}
+		)
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, assumption["Favorite Regist Test2"].filePath);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,  assumption["Favorite Regist Test2"].opacity);
 		inputStub.resolves("Favorite Regist Test2");
-		pickStub.resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
+		pickStub.resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
 
-		assert.strictEqual(state.message, `Registered Favorite Regist Test2 to my favorites!`);
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.register("Favorite Regist Test2"));
 		checkFavorite(assumption, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 
 		inputStub.restore();
@@ -140,14 +149,21 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		const pickStub                      = sinon.stub(MultiStepInput.prototype, "showQuickPick");
 		const state                         = stateCreater();
 		const setupInstance                 = new ExtensionSetting();
+		const confirmItems                  = Constant.confirmItem(
+			Constant.confirmItemType.confirm,
+			{
+				item1: Constant.messages.placeholder.favorite.register.override.confirm.yes,
+				item2: Constant.messages.placeholder.favorite.register.override.confirm.no,
+			}
+		)
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, assumption["Favorite Regist Test1"].filePath);
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,  assumption["Favorite Regist Test1"].opacity);
 		inputStub.resolves("Favorite Regist Test1");
-		pickStub.resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
+		pickStub.resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
 
-		assert.strictEqual(state.message, `Registered Favorite Regist Test1 to my favorites!`);
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.register("Favorite Regist Test1"));
 		checkFavorite(assumption, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 
 		inputStub.restore();
@@ -161,16 +177,17 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		const state                         = stateCreater();
 		const setupInstance                 = new ExtensionSetting();
 
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,    assumption["Favorite Regist Test4"].slideFilePaths);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,           assumption["Favorite Regist Test4"].opacity);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideInterval,     assumption["Favorite Regist Test4"].slideInterval);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit, assumption["Favorite Regist Test4"].slideIntervalUnit);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,   assumption["Favorite Regist Test4"].slideRandomPlay);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn, assumption["Favorite Regist Test4"].slideEffectFadeIn);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,        assumption["Favorite Regist Test4"].slideFilePaths);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,               assumption["Favorite Regist Test4"].opacity);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideInterval,         assumption["Favorite Regist Test4"].slideInterval);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit,     assumption["Favorite Regist Test4"].slideIntervalUnit);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,       assumption["Favorite Regist Test4"].slideRandomPlay);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn,     assumption["Favorite Regist Test4"].slideEffectFadeIn);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideLoadWaitComplete, assumption["Favorite Regist Test4"].slideLoadWaitComplete);
 		inputStub.resolves("Favorite Regist Test4");
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.wallpaperType.Slide).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.types.wallpaper.slide).start(input));
 
-		assert.strictEqual(state.message, `Registered Favorite Regist Test4 to my favorites!`);
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.register("Favorite Regist Test4"));
 		checkFavorite(imageFavorite, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite(assumption,    (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 
@@ -183,16 +200,17 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		const state                         = stateCreater();
 		const setupInstance                 = new ExtensionSetting();
 
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,    assumption["Favorite Regist Test3"].slideFilePaths);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,           assumption["Favorite Regist Test3"].opacity);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideInterval,     assumption["Favorite Regist Test3"].slideInterval);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit, assumption["Favorite Regist Test3"].slideIntervalUnit);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,   assumption["Favorite Regist Test3"].slideRandomPlay);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn, assumption["Favorite Regist Test3"].slideEffectFadeIn);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideFilePaths,        assumption["Favorite Regist Test3"].slideFilePaths);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.opacity,               assumption["Favorite Regist Test3"].opacity);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideInterval,         assumption["Favorite Regist Test3"].slideInterval);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideIntervalUnit,     assumption["Favorite Regist Test3"].slideIntervalUnit);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,       assumption["Favorite Regist Test3"].slideRandomPlay);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn,     assumption["Favorite Regist Test3"].slideEffectFadeIn);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideLoadWaitComplete, assumption["Favorite Regist Test3"].slideLoadWaitComplete);
 		inputStub.resolves("Favorite Regist Test3");
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.wallpaperType.Slide).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.RegisterFavoriteGuide(state, Constant.types.wallpaper.slide).start(input));
 
-		assert.strictEqual(state.message, `Registered Favorite Regist Test3 to my favorites!`);
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.register("Favorite Regist Test3"));
 		checkFavorite(imageFavorite, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite(assumption,    (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 
@@ -206,7 +224,7 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[2]; })
 		
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
 
 		assert.strictEqual(state.reload, undefined);
 
@@ -223,7 +241,7 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		pickStub.onFirstCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[1]; })
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
 		assert.strictEqual(state.reload, true);
 
 		let setting                         = new ExtensionSetting();
@@ -236,16 +254,17 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })
 		state                               = stateCreater();
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Slide).start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.slide).start(input));
 		assert.strictEqual(state.reload, true);
 
 		setting                             = new ExtensionSetting();
-		compareArray(slideFavorite["Favorite Regist Test4"].slideFilePaths,          setting.getItemValue(ExtensionSetting.propertyIds.slideFilePaths) as Array<unknown>);
-		assert.strictEqual(slideFavorite["Favorite Regist Test4"].opacity,           setting.getItemValue(ExtensionSetting.propertyIds.opacity));
-		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideInterval,     setting.getItemValue(ExtensionSetting.propertyIds.slideInterval));
-		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideIntervalUnit, setting.getItemValue(ExtensionSetting.propertyIds.slideIntervalUnit));
-		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideRandomPlay,   setting.slideRandomPlay.validValue);
-		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideEffectFadeIn, setting.slideEffectFadeIn.validValue);
+		compareArray(slideFavorite["Favorite Regist Test4"].slideFilePaths,              setting.getItemValue(ExtensionSetting.propertyIds.slideFilePaths) as Array<unknown>);
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].opacity,               setting.getItemValue(ExtensionSetting.propertyIds.opacity));
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideInterval,         setting.getItemValue(ExtensionSetting.propertyIds.slideInterval));
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideIntervalUnit,     setting.getItemValue(ExtensionSetting.propertyIds.slideIntervalUnit));
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideRandomPlay,       setting.slideRandomPlay.validValue);
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideEffectFadeIn,     setting.slideEffectFadeIn.validValue);
+		assert.strictEqual(slideFavorite["Favorite Regist Test4"].slideLoadWaitComplete, setting.slideLoadWaitComplete.validValue);
 
 		checkFavorite(imageFavorite, (setting.getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite(slideFavorite, (setting.getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
@@ -261,14 +280,21 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 	test('Delete', async () => {
 		const pickStub                      = sinon.stub(MultiStepInput.prototype, "showQuickPick");
 		let   state                         = stateCreater();
+		const confirmItems                  = Constant.confirmItem(
+			Constant.confirmItemType.confirm,
+			{
+				item1: Constant.messages.placeholder.favorite.register.override.confirm.yes,
+				item2: Constant.messages.placeholder.favorite.register.override.confirm.no,
+			}
+		)
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onFirstCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[1]; })
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[2]; })
-		pickStub.onThirdCall().resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
-		assert.strictEqual(state.message, "UnRegistered Favorite Regist Test2 from my favorites!");
+		pickStub.onThirdCall().resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.delete("Favorite Regist Test2"));
 		checkFavorite({ "Favorite Regist Test1": imageFavorite["Favorite Regist Test1"] }, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite(slideFavorite, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 
@@ -278,9 +304,9 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		pickStub.onFirstCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[2]; })
-		pickStub.onThirdCall().resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Slide).start(input));
-		assert.strictEqual(state.message, "UnRegistered Favorite Regist Test3 from my favorites!");
+		pickStub.onThirdCall().resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.slide).start(input));
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.delete("Favorite Regist Test3"));
 		checkFavorite({ "Favorite Regist Test1": imageFavorite["Favorite Regist Test1"] }, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite({ "Favorite Regist Test4": slideFavorite["Favorite Regist Test4"] }, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 
@@ -290,9 +316,9 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		pickStub.onFirstCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[2]; })
-		pickStub.onThirdCall().resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Image).start(input));
-		assert.strictEqual(state.message, "UnRegistered Favorite Regist Test1 from my favorites!");
+		pickStub.onThirdCall().resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.image).start(input));
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.delete("Favorite Regist Test1"));
 		checkFavorite({},                                                                  (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite({ "Favorite Regist Test4": slideFavorite["Favorite Regist Test4"] }, (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 
@@ -302,9 +328,9 @@ suite('Scenario - Favorite Operation Test Suite', async () => {
 		pickStub.onFirstCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[0]; })
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.onSecondCall().callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[2]; })
-		pickStub.onThirdCall().resolves(Constant.itemsCreat(Constant.ItemType.Confirm, { item1: "", item2: "" })[0]);
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.wallpaperType.Slide).start(input));
-		assert.strictEqual(state.message, "UnRegistered Favorite Regist Test4 from my favorites!");
+		pickStub.onThirdCall().resolves(confirmItems[0]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.OpenFavoriteGuide(state, Constant.types.wallpaper.slide).start(input));
+		assert.strictEqual(state.message, Constant.messages.showInformationMessage.favorite.delete("Favorite Regist Test4"));
 		checkFavorite({},                                                                  (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteImageSet)) as Favorite);
 		checkFavorite({},                                                                  (new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.favoriteSlideSet)) as Favorite);
 

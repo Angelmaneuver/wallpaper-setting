@@ -7,11 +7,12 @@ import { MultiStepInput }   from "../../../includes/utils/multiStepInput";
 import { State }            from "../../../includes/guide/base/base";
 import { VSCodePreset }     from "../../../includes/utils/base/vscodePreset";
 import { ProcessExplorer }  from "../../../includes/wallpaper/processExplorer";
+import * as Constant        from "../../../includes/constant";
 
 suite('Scenario - Process Explorer Test Suite', async () => {
 	const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
 	const items         = {
-		ProcessExplorer: VSCodePreset.create(VSCodePreset.Icons.window,          "Process Explorer", "Set an background color of the Process Explorer."),
+		ProcessExplorer: VSCodePreset.create(VSCodePreset.Icons.window,          ...Constant.quickpicks.begin.processExplorer),
 	};
 
 	test('Begin -> Process Explorer', async () => {
@@ -21,11 +22,18 @@ suite('Scenario - Process Explorer Test Suite', async () => {
 		const peUninstallStub = sinon.stub(ProcessExplorer.prototype,       "uninstall");
 		const peIsInstallStub = sinon.stub(ProcessExplorer.prototype,       "isInstall");
 		const context         = { asAbsolutePath: (dir: string) => path.join(__dirname, "..", "..", "..", "..", "..", dir) } as ExtensionContext;
+		const confirmItems    = Constant.confirmItem(
+			Constant.confirmItemType.confirm,
+			{
+				item1: "",
+				item2: "",
+			}
+		)
 
 		peIsInstallStub.value(false);
 		pickStub.onFirstCall().resolves(items.ProcessExplorer);
 		inputStub.onFirstCall().resolves('#000000');
-		pickStub.onSecondCall().resolves({ label: "$(check) Yes", description: "" });
+		pickStub.onSecondCall().resolves(confirmItems[0]);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(stateCreater(), context).start(input));
 
 		assert.strictEqual(pickStub.calledTwice,     true);
@@ -38,7 +46,7 @@ suite('Scenario - Process Explorer Test Suite', async () => {
 
 		peIsInstallStub.value(true);
 		pickStub.onFirstCall().resolves(items.ProcessExplorer);
-		pickStub.onSecondCall().resolves({ label: "$(check) Yes", description: "" });
+		pickStub.onSecondCall().resolves(confirmItems[0]);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.StartMenuGuide(stateCreater(), context).start(input));
 
 		assert.strictEqual(pickStub.calledTwice,       true);

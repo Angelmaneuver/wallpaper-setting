@@ -195,15 +195,15 @@ suite('Extension Setting Test Suite', async () => {
 		const setupInstance = new testTarget.ExtensionSetting();
 		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.opacity,           "0.85");
 		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.slideInterval,     "");
-		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.slideRandomPlay,   Constant.slideRandomPlay[0].label);
-		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.slideEffectFadeIn, Constant.slideEffectFadeIn[1].label);
+		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.slideRandomPlay,   Constant.quickpicks.slide.randomPlay[0].label);
+		await setupInstance.setItemValue(testTarget.ExtensionSetting.propertyIds.slideEffectFadeIn, Constant.quickpicks.slide.effectFadeIn[1].label);
 
 		const instance      = new testTarget.ExtensionSetting();
 		assert.strictEqual(instance.opacity.value,                0.85);
 		assert.strictEqual(instance.slideInterval.value,          25);
-		assert.strictEqual(instance.slideRandomPlay.value,        Constant.slideRandomPlay[0].label);
+		assert.strictEqual(instance.slideRandomPlay.value,        Constant.quickpicks.slide.randomPlay[0].label);
 		assert.strictEqual(instance.slideRandomPlay.validValue,   true);
-		assert.strictEqual(instance.slideEffectFadeIn.value,      Constant.slideEffectFadeIn[1].label);
+		assert.strictEqual(instance.slideEffectFadeIn.value,      Constant.quickpicks.slide.effectFadeIn[1].label);
 		assert.strictEqual(instance.slideEffectFadeIn.validValue, false);
 
 		instance.opacity.value           = "亞";
@@ -211,7 +211,7 @@ suite('Extension Setting Test Suite', async () => {
 		instance.favoriteRandomSet.value = true;
 		assert.strictEqual(instance.opacity.value,                undefined);
 		assert.strictEqual(instance.slideInterval.value,          undefined);
-		assert.strictEqual(instance.favoriteRandomSet.value,      Constant.favoriteRandomSet[0].label);
+		assert.strictEqual(instance.favoriteRandomSet.value,      Constant.quickpicks.favorite.randomSet[0].label);
 		assert.strictEqual(instance.favoriteRandomSet.validValue, true);
 
 		try {

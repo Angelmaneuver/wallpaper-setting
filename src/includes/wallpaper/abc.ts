@@ -1,13 +1,14 @@
+import { pathToFileURL }    from "url";
 import { ExtensionSetting } from "../settings/extension";
 import { ContextManager }   from "../utils/base/context";
-import * as Constant        from "../constant";
+import { types }            from "../constant";
 import { formatByArray }    from "../utils/base/string";
 import { File }             from "../utils/base/file";
 
 type Ready   = { image: boolean, slide: boolean };
 type AutoSet = number;
 
-const imageChangeScript         = `const changeImage=(async(imageData)=>{{0}document.body.style.backgroundImage=imageData;{1}});`;
+const imageChangeScript         = `const changeImage=(async(pre,current)=>{{0}if(pre){document.body.classList.remove(pre);};document.body.classList.add(current);{1}});`;
 const feedInScript1             = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity={0};});document.body.style.opacity=1;`;
 const feedInScript2             = `await feedin({0},0.01,50);`;
 const feedInScript1WithAdvanced = `const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(start,increment,ms)=>{let current=start;while(current<1){current+=increment;document.body.style.backdropFilter="brightness("+current+")";await sleep(ms);}});`;
@@ -31,7 +32,7 @@ export abstract class AbstractWallpaper {
 		this.destination    = destination;
 		this.settings       = settings;
 		this.extensionKey   = extensionKey;
-		this.previous       = '';
+		this.previous       = "";
 		this.isAdvancedMode = this.settings.isAdvancedMode;
 		this._isInstall     = this.checkIsInstall();
 		this._isReady       = this.checkIsReady();
@@ -58,9 +59,9 @@ export abstract class AbstractWallpaper {
 
 		if (this.isReady) {
 			if (this.isReady.image && !this.isReady.slide) {
-				checkResult = Constant.wallpaperType.Image;
+				checkResult = types.wallpaper.image;
 			} else if (!this.isReady.image && this.isReady.slide) {
-				checkResult = Constant.wallpaperType.Slide;
+				checkResult = types.wallpaper.slide;
 			}
 		}
 
@@ -79,25 +80,21 @@ export abstract class AbstractWallpaper {
 		return this._isAutoSet;
 	}
 
-	public install(fromSync?: boolean, syncData?: string, syncOpacity?: number): void {
+	public install(): void {
 		const editFile   = new File(this.destination);
-		let   image      = "";
-		let   opacity    = undefined;
 
-		if (
-			fromSync                                              &&
-			syncData    && syncData.length > 0                    &&
-			syncOpacity && syncOpacity >= Constant.maximumOpacity
-		) {
-			image        = syncData;
-			opacity      = syncOpacity;
-		} else if (this.settings.filePath.value) {
-			const file   = new File(this.settings.filePath.value,);
-			image        = `data:image/${file.extension};base64,${file.toBase64()}`
-			opacity      = this.settings.opacity.validValue;
-		}
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + this.getWallpaperScript(
+			this.getFileUrl(File.normalize(this.settings.filePath.value)),
+			this.settings.opacity.validValue,
+		);
 
-		editFile.content = this.clearWallpaperScript(editFile.toString()) + this.getWallpaperScript(image, opacity);
+		editFile.write();
+	}
+
+	public installFromSync(data: string, opacity: number): void {
+		const editFile   = new File(this.destination);
+
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + this.getWallpaperScript(data, opacity);
 
 		editFile.write();
 	}
@@ -108,7 +105,7 @@ export abstract class AbstractWallpaper {
 		editFile.content =
 			this.clearWallpaperScript(editFile.toString()) +
 			this.getSlideScript(
-				this.settings.slideFilePaths.value,
+				File.normalizes(this.settings.slideFilePaths.value),
 				this.settings.opacity.validValue,
 				this.settings.slideIntervalUnit2Millisecond,
 				this.settings.slideRandomPlay.validValue,
@@ -145,16 +142,23 @@ export abstract class AbstractWallpaper {
 	}
 
 	protected getWallpaperScript(image: string, opacity: number): string {
-		let result = "";
+		let script = "";
 
 		if (image && opacity) {
-			result = formatByArray(
-				this.getScriptTemplate(opacity),
-				`document.body.style.backgroundImage='url("${image}")';`
+			const style = formatByArray(
+				this.getBasicStyle(),
+				`background-image:url('${image}');${this.getOpacity(opacity)}`,
+			);
+
+			script = formatByArray(
+				this.getScriptTemplate(),
+				style,
+				"",
+				"",
 			);
 		}
 
-		return result;
+		return script;
 	}
 
 	protected getSlideScript(
@@ -164,26 +168,66 @@ export abstract class AbstractWallpaper {
 		random:    boolean,
 		feedin:    boolean
 	): string {
-		let result = "";
+		let script = "";
 
 		if (filePaths.length > 0 && opacity && interval) {
-			const [script1, script2] = feedin ? this.getFeedInScript(opacity) : [``, ``];
+			const [script1, script2] = (() => {
+				const data = this.getSlideScriptData(filePaths, opacity, interval, random, feedin);
 
-			let   temp               = `let images=new Array();`;
+				if (this.settings.slideLoadWaitComplete.validValue) {
+					return ["", formatByArray(this.getSlideScriptTemplate(), data)];
+				} else {
+					return [data, ""];
+				}
+			})();
 
-			filePaths.forEach((filePath) => {
-				const image = new File(filePath);
-				temp        += `images.push('url("data:image/${image.extension};base64,${image.toBase64()}")');`;
-			});
-
-			temp    += formatByArray(imageChangeScript, script1, script2);
-			temp    += this.getRandomOrNormalScript(random);
-			temp    += `setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${interval});`;
-
-			result  =  formatByArray(this.getScriptTemplate(opacity), temp);
+			script = formatByArray(
+				this.getScriptTemplate(),
+				this.getSlideStyleData(filePaths, opacity),
+				script1,
+				script2,
+			);
 		}
 
-		return result;
+		return script;
+	}
+
+	protected getSlideStyleData(filePaths: Array<string>, opacity: number): string {
+		const body:        Array<string> = [];
+		const bodyClasses: Array<string> = [];
+
+		filePaths.forEach((filePath, index) => {{
+			const url = `url('${this.getFileUrl(filePath)}')`;
+
+			body.push(url);
+
+			bodyClasses.push(` body.${this.extensionKey}-${index} {background-image:url('${this.getFileUrl(filePath)}');background-size:cover;}`)
+		}});
+
+		return formatByArray(
+			this.getBasicStyle(false),
+			`background-image:${body.join(",")};${this.getOpacity(opacity)}`,
+		) + bodyClasses.join("");
+	}
+
+	protected getSlideScriptData(
+		filePaths: Array<string>,
+		opacity:   number,
+		interval:  number,
+		random:    boolean,
+		feedin:    boolean
+	): string {
+		const [
+			feedIn1,
+			feedIn2
+		]            = feedin ? this.getFeedInScript(opacity) : [``, ``];
+
+		let   script = `let images=[...Array(${filePaths.length}).keys()];`
+		script      += formatByArray(imageChangeScript, feedIn1, feedIn2);
+		script      += this.getRandomOrNormalScript(random);
+		script      += `setInterval((async()=>{i=choice(0,Math.max(...images));current="${this.extensionKey}-"+i.toString();changeImage(pre,current);pre=current;after(i);}),${interval});`;
+
+		return script;
 	}
 
 	private getFeedInScript(opacity: number): [script1: string, script2: string] {
@@ -200,26 +244,30 @@ export abstract class AbstractWallpaper {
 		}
 	}
 
-	protected getScriptTemplate(opacity: number): string {
-		let result = `/*${this.extensionKey}-start*/
+	protected getScriptTemplate(): string {
+		let script = `/*${this.extensionKey}-start*/
 /*${this.extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{`;
-		result     += `const style=document.createElement("style");`;
-		result     += `style.appendChild(document.createTextNode("` + this.getBasicStyle(opacity) + `"));`
-		result     += `document.head.appendChild(style);`;
-		result     += `{0}`;
-		result     += `}
+document.addEventListener('DOMContentLoaded', () => {`;
+		script += `const style=document.createElement("style");`;
+		script += `style.appendChild(document.createTextNode("{0}"));`
+		script += `document.head.appendChild(style);`;
+		script += `{1}`;
+		script += `});{2}
 /*${this.extensionKey}-end*/`;
 
-		return result;
+		return script;
 	}
 
-	protected getBasicStyle(opacity: number): string {
+	protected getSlideScriptTemplate(): string {
+		return `window.addEventListener('load', () => {{0}});`;
+	}
+
+	protected getBasicStyle(wallpaper = true): string {
 		let style = ``;
 		style += `body > div {background-color:transparent !important;}`;
-		style += `body {`;
-		style += this.isAdvancedMode ? `` : `opacity:${opacity};`
-		style += `background-size:cover;`
+		style += ` body {`;
+		style += `{0}`;
+		style += `background-size:${wallpaper ? "cover" : "0%"};`
 		style += `background-position:center;`;
 		style += `background-repeat:no-repeat;`;
 		style += `}`;
@@ -239,20 +287,29 @@ window.onload=()=>{`;
 	}
 
 	protected getRandomOrNormalScript(random: boolean): string {
-		let result = "";
+		let script = "let i=0;let pre=undefined;";
+
 		if (random) {
-			result += `let played=new Array();let i=0;`;
-			result += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;
-			result += `const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};`;
-			result += `i=choice(0,images.length-1);`;
-			result += `document.body.style.backgroundImage=images[i];after(i);`;
+			script += `let played=new Array();`;
+			script += `const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};`;
+			script += `const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};`;
+			script += `i=choice(0,images.length-1);`;
 		} else {
-			result += `let i=0;`;
-			result += `const choice=(min,max)=>{i++; return i===max?min:i;};`
-			result += `const after=(index)=>{return;};`;
-			result += `document.body.style.backgroundImage=images[i];`;
+			script += `const choice=(min,max)=>{i++; return i===max?min:i;};`
+			script += `const after=(index)=>{return;};`;
 		}
 
-		return result;
+		script += `let current="${this.extensionKey}-"+i.toString();`;
+		script += `changeImage(pre,current);pre=current;after(i);`;
+
+		return script;
+	}
+
+	protected getFileUrl(image: string): string {
+		return `vscode-file://vscode-app${pathToFileURL(image).pathname}`;
+	}
+
+	protected getOpacity(opacity: number): string {
+		return this.isAdvancedMode ? `` : `opacity:${opacity};`
 	}
 }

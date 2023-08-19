@@ -1,6 +1,6 @@
 import * as Installer       from "./installer";
 import { ExtensionSetting } from "./settings/extension";
-import * as Constant        from "./constant";
+import { types }            from "./constant";
 
 interface Favorite{ name: string, type: number }
 interface FavoritesByHash{ [key: string]: unknown }
@@ -11,11 +11,11 @@ const choice         = (min: number, max: number) => {
 const getFavorite    = (
 	(filter: string, imageSet: FavoritesByHash, slideSet: FavoritesByHash) => {
 		if ("All" === filter) {
-			return favorite2array(Constant.wallpaperType.Image, imageSet).concat(favorite2array(Constant.wallpaperType.Slide, slideSet));
+			return favorite2array(types.wallpaper.image, imageSet).concat(favorite2array(types.wallpaper.slide, slideSet));
 		} else if ("Image" === filter) {
-			return favorite2array(Constant.wallpaperType.Image, imageSet);
+			return favorite2array(types.wallpaper.image, imageSet);
 		} else {
-			return favorite2array(Constant.wallpaperType.Slide, slideSet);
+			return favorite2array(types.wallpaper.slide, slideSet);
 		}
 	}	
 );
@@ -47,7 +47,7 @@ export async function randomSet(): Promise<void> {
 		);
 		const selection = favorites[choice(0, favorites.length -1)];
 
-		if (selection.type === Constant.wallpaperType.Image) {
+		if (types.wallpaper.image === selection.type) {
 			favoriteSetter(setting.favoriteImageSet.value[selection.name], setting);
 			installer.install();
 		} else {

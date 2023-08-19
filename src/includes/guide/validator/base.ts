@@ -1,27 +1,32 @@
 import { File }      from "../../utils/base/file";
 import { Optional }  from "../../utils/base/optional";
+import { messages }  from "../../constant";
 
 const HEX_COLOR_CODE_MATCHER = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
 export class BaseValidator {
 	public static filters: Array<string> | undefined = undefined;
 
-	public static async validateFileExist(filePath: string): Promise<string | undefined> {
+	public static async validateFileExist(value: string): Promise<string | undefined> {
+		const filePath = File.normalize(value);
+
 		if (!File.isFile(filePath, BaseValidator.filters)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve("Invalid path.");
+				resolve(messages.validate.file.invalid);
 			});
 		} else {
 			return undefined;
 		}
 	}
 
-	public static async validateDirectoryExist(filePath: string): Promise<string | undefined> {
+	public static async validateDirectoryExist(value: string): Promise<string | undefined> {
+		const filePath = File.normalize(value);
+
 		if (!File.isDirectory(filePath)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve("Invalid path.");
+				resolve(messages.validate.file.invalid);
 			});
 		} else {
 			return undefined;
@@ -32,7 +37,7 @@ export class BaseValidator {
 		if (!(value) || value.length === 0) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve("Required field.");
+				resolve(messages.validate.required);
 			});
 		} else {
 			return undefined;
@@ -51,7 +56,7 @@ export class BaseValidator {
 		if (value.length > 0 && (isNaN(string2Number) || string2Number > maximum || string2Number < minimum)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve(`Enter a number between ${minimum} and ${maximum} for ${name}.`);
+				resolve(messages.validate.number.between(minimum, maximum, name));
 			});
 		} else {
 			return undefined;
@@ -64,7 +69,7 @@ export class BaseValidator {
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve("Invalid value.");
+				resolve(messages.validate.invalidValue);
 			});
 		}
 	}

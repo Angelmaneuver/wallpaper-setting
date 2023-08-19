@@ -1,13 +1,14 @@
 import {
 	window,
 	commands,
-	ExtensionContext
-} from "vscode";
+	ExtensionContext,
+}                            from "vscode";
 import { ContextManager }    from "./utils/base/context";
 import { MultiStepInput }    from "./utils/multiStepInput";
 import { State }             from "./guide/base/base";
 import { GuideFactory }      from "./guide/factory/base";
 import * as Installer        from "./installer";
+import { messages, words }   from "./constant";
 
 export async function guidance(context: ExtensionContext): Promise<void> {
 	const state = { title: "Wallpaper Setting", resultSet: {} } as Partial<State>;
@@ -38,12 +39,12 @@ function errorHandling(e: unknown): void {
 }
 
 function restart(): void {
-	const yes   = 'Yes'
-	const items = [yes, 'No']
+	const yes   = words.confirm.yes;
+	const items = [yes, words.confirm.no];
 
 	window.showInformationMessage(
-		`VSCode must be restarted for the settings to take effect. Would you like to close this window and open a new one?`,
-		...items
+		messages.showInformationMessage.restart,
+		...items,
 	).then(selectAction => {
 		if (selectAction === yes) {
 			commands.executeCommand('workbench.action.closeWindow');

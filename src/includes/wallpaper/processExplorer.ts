@@ -29,13 +29,13 @@ export class ProcessExplorer extends AbstractWallpaper {
 
 		const editFile   = new File(this.destination);
 
-		editFile.content = this.clearWallpaperScript(editFile.toString()) + formatByArray(this.getScriptTemplate(0), "");
+		editFile.content = this.clearWallpaperScript(editFile.toString()) + formatByArray(this.getScriptTemplate(), this.getBasicStyle(), "", "");
 
 		editFile.write();
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	protected getBasicStyle(opacity: number): string {
+	protected getBasicStyle(): string {
 		return `body{background-color:${this.colorCode};}`;
 	}
 

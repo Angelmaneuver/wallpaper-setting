@@ -13,9 +13,7 @@ import { BaseValidator }    from "./validator/base";
 import { File }             from "../utils/base/file";
 import { Optional }         from "../utils/base/optional";
 import * as Encrypt         from "../utils/base/encrypt";
-import * as Constant        from "../constant";
-
-const warning = `The image file size that can be sync is less than ${Constant.syncImageSize4Display}.`;
+import { messages, values } from "../constant";
 
 export class SyncImageFilePathGuide extends InputResourceGuide {
 	constructor(
@@ -24,7 +22,7 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 		super(state, Type.File);
 
 		this.itemId         = this.itemIds.filePath;
-		this.prompt         = "Enter the path of the image file you want to sync as the wallpaper, or select it from the file dialog that appears by clicking the button on the upper right.";
+		this.prompt         = messages.placeholder.sync.upload.filePath;
 		this.state.validate = SyncImageFilePathGuide.validateFilePath;
 	}
 
@@ -35,7 +33,7 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 				&& File.isFile(this.inputValueAsString)
 				&& SyncImageFilePathGuide.isNotApplyFileSize(File.getFilesize(this.inputValueAsString))
 			) {
-				window.showWarningMessage(warning);
+				window.showWarningMessage(messages.validate.sync.size);
 			}
 			await super.show(input);
 		} while (
@@ -44,11 +42,13 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 		);
 	}
 
-	public static async validateFilePath(filePath: string): Promise<string | undefined> {
+	public static async validateFilePath(value: string): Promise<string | undefined> {
+		const filePath = File.normalize(value);
+
 		if (!File.isFile(filePath)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve("Invalid path.");
+				resolve(messages.validate.file.invalid);
 			});
 		} else if (
 			SyncImageFilePathGuide.isNotApplyFileSize(
@@ -57,7 +57,7 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 		) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			return new Promise<string>((resolve, reject) => {
-				resolve(warning);
+				resolve(messages.validate.sync.size);
 			});
 		} else {
 			return undefined;
@@ -65,7 +65,7 @@ export class SyncImageFilePathGuide extends InputResourceGuide {
 	}
 
 	private static isNotApplyFileSize(size: number | boolean): boolean {
-		return (typeof size === "boolean" || (typeof size === "number" && size > Constant.syncImageSize)) ? true : false;
+		return (typeof size === "boolean" || (typeof size === "number" && size > values.sync.limit.size)) ? true : false;
 	}
 }
 
@@ -95,11 +95,11 @@ export class SyncEncryptSaltInputGuide extends BaseSyncSaltInputGuide {
 		await this.sync.setData(iv.toString("base64"), data.toString("base64"));
 		await this.sync.setOpacity(opacity);
 
-		this.state.message = "Wallpaper settings uploaded!"
+		this.state.message = messages.showInformationMessage.sync.success.upload;
 	}
 
 	private get getSyncData(): [Buffer, Buffer] {
-		const file = new File(this.guideGroupResultSet[this.itemIds.filePath] as string);
+		const file = new File(File.normalize(this.guideGroupResultSet[this.itemIds.filePath] as string));
 		const data = Buffer.from(`data:image/${file.extension};base64,${file.toBase64()}`);
 
 		return Encrypt.encrypt(
@@ -117,7 +117,7 @@ export class SyncDecryptSaltInputGuide extends BaseSyncSaltInputGuide {
 	public async show(input: MultiStepInput):Promise<void | InputStep> {
 		do {
 			if (this.data && this.opacity) {
-				window.showWarningMessage(`The decryption result was not in the expected format. Please check password and salt.`);
+				window.showWarningMessage(messages.showInformationMessage.sync.warning.download);
 			}
 
 			await super.show(input);
@@ -134,7 +134,7 @@ export class SyncDecryptSaltInputGuide extends BaseSyncSaltInputGuide {
 	}
 
 	protected async lastInputStepExecute(): Promise<void> {
-		this.installer.install(true, this.data, this.opacity);
+		this.installer.installFromSync(this.data ?? "", this.opacity ?? 0.75);
 		this.state.reload = true;
 	}
 

@@ -17,6 +17,7 @@ import { ImageFilePathGuide }                      from "../../../../../includes
 import { SlideFilePathsGuide, SlideIntervalGuide } from "../../../../../includes/guide/slide";
 import { OpacityGuide }                            from "../../../../../includes/guide/opacity";
 import * as Wallpaper                              from "../../../../../includes/guide/select/wallpaper";
+import { quickpicks }                              from "../../../../../includes/constant";
 
 interface QuickPickParameters<T extends QuickPickItem> {
 	title:        string;
@@ -29,17 +30,18 @@ interface QuickPickParameters<T extends QuickPickItem> {
 	shouldResume: () => Thenable<boolean>;
 }
 
-suite('Guide - SelectFavoriteProcess Test Suite', async () => {
+suite('Guide - SelectParameter Test Suite', async () => {
 	const items         = [
-		VSCodePreset.create(VSCodePreset.Icons.fileMedia, "Image Path",            "Set the image to be used as the wallpaper."),
-		VSCodePreset.create(VSCodePreset.Icons.folder,    "Image Files Path",      "Set the images to be used as the slide."),
-		VSCodePreset.create(VSCodePreset.Icons.eye,       "Opacity",               "Set the opacity of the wallpaper."),
-		VSCodePreset.create(VSCodePreset.Icons.clock,     "Slide Interval",        "Set the slide interval."),
-		VSCodePreset.create(VSCodePreset.Icons.law,       "Slide Interval's Unit", "Set the slide interval's unit."),
-		VSCodePreset.create(VSCodePreset.Icons.merge,     "Slide Random Playback", "set whether to play the slides randomly."),
-		VSCodePreset.create(VSCodePreset.Icons.foldDown,  "Effect Fade in",        "set whether to use fade in effect."),
-		VSCodePreset.create(VSCodePreset.Icons.save,      "Save",                  "Save changes."),
-		VSCodePreset.create(VSCodePreset.Icons.reply,     "Return",                "Return without saving any changes."),
+		VSCodePreset.create(VSCodePreset.Icons.fileMedia,     ...quickpicks.parameter.image),
+		VSCodePreset.create(VSCodePreset.Icons.folder,        ...quickpicks.parameter.slide.filePaths),
+		VSCodePreset.create(VSCodePreset.Icons.eye,           ...quickpicks.parameter.opacity),
+		VSCodePreset.create(VSCodePreset.Icons.clock,         ...quickpicks.parameter.slide.interval.time),
+		VSCodePreset.create(VSCodePreset.Icons.law,           ...quickpicks.parameter.slide.interval.unit),
+		VSCodePreset.create(VSCodePreset.Icons.merge,         ...quickpicks.parameter.slide.random),
+		VSCodePreset.create(VSCodePreset.Icons.foldDown,      ...quickpicks.parameter.slide.effectFadeIn),
+		VSCodePreset.create(VSCodePreset.Icons.debugContinue, ...quickpicks.parameter.slide.loadWaitComplete),
+		VSCodePreset.create(VSCodePreset.Icons.save,          ...quickpicks.parameter.save),
+		VSCodePreset.create(VSCodePreset.Icons.reply,         ...quickpicks.parameter.return),
 	];
 	const stateCreater  = (setting: ExtensionSetting) => ({ title: "Test Suite", guideGroupId: "test", settings: setting, installer: Installer.getInstance(setting), resultSet: {} } as State);
 	const itemChecker = (assumption: Array<QuickPickItem>, result: Array<QuickPickItem>) => {
@@ -71,7 +73,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state).start(input));
 		itemChecker(
-			[items[0], items[1], items[2], items[3], items[4], items[5], items[6], items[8]],
+			[items[0], items[1], items[2], items[3], items[4], items[5], items[6], items[7], items[9]],
 			pickStub.getCall(0).args[0].items
 		);
 
@@ -111,17 +113,21 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 		// eslint-disable-next-line
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[7]);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state, context).start(input));
-		assert.strictEqual(new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.opacity), 0.85);
 
 		// eslint-disable-next-line
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[8]);
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state, context).start(input));
+		assert.strictEqual(new ExtensionSetting().getItemValue(ExtensionSetting.propertyIds.opacity), 0.85);
+
+		// eslint-disable-next-line
+		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => args.items[9]);
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state, context).start(input));
 
 		assert.strictEqual(imageStub.calledOnce,           true);
 		assert.strictEqual(slideStub.calledOnce,           true);
 		assert.strictEqual(opacityStub.calledOnce,         true);
 		assert.strictEqual(intervalStub.calledOnce,        true);
-		assert.strictEqual(baseQuickPickStub.calledThrice, true);
+		assert.strictEqual(baseQuickPickStub.callCount,    4);
 
 		pickStub.restore();
 		imageStub.restore();
@@ -143,7 +149,7 @@ suite('Guide - SelectFavoriteProcess Test Suite', async () => {
 
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectParameterType(state).start(input));
 		itemChecker(
-			[items[0], items[1], items[3], items[4], items[5], items[6], items[8]],
+			[items[0], items[1], items[3], items[4], items[5], items[6], items[7], items[9]],
 			pickStub.getCall(0).args[0].items
 		);
 

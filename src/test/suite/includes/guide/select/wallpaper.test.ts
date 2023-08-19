@@ -49,12 +49,12 @@ suite('Guide - Wallpaper Operation Test Suite', async () => {
 		assert.strictEqual(state.reload, undefined);
 
 		state                    = stateCreater(setting);
-		isAutoSetStub.get(() => Constant.wallpaperType.Image);
+		isAutoSetStub.get(() => Constant.types.wallpaper.image);
 		testTarget.delegation2Transition(new BaseInputGuide(state), state, true);
 		assert.strictEqual(state.reload, true);
 
 		state                    = stateCreater(setting);
-		isAutoSetStub.get(() => Constant.wallpaperType.Slide);
+		isAutoSetStub.get(() => Constant.types.wallpaper.slide);
 		testTarget.delegation2Transition(new BaseInputGuide(state), state, true);
 		assert.strictEqual(state.reload, true);
 

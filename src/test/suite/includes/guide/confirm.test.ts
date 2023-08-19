@@ -4,7 +4,10 @@ import * as testTarget    from "../../../../includes/guide/confirm";
 import { QuickPickItem }  from "vscode";
 import { MultiStepInput } from "../../../../includes/utils/multiStepInput";
 import { State }          from "../../../../includes/guide/base/base";
-import * as Constant      from "../../../../includes/constant";
+import {
+	confirmItemType,
+	confirmItem,
+}                         from "../../../../includes/constant";
 
 suite('Guide - Confirm Test Suite', async () => {
 	const itemchecker = (assumption: Array<QuickPickItem>, result: Array<QuickPickItem>) => {
@@ -26,7 +29,7 @@ suite('Guide - Confirm Test Suite', async () => {
 	test('constructor', async () => {
 		const description1 = "description 1";
 		const description2 = "description 2";
-		const items        = Constant.itemsCreat(Constant.ItemType.Confirm, { item1: description1, item2: description2 });
+		const items        = confirmItem(confirmItemType.confirm, { item1: description1, item2: description2 });
 		const pickStub     = sinon.stub(MultiStepInput.prototype, "showQuickPick");
 		const callback     = { function: (async (value1: string, value2: number) => { return }) as (...args: Array<unknown>) => Promise<void> } // eslint-disable-line @typescript-eslint/no-unused-vars
 		const callbackStub = sinon.stub(callback, "function");

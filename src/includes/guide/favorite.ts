@@ -14,7 +14,13 @@ import { Favorite }              from "../settings/extension";
 import * as StartUp              from "../favorite";
 import { ExtensionSetting }      from "../settings/extension";
 import { VSCodePreset }          from "../utils/base/vscodePreset";
-import * as Constant             from "../constant";
+import {
+	messages,
+	words,
+	types,
+	WallpaperType,
+	quickpicks,
+}                                from "../constant";
 
 async function registFavorite(
 	key:       string,
@@ -44,9 +50,9 @@ async function removeFavorite(key: string, state: State, message: string): Promi
 }
 
 export class RegisterFavoriteGuide extends BaseInputGuide {
-	private type: number;
+	private type: WallpaperType;
 
-	constructor(state: State, type: number) {
+	constructor(state: State, type: WallpaperType) {
 		super(state);
 
 		this.type = type;
@@ -55,21 +61,26 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 	public init(): void {
 		super.init();
 
-		this.itemId   = this.type === Constant.wallpaperType.Image ? this.itemIds.favoriteImageSet : this.itemIds.favoriteSlideSet;
-		this.prompt   = "Enter the name of the favorite setting to be registered.";
+		this.itemId   = types.wallpaper.image === this.type ? this.itemIds.favoriteImageSet : this.itemIds.favoriteSlideSet;
+		this.prompt   = messages.placeholder.favorite.register.message;
 		this.validate = BaseValidator.validateRequired;
 	}
 
 	public async after(): Promise<void> {
 		const [favorite, registered] = this.createRegistFavorite();
-		const message                = `Registered ${this.inputValueAsString} to my favorites!`;
+		const message                = messages.showInformationMessage.favorite.register(this.inputValueAsString);
 
 		if (Object.keys(registered).includes(this.inputValueAsString)) {
-			this.state.placeholder = "There is a favorite setting with the same name, do you want to overwrite it?";
+			this.state.placeholder = messages.placeholder.favorite.register.override.confirm.message;
 			this.setNextSteps([{
 				key:   "BaseConfirmGuide",
-				state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
-				args:  [{ yes: "Overwrite.", no: "Back to previous." }, registFavorite, this.itemId, this.state, message, { favorite: favorite, option: registered }]
+				state: { title: this.title + words.headline.confirm, guideGroupId: this.guideGroupId },
+				args:  [
+					{
+						yes: messages.placeholder.favorite.register.override.confirm.yes,
+						no:  messages.placeholder.favorite.register.override.confirm.no,
+					},
+					registFavorite, this.itemId, this.state, message, { favorite: favorite, option: registered }]
 			}]);
 		} else {
 			return registFavorite(this.itemId, this.state, message, { favorite: favorite, option: registered });
@@ -80,18 +91,19 @@ export class RegisterFavoriteGuide extends BaseInputGuide {
 		const favorite:   Partial<Favorite> = {};
 		let   registered: Partial<Favorite> = {};
 
-		if (this.type === Constant.wallpaperType.Image) {
+		if (types.wallpaper.image === this.type) {
 			favorite[this.inputValueAsString] = {
 				filePath: this.settings.filePath.value,
 			};
 			registered = this.settings.favoriteImageSet.value;
 		} else {
 			favorite[this.inputValueAsString] = {
-				slideFilePaths:    this.settings.slideFilePaths.value,
-				slideInterval:     this.settings.slideInterval.validValue,
-				slideIntervalUnit: this.settings.slideIntervalUnit.value,
-				slideRandomPlay:   this.settings.slideRandomPlay.validValue,
-				slideEffectFadeIn: this.settings.slideEffectFadeIn.validValue
+				slideFilePaths:        this.settings.slideFilePaths.value,
+				slideInterval:         this.settings.slideInterval.validValue,
+				slideIntervalUnit:     this.settings.slideIntervalUnit.value,
+				slideRandomPlay:       this.settings.slideRandomPlay.validValue,
+				slideEffectFadeIn:     this.settings.slideEffectFadeIn.validValue,
+				slideLoadWaitComplete: this.settings.slideLoadWaitComplete.validValue,
 			}
 			registered = this.settings.favoriteSlideSet.value;
 		}
@@ -109,18 +121,24 @@ abstract class AbstractRegistedFavoriteOperationGuide extends AbstractQuickPickG
 	protected type:       number;
 	protected returnItem: QuickPickItem;
 
-	constructor(state: State, type: number, description: { returnItem: string }) {
+	constructor(state: State, type: WallpaperType, description: { returnItem: string }) {
 		super(state);
 
 		this.type       = type;
-		this.returnItem = VSCodePreset.create(VSCodePreset.Icons.reply, "Return", description.returnItem);
+		this.returnItem = VSCodePreset.create(VSCodePreset.Icons.reply, words.return, description.returnItem);
 	}
 
 	public init(): void {
 		super.init();
 
-		this.itemId = Constant.wallpaperType.Image === this.type ? this.itemIds.favoriteImageSet                              : this.itemIds.favoriteSlideSet;
-		this.items  = Constant.wallpaperType.Image === this.type ? this.favorites2Items(this.settings.favoriteImageSet.value) : this.favorites2Items(this.settings.favoriteSlideSet.value);
+		if (types.wallpaper.image === this.type) {
+			this.itemId = this.itemIds.favoriteImageSet;
+			this.items  = this.favorites2Items(this.settings.favoriteImageSet.value);
+		} else {
+			this.itemId = this.itemIds.favoriteSlideSet;
+			this.items  = this.favorites2Items(this.settings.favoriteSlideSet.value)
+		}
+
 		this.items  = this.items.concat([this.returnItem]);
 	}
 
@@ -140,15 +158,15 @@ abstract class AbstractRegistedFavoriteOperationGuide extends AbstractQuickPickG
 export class OpenFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 	constructor(
 		state: State,
-		type:  number
+		type:  WallpaperType
 	) {
-		super(state, type, { returnItem: "Back to previous." });
+		super(state, type, { returnItem: messages.backToPrevious });
 	}
 
 	public init(): void {
 		super.init();
 
-		this.placeholder = "Select the favorite.";
+		this.placeholder = messages.placeholder.favorite.open;
 	}
 
 	public async after(): Promise<void> {
@@ -169,12 +187,12 @@ export class OpenFavoriteGuide extends AbstractRegistedFavoriteOperationGuide {
 }
 
 export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelectGuide {
-	protected type: number;
+	protected type: WallpaperType;
 	protected name: string;
 
 	constructor(
 		state: State,
-		type:  number,
+		type:  WallpaperType,
 		name:  string
 	) {
 		super(state);
@@ -186,8 +204,12 @@ export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelect
 	public init(): void {
 		super.init();
 
-		this.placeholder = "Select what you want to execute with this favorite.";
-		this.items       = Constant.favoriteOperationExecute;
+		this.placeholder = messages.placeholder.favorite.selectExecute;
+		this.items       = [
+			VSCodePreset.create(VSCodePreset.Icons.debugStart,  ...quickpicks.favorite.set),
+			VSCodePreset.create(VSCodePreset.Icons.emptyWindow, ...quickpicks.favorite.windowOpen),
+			VSCodePreset.create(VSCodePreset.Icons.trashcan,    ...quickpicks.favorite.delete),
+		];
 	}
 
 	public getExecute(label: string): () => Promise<void> {
@@ -219,8 +241,8 @@ export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelect
 		commands.executeCommand('workbench.action.newWindow');
 			
 		window.showInformationMessage(
-			`After confirming that a new window has been lunched, please click 'OK' or close this message. * Restore the wallpaper settings.`,
-			'OK'
+			messages.showInformationMessage.favorite.selectExecute.newWindow,
+			messages.showInformationMessage.favorite.selectExecute.ok,
 		).then(() => {
 			this.installer.installWithPrevious();
 			backup.batchInstall();
@@ -228,15 +250,18 @@ export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelect
 	}
 
 	private delete(): void {
-		const message  = `UnRegistered ${this.name} from my favorites!`;
+		const message  = messages.showInformationMessage.favorite.delete(this.name);
 		const favorite = this.removedFavorite();
 
-		this.state.placeholder = "Do you want to unregister it?";
+		this.state.placeholder = messages.placeholder.favorite.delete.confirm.message;
 		this.setNextSteps([{
 			key:   "BaseConfirmGuide",
-			state: { title: this.title + " - Confirm", guideGroupId: this.guideGroupId },
+			state: { title: this.title + words.headline.confirm, guideGroupId: this.guideGroupId },
 			args:  [
-				{ yes: "UnRegister.", no: "Back to previous." },
+				{
+					yes: messages.placeholder.favorite.delete.confirm.yes,
+					no:  messages.placeholder.favorite.delete.confirm.no,
+				},
 				(Object.keys(favorite).length > 0 ? registFavorite : removeFavorite),
 				this.itemId,
 				this.state,
@@ -249,17 +274,17 @@ export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelect
 	private async loadFavorite(): Promise<void> {
 		let favorite: Partial<Favorite> = {};
 
-		if (this.type === Constant.wallpaperType.Image) {
+		if (types.wallpaper.image === this.type) {
 			favorite = this.settings.favoriteImageSet.value[this.name] as Partial<Favorite>;
 		} else {
 			favorite = this.settings.favoriteSlideSet.value[this.name] as Partial<Favorite>;
 		}
 
 		for (const key of Object.keys(favorite)) {
-			await this.settings.setItemValue(key, favorite[key]);
+			await this.settings.setItemValue(this.itemIds[key], favorite[key]);
 		}
 
-		if (this.type === Constant.wallpaperType.Image) {
+		if (types.wallpaper.image === this.type) {
 			this.installer.install();
 		} else {
 			this.installer.installAsSlide();
@@ -270,7 +295,7 @@ export class SelectExecuteOperationFavoriteGuide extends AbstractQuickPickSelect
 		let   registered: Favorite = {};
 		const favorite:   Favorite = {};
 
-		if (this.type === Constant.wallpaperType.Image) {
+		if (types.wallpaper.image === this.type) {
 			registered = this.settings.favoriteImageSet.value;
 		} else {
 			registered = this.settings.favoriteSlideSet.value;
@@ -291,8 +316,8 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 		super.init();
 
 		this.itemId      = this.itemIds.favoriteRandomSet;
-		this.placeholder = "Do you want to set a random wallpaper from your favorite settings at start up?";
-		this.items       = Constant.favoriteRandomSet;
+		this.placeholder = messages.placeholder.favorite.randomSet.message;
+		this.items       = quickpicks.favorite.randomSet;
 	}
 
 	public getExecute(label: string): () => Promise<void> {
@@ -308,7 +333,8 @@ export class FavoriteRandomSetGuide extends AbstractQuickPickSelectGuide {
 				} else {
 					this.state.reload = true;
 				}
-				// fallsthrough
+
+			// fallsthrough
 			case this.items[1].label:
 				return async () => { await this.settings.setItemValue(this.itemIds.favoriteRandomSetFilter, this.settings.favoriteRandomSetFilter.defaultValue); await this.registSetting(); await StartUp.randomSet(); };
 			default:
@@ -322,8 +348,8 @@ export class FavoriteRandomSetFilterGuide extends AbstractQuickPickSelectGuide {
 		super.init();
 
 		this.itemId      = this.itemIds.favoriteRandomSetFilter;
-		this.placeholder = "Select the favorite type you want to set as random.";
-		this.items       = Constant.favoriteRandomSetFilter;
+		this.placeholder = messages.placeholder.favorite.randomSet.filter;
+		this.items       = quickpicks.favorite.randomSetFilter;
 		this.activeItem  = this.getItemByLabelString(this.items, this.settings.favoriteRandomSetFilter.validValue);
 	}
 

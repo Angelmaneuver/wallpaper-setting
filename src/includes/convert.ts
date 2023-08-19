@@ -50,7 +50,7 @@ export async function theme2transparancy(
 	const baseAa                         = decimal2hex(opacity.base);
 	const overlapAa                      = decimal2hex(opacity.overlap);
 	const selectionAa                    = decimal2hex(opacity.selection);
-	const theme                          = jsonc.parse(new File(sourcePath).content.toString());
+	const theme                          = jsonc.parse(new File(File.normalize(sourcePath)).content.toString());
 	const colors: Record<string, string> = {};
 
 	if (!(id in theme)) {

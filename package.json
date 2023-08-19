@@ -3,7 +3,7 @@
 	"displayName": "Wallpaper Setting",
 	"description": "Set an image as the VSCode background.",
 	"publisher": "Angelmaneuver",
-	"version": "0.10.3",
+	"version": "0.11.0",
 	"homepage": "https://github.com/Angelmaneuver/wallpaper-setting/blob/main/README.md#wallpaper-setting",
 	"repository": {
 		"type": "git",
@@ -16,7 +16,7 @@
 		"url": "https://github.com/sponsors/Angelmaneuver"
 	},
 	"engines": {
-		"vscode": "^1.78.0"
+		"vscode": "^1.81.0"
 	},
 	"icon": "resource/AppIcon.png",
 	"categories": [
@@ -35,6 +35,7 @@
 		"workspace"
 	],
 	"main": "./dist/extension.js",
+	"l10n": "./l10n",
 	"contributes": {
 		"commands": [
 			{
@@ -98,6 +99,12 @@
 					"default": true,
 					"description": "Fade in when the slide image changes."
 				},
+				"wallpaper-setting.slide.load.waitComplete": {
+					"type": "boolean",
+					"scope": "application",
+					"default": false,
+					"description": "Wait for image loading to complete * Depending on the images file size, startup may be slow."
+				},
 				"wallpaper-setting.favoriteWallpaperImageSet": {
 					"type": "object",
 					"scope": "application",
@@ -152,31 +159,34 @@
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
 		"test": "node ./out/test/runTest.js",
-		"coverage": "yarn run test --coverage"
+		"coverage": "yarn run test --coverage",
+		"generate": "npx @vscode/l10n-dev export -o ./l10n ./src"
 	},
 	"devDependencies": {
 		"@istanbuljs/nyc-config-typescript": "^1.0.2",
 		"@types/glob": "^8.1.0",
 		"@types/mocha": "^10.0.1",
-		"@types/node": "^20.1.4",
-		"@types/sinon": "^10.0.15",
-		"@types/vscode": "^1.78.0",
-		"@typescript-eslint/eslint-plugin": "^5.59.5",
-		"@typescript-eslint/parser": "^5.59.5",
-		"@vscode/test-electron": "^2.3.2",
-		"eslint": "^8.40.0",
+		"@types/node": "^20.4.9",
+		"@types/sinon": "^10.0.16",
+		"@types/vscode": "^1.81.0",
+		"@typescript-eslint/eslint-plugin": "^6.3.0",
+		"@typescript-eslint/parser": "^6.3.0",
+		"@vscode/l10n-dev": "^0.0.29",
+		"@vscode/test-electron": "^2.3.4",
+		"eslint": "^8.46.0",
 		"glob": "^8.1.0",
 		"mocha": "^10.2.0",
 		"nyc": "^15.1.0",
-		"sinon": "^15.0.4",
+		"sinon": "^15.2.0",
 		"source-map-support": "^0.5.21",
-		"ts-loader": "^9.4.2",
+		"ts-loader": "^9.4.4",
 		"ts-node": "^10.9.1",
-		"typescript": "^5.0.4",
-		"webpack": "^5.82.1",
-		"webpack-cli": "^5.1.1"
+		"typescript": "^5.1.6",
+		"webpack": "^5.88.2",
+		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {
+		"@vscode/l10n": "^0.0.16",
 		"jsonc-parser": "^3.2.0"
 	}
 }

@@ -5,10 +5,10 @@ import {
 	BooleanSettingItem
 }                              from "../base";
 import { Optional }            from "../../../utils/base/optional";
-import * as Constant           from "../../../constant";
+import { quickpicks }          from "../../../constant";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Constructable<T> extends Function { new (...args: Array<any>): T; }
+interface Constructable<T> { new (...args: Array<any>): T; }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Items = { [key: string]: { className: string, args: { [key: string]: any } } };
@@ -43,14 +43,15 @@ export abstract class SettingItemFactory {
 			slideFilePaths:                   { className: BaseSettingItem.name,    args: { default: [] } },
 			slideInterval:                    { className: NumberSettingItem.name,  args: { default: 25 } },
 			slideIntervalUnit:                { className: BaseSettingItem.name,    args: { default: "Minute" } },
-			slideRandomPlay:                  { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.slideRandomPlay[0].label,   falseValue: Constant.slideRandomPlay[1].label } },
-			slideEffectFadeIn:                { className: BooleanSettingItem.name, args: { default: true,  trueValue: Constant.slideEffectFadeIn[0].label, falseValue: Constant.slideEffectFadeIn[1].label } },
+			slideRandomPlay:                  { className: BooleanSettingItem.name, args: { default: false, trueValue: quickpicks.slide.randomPlay[0].label,       falseValue: quickpicks.slide.randomPlay[1].label } },
+			slideEffectFadeIn:                { className: BooleanSettingItem.name, args: { default: true,  trueValue: quickpicks.slide.effectFadeIn[0].label,     falseValue: quickpicks.slide.effectFadeIn[1].label } },
+			"slide.load.waitComplete":        { className: BooleanSettingItem.name, args: { default: false, trueValue: quickpicks.slide.loadWaitComplete[0].label, falseValue: quickpicks.slide.loadWaitComplete[1].label } },
 			favoriteWallpaperImageSet:        { className: BaseSettingItem.name,    args: { default: {} } },
 			favoriteWallpaperSlideSet:        { className: BaseSettingItem.name,    args: { default: {} } },
-			favoriteWallpaperRandomSet:       { className: BooleanSettingItem.name, args: { default: false, trueValue: Constant.favoriteRandomSet[0].label, falseValue: Constant.favoriteRandomSet[1].label } },
+			favoriteWallpaperRandomSet:       { className: BooleanSettingItem.name, args: { default: false, trueValue: quickpicks.favorite.randomSet[0].label,     falseValue: quickpicks.favorite.randomSet[1].label } },
 			favoriteWallpaperRandomSetFilter: { className: BaseSettingItem.name,    args: { default: "All" } },
-			enableSync:                       { className: BooleanSettingItem.name, args: { default: false, trueValue: true,                                falseValue: false } },
-			advancedMode:                     { className: BooleanSettingItem.name, args: { default: false, trueValue: true,                                falseValue: false } },
+			enableSync:                       { className: BooleanSettingItem.name, args: { default: false, trueValue: true,                                       falseValue: false } },
+			advancedMode:                     { className: BooleanSettingItem.name, args: { default: false, trueValue: true,                                       falseValue: false } },
 		};
 
 		this.classes.push(BaseSettingItem, NumberSettingItem, BooleanSettingItem);

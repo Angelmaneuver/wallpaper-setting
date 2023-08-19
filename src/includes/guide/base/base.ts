@@ -9,7 +9,7 @@ import {
 }                           from "./abc";
 import { ExtensionSetting } from "../../settings/extension";
 import { SettingSync }      from "../../settings/sync";
-import * as Constant        from "../../constant";
+import { values }           from "../../constant";
 import { File }             from "../../utils/base/file";
 import {
 	getInstance,
@@ -116,25 +116,31 @@ export abstract class AbstractBaseGuide extends AbstractGuide {
 
 	private setSlideFilePaths(): void {
 		const inputValue = this.guideGroupResultSet[this.itemIds.slideFilePaths];
-		let slidePaths   = new Array<string>();
-		let result       = new Array<string>();
+		let   paths      = new Array<string>();
+		let   result     = new Array<string>();
 
 		if (Array.isArray(inputValue)) {
-			slidePaths = inputValue as Array<string>;
+			paths = inputValue as Array<string>;
 		} else if (typeof(inputValue) === "string") {
-			slidePaths = [inputValue];
+			paths = [inputValue];
 		}
 
-		slidePaths.forEach( (slidePath) => {
-			if (File.isFile(slidePath)) {
-				result.push(slidePath);
-			} else if (File.isDirectory(slidePath)) {
+		paths.forEach((virtual) => {
+			const real = File.normalize(virtual);
+
+			if (File.isFile(real)) {
+				result.push(virtual);
+			} else if (File.isDirectory(real)) {
 				const childrens = File.getChildrens(
-					slidePath,
-					{ filter: { extension: Constant.applyImageFile }, fullPath: true, recursive: false }
+					real,
+					{ filter: { extension: [...values.file.apply.image] }, fullPath: true, recursive: false }
 				);
 
-				result = result.concat( childrens ? childrens : new Array<string>());
+				result = result.concat(
+					childrens
+						? childrens.map(value => value.replace(real, virtual))
+						: new Array<string>()
+				);
 			}
 		});
 

@@ -3,6 +3,7 @@ import * as sinon      from "sinon";
 import * as path       from "path";
 import * as fs         from "fs";
 import * as testTarget from "../../../../../includes/guide/validator/base";
+import * as Constant   from "../../../../../includes/constant";
 
 suite('Guide Validator Test Suite', async () => {
 	test('validateFileExist', async () => {
@@ -82,38 +83,63 @@ suite('Guide Validator Test Suite', async () => {
 	});
 
 	test('validateNumber', async () => {
-		const name = "test item";
+		const name    = "test item";
+		let   message = Constant.messages.validate.number.between(
+			0,
+			65555,
+			name,
+		);
 
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, ""),       undefined);
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "0"),      undefined);
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "65555"),  undefined);
 
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "-1"),     `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "65556"),  `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "-"),      `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "a"),      `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "A"),      `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "あ"),     `Enter a number between 0 and 65555 for ${name}.`);
-		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "亞"),     `Enter a number between 0 and 65555 for ${name}.`);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "-1"),     message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "65556"),  message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "-"),      message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "a"),      message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "A"),      message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "あ"),     message);
+		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "亞"),     message);
+
+		message = Constant.messages.validate.number.between(
+			4.5,
+			65555,
+			name,
+		);
 
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "4.5", { minimum: 4.5 }), undefined);
 		assert.strictEqual(
 			await testTarget.BaseValidator.validateNumber(name, "4.4", { minimum: 4.5 }),
-			`Enter a number between 4.5 and 65555 for ${name}.`
+			message,
 		);
+
+		message = Constant.messages.validate.number.between(
+			0,
+			4.5,
+			name,
+		);
+
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "4.5", { maximum: 4.5 }), undefined);
 		assert.strictEqual(
 			await testTarget.BaseValidator.validateNumber(name, "4.6", { maximum: 4.5 }),
-			`Enter a number between 0 and 4.5 for ${name}.`
+			message,
 		);
+
+		message = Constant.messages.validate.number.between(
+			4.4,
+			4.6,
+			name,
+		);
+
 		assert.strictEqual(await testTarget.BaseValidator.validateNumber(name, "4.5", { minimum: 4.4, maximum: 4.6 }), undefined);
 		assert.strictEqual(
 			await testTarget.BaseValidator.validateNumber(name, "4.3", { minimum: 4.4, maximum: 4.6 }),
-			`Enter a number between 4.4 and 4.6 for ${name}.`
+			message,
 		);
 		assert.strictEqual(
 			await testTarget.BaseValidator.validateNumber(name, "4.7", { minimum: 4.4, maximum: 4.6 }),
-			`Enter a number between 4.4 and 4.6 for ${name}.`
+			message,
 		);
 	});
 

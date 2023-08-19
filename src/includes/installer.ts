@@ -81,8 +81,12 @@ export class InstallManager {
 		return this.main.isAutoSet;
 	}
 
-	public install(fromSync?: boolean, syncData?: string, syncOpacity?: number): void {
-		this.main.install(fromSync, syncData, syncOpacity);
+	public install(): void {
+		this.main.install();
+	}
+
+	public installFromSync(data: string, opacity: number): void {
+		this.main.installFromSync(data, opacity);
 	}
 
 	public installAsSlide(): void {

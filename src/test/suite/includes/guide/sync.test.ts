@@ -7,7 +7,7 @@ import { File }        from "../../../../includes/utils/base/file";
 
 suite('Guide - Sync Test Suite', async () => {
 	test('SyncImageFilePathGuide - validateFilePath', async () => {
-		const warning         = `The image file size that can be sync is less than ${Constant.syncImageSize4Display}.`;
+		const warning         = Constant.messages.validate.sync.size;
 		const filePath        = path.join(__dirname, "testDir", "test.png");
 		const isFileStub      = sinon.stub(File, "isFile");
 		const getFileSizeStub = sinon.stub(File, "getFilesize");

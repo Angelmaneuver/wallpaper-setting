@@ -28,7 +28,7 @@ suite('Guide - Favorite Test Suite', async () => {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		pickStub.callsFake(async (args: QuickPickParameters<any>): Promise<QuickPickItem> => { return args.items[3]; })
-		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectExecuteOperationFavoriteGuide(state, Constant.wallpaperType.Image, "test").start(input));
+		await MultiStepInput.run((input: MultiStepInput) => new testTarget.SelectExecuteOperationFavoriteGuide(state, Constant.types.wallpaper.image, "test").start(input));
 
 		pickStub.restore();
 	});
@@ -48,14 +48,14 @@ suite('Guide - Favorite Test Suite', async () => {
 
 		state                         = stateCreater();
 		isFavoriteRegisterdStub.get(() => { return { image: false, slide: true } } );
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Slide );
+		favoriteAutoSetStub.get(() => Constant.types.wallpaper.slide );
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.FavoriteRandomSetGuide(state).start(input));
 		assert.strictEqual(state.reload,                                        true);
 		assert.strictEqual(new ExtensionSetting().favoriteRandomSet.validValue, true);
 
 		state                         = stateCreater();
 		isFavoriteRegisterdStub.get(() => { return { image: true, slide: false } } );
-		favoriteAutoSetStub.get(() => Constant.wallpaperType.Image );
+		favoriteAutoSetStub.get(() => Constant.types.wallpaper.image );
 		await MultiStepInput.run((input: MultiStepInput) => new testTarget.FavoriteRandomSetGuide(state).start(input));
 		assert.strictEqual(state.reload,                                        true);
 		assert.strictEqual(new ExtensionSetting().favoriteRandomSet.validValue, true);

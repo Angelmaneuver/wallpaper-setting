@@ -1,5 +1,6 @@
 import * as assert                    from "assert";
 import * as path            from "path";
+import { pathToFileURL }    from "url";
 import * as fs              from "fs";
 import * as sinon           from "sinon";
 import * as testTarget      from "../../../includes/wallpaper/main";
@@ -55,7 +56,7 @@ suite('Wallpaper Test Suite', async () => {
 		if (instance.isReady) {
 			assert.strictEqual(instance.isReady.image, true);
 			assert.strictEqual(instance.isReady.slide, false);
-			assert.strictEqual(instance.isAutoSet,     Constant.wallpaperType.Image);
+			assert.strictEqual(instance.isAutoSet,     Constant.types.wallpaper.image);
 		} else {
 			assert.fail();
 		}
@@ -66,7 +67,7 @@ suite('Wallpaper Test Suite', async () => {
 		if (instance.isReady) {
 			assert.strictEqual(instance.isReady.image, false);
 			assert.strictEqual(instance.isReady.slide, true);
-			assert.strictEqual(instance.isAutoSet,     Constant.wallpaperType.Slide);
+			assert.strictEqual(instance.isAutoSet,     Constant.types.wallpaper.slide);
 		} else {
 			assert.fail();
 		}
@@ -89,28 +90,18 @@ suite('Wallpaper Test Suite', async () => {
 		const ctxStub       = sinon.stub(ContextManager, "version").value("9.9.9");
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = 0.55;
-		const readData      = `test.png Data`;
-		const read2Base64   = `dGVzdC5wbmcgRGF0YQ==`;
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;} body {background-image:url('vscode-file://vscode-app${pathToFileURL(filePath).pathname}');opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);});
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
-		let   fsWriterMock  = sinon.mock(fs);
+		const fsWriterMock  = sinon.mock(fs);
 
 		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
 `);
-		fsReaderStub.withArgs(filePath       ).returns(`${readData}`);
-		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/
-`);
-
-		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install();
-
-		fsWriterMock.restore();
-		fsWriterMock        = sinon.mock(fs);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
 
 		await setupInstance.setItemValue(ExtensionSetting.propertyIds.filePath, filePath);
@@ -128,11 +119,10 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		const filePath      = path.join(__dirname, "testDir", "test.png");
 		const opacity       = 0.55;
 		const readData      = `test.png Data`;
-		const read2Base64   = `dGVzdC5wbmcgRGF0YQ==`;
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("data:image/png;base64,${read2Base64}")';}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;} body {background-image:url('vscode-file://vscode-app${pathToFileURL(filePath).pathname}');background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);});
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
@@ -163,7 +153,7 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);document.body.style.backgroundImage='url("${readData}")';}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;} body {background-image:url('${readData}');opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);});
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");
@@ -173,7 +163,7 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 `);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
 
-		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).install(true, readData, opacity);
+		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).installFromSync(readData, opacity);
 
 		fsReaderStub.restore();
 		fsWriterMock.restore();
@@ -182,8 +172,6 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 
 	test('installAsSlide', async () => {
 		const filePaths         = [path.join(__dirname, "testDir", "test.png"), path.join(__dirname, "testDir1", "testDir2", "test.gif")];
-		const readDatas         = [`test.png Data`,        `test.gif Data`];
-		const read2Base64s      = [`dGVzdC5wbmcgRGF0YQ==`, `dGVzdC5naWYgRGF0YQ==`];
 		const opacity           = 0.55;
 		const slideInterval     = 15;
 		const slideIntervalUnit = "Hour";
@@ -193,8 +181,6 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 
 		fsReaderStub.withArgs(installFilePath).returns(`/*bootstrap-window.js - Data*/
 `);
-		fsReaderStub.withArgs(filePaths[0]).returns(`${readDatas[0]}`);
-		fsReaderStub.withArgs(filePaths[1]).returns(`${readDatas[1]}`);
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), `/*bootstrap-window.js - Data*/
 `);
 
@@ -206,11 +192,11 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		let   writeData         = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
-		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
-		writeData               += `const changeImage=(async(imageData)=>{document.body.style.backgroundImage=imageData;});`;
-		writeData               += `let i=0;const choice=(min,max)=>{i++; return i===max?min:i;};const after=(index)=>{return;};document.body.style.backgroundImage=images[i];setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
-		writeData               += `}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;} body {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[0]).pathname}'),url('vscode-file://vscode-app${pathToFileURL(filePaths[1]).pathname}');opacity:${opacity};background-size:0%;background-position:center;background-repeat:no-repeat;} body.${extensionKey}-0 {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[0]).pathname}');background-size:cover;} body.${extensionKey}-1 {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[1]).pathname}');background-size:cover;}"));document.head.appendChild(style);`;
+		writeData               += `let images=[...Array(${filePaths.length}).keys()];`;
+		writeData               += `const changeImage=(async(pre,current)=>{if(pre){document.body.classList.remove(pre);};document.body.classList.add(current);});`;
+		writeData               += `let i=0;let pre=undefined;const choice=(min,max)=>{i++; return i===max?min:i;};const after=(index)=>{return;};let current="${extensionKey}-"+i.toString();changeImage(pre,current);pre=current;after(i);setInterval((async()=>{i=choice(0,Math.max(...images));current="${extensionKey}-"+i.toString();changeImage(pre,current);pre=current;after(i);}),${slideInterval * 60 * 60 * 1000});`;
+		writeData               += `});
 /*${extensionKey}-end*/`;
 
 		const setupInstance = new ExtensionSetting();
@@ -229,16 +215,19 @@ window.onload=()=>{const style=document.createElement("style");style.appendChild
 		writeData               = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;}body {opacity:${opacity};background-size:cover;background-position:center;background-repeat:no-repeat;}"));document.head.appendChild(style);`;
-		writeData               += `let images=new Array();images.push('url("data:image/png;base64,${read2Base64s[0]}")');images.push('url("data:image/gif;base64,${read2Base64s[1]}")');`;
-		writeData               += `const changeImage=(async(imageData)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;document.body.style.backgroundImage=imageData;await feedin(${opacity},0.01,50);});`;
-		writeData               += `let played=new Array();let i=0;const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};i=choice(0,images.length-1);document.body.style.backgroundImage=images[i];after(i);setInterval((async()=>{i=choice(0,images.length-1);changeImage(images[i]);after(i);}),${slideInterval * 60 * 60 * 1000});`;
-		writeData               += `}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body > div {background-color:transparent !important;} body {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[0]).pathname}'),url('vscode-file://vscode-app${pathToFileURL(filePaths[1]).pathname}');opacity:${opacity};background-size:0%;background-position:center;background-repeat:no-repeat;} body.${extensionKey}-0 {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[0]).pathname}');background-size:cover;} body.${extensionKey}-1 {background-image:url('vscode-file://vscode-app${pathToFileURL(filePaths[1]).pathname}');background-size:cover;}"));document.head.appendChild(style);`;
+		writeData               += `});`
+		writeData               += `window.addEventListener('load', () => {`;
+		writeData               += `let images=[...Array(${filePaths.length}).keys()];`;
+		writeData               += `const changeImage=(async(pre,current)=>{const sleep=(ms)=>{return new Promise((resolve,reject)=>{setTimeout(resolve,ms);});};const feedin=(async(opacity,decrement,ms)=>{let current=1;while(current>opacity){current-=decrement;document.body.style.opacity=current;await sleep(ms);};document.body.style.opacity=${opacity};});document.body.style.opacity=1;if(pre){document.body.classList.remove(pre);};document.body.classList.add(current);await feedin(${opacity},0.01,50);});`;
+		writeData               += `let i=0;let pre=undefined;let played=new Array();const choice=(min,max)=>{return Math.floor(Math.random()*(max-min+1))+min;};const after=(index)=>{played.push(images[index]);images.splice(index,1);if(images.length===0){images=played;played=new Array();}};i=choice(0,images.length-1);let current="${extensionKey}-"+i.toString();changeImage(pre,current);pre=current;after(i);setInterval((async()=>{i=choice(0,Math.max(...images));current="${extensionKey}-"+i.toString();changeImage(pre,current);pre=current;after(i);}),${slideInterval * 60 * 60 * 1000});`;
+		writeData               += `});
 /*${extensionKey}-end*/`;
 		fsWriterMock.expects("writeFileSync").withArgs(path.resolve(installFilePath), writeData);
 
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,   true);
-		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn, true);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideRandomPlay,       true);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideEffectFadeIn,     true);
+		await setupInstance.setItemValue(ExtensionSetting.propertyIds.slideLoadWaitComplete, true);
 
 		new testTarget.MainWallpaper(installFilePath, new ExtensionSetting(), extensionKey).installAsSlide();
 
@@ -321,7 +310,7 @@ window.onload=()=>{if(document.querySelector("body > #process-list")){return;};c
 		const writeData     = `/*bootstrap-window.js - Data*/
 /*${extensionKey}-start*/
 /*${extensionKey}.ver.${ContextManager.version}*/
-window.onload=()=>{const style=document.createElement("style");style.appendChild(document.createTextNode("body{background-color:${colorCode};}"));document.head.appendChild(style);}
+document.addEventListener('DOMContentLoaded', () => {const style=document.createElement("style");style.appendChild(document.createTextNode("body{background-color:${colorCode};}"));document.head.appendChild(style);});
 /*${extensionKey}-end*/`;
 
 		const fsReaderStub  = sinon.stub(fs, "readFileSync");

@@ -8,7 +8,10 @@ import { MultiStepInput } from "../../../../includes/utils/multiStepInput";
 suite('Guide - Slide Test Suite', async () => {
 	test('SlideIntervalGuide - show', async () => {
 		const stateCreater  = () => ({ title: "Test Suite", resultSet: {} } as State);
-		const prompt        = `Enter a number between ${Constant.minimumSlideInterval} and 65555 in Minute. (Default: 25)`;
+		const prompt        = Constant.messages.placeholder.slide.interval.time(
+			Constant.values.slide.min,
+			"Minute",
+		);
 		const inputStub     = sinon.stub(MultiStepInput.prototype, "showInputBox");
 		const state         = stateCreater();
 
@@ -20,17 +23,23 @@ suite('Guide - Slide Test Suite', async () => {
 	});
 
 	test('SlideIntervalGuide - validateSlideInterval', async () => {
+		const message = Constant.messages.validate.number.between(
+			Constant.values.slide.min,
+			65555,
+			Constant.words.slideInterval,
+		);
+
 		assert.strictEqual(await testTarget.SlideIntervalGuide.validateSlideInterval(""),      undefined);
 		assert.strictEqual(await testTarget.SlideIntervalGuide.validateSlideInterval("0.1"),   undefined);
 		assert.strictEqual(await testTarget.SlideIntervalGuide.validateSlideInterval("65555"), undefined);
 
 		assert.strictEqual(
 			await testTarget.SlideIntervalGuide.validateSlideInterval("0.01"),
-			`Enter a number between ${Constant.minimumSlideInterval} and 65555 for slide interval.`
+			message,
 		);
 		assert.strictEqual(
 			await testTarget.SlideIntervalGuide.validateSlideInterval("65556"),
-			`Enter a number between ${Constant.minimumSlideInterval} and 65555 for slide interval.`
+			message,
 		);
 	});
 });
