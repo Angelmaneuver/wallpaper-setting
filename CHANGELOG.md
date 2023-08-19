@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.11.0
+ - Change image file handling from base64 to file links
+ - Added Japanese as supported language
+ - Added the ability to use environment variables to specify file paths
+
 ## 0.10.3
  - Fixed a bug sync upload size was not checked
  - Fixed color theme loading correctly for Optimize (Fix to use [jsonc-parser](https://github.com/microsoft/node-jsonc-parser))

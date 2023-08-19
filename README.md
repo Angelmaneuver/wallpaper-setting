@@ -3,6 +3,7 @@
 	<p>Set an image as the VSCode background.</p>
 	<div>
 		<img alt="Version" src="https://img.shields.io/github/package-json/version/angelmaneuver/wallpaper-setting?color=blue" />
+		<img alt="Language" src="https://img.shields.io/badge/Language-en%2Cja-brightgreen?logo=Language">
 		<img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/Angelmaneuver.wallpaper-setting" />
 		<a href="https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/maintainability"><img src="https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/maintainability" /></a>
 		<a href="https://codeclimate.com/github/Angelmaneuver/wallpaper-setting/test_coverage"><img src="https://api.codeclimate.com/v1/badges/2627a4a3b1ad7bc2e683/test_coverage" /></a>
@@ -10,12 +11,16 @@
 			<img alt="Issues" src="https://img.shields.io/github/issues/Angelmaneuver/wallpaper-setting?color=#86D492" />
 		</a>
 	</div>
-	<h2>Warning</h2>
+	<h2>Warning and Plans</h2>
 </div>
 
-Since version 0.10.0, the management of settings has changed from profile to user settings.
+Since version 0.11.0, image files are now treated as file links instead of base64.
 
-If necessary, manually move the setting values starting with `"wallpaper-setting."` from the profile's `settings.json` to user's `settings.json`.
+If the file does not exist when VSCode startup, the wallpaper will not be displayed.
+
+### Plans
+ - Normal mode will be discontinued
+ - Various parameters will be refactored
 
 ---
 
@@ -58,6 +63,7 @@ You can set a slide image as the VSCode background.
 | Slide Interval Time | ○ | Image switching time. (Hour, Minute, Second, MilliSecond) | |
 | Randome Play | - | Randomize image switching. | Default False. |
 | Effect Fade in | - | Display Fade in effect when switching images. | Default True. |
+| Load wait complete | - | Wait for the screen to display until all images are loaded. | Default False. |
 
 *1 Same as the Wallpaper - Image.
 
@@ -179,6 +185,14 @@ Finally, enter the json file path of the Color Theme you prepared.
 After that, please proceed as usual setting from the menu.
 
 In Advanced Mode, transparency settings can only be set when `Optimize`.
+
+## Environment Variables Support
+Environment variables can be used to specify paths.
+
+| Notation                          | Description                                                                          | Remark                                          |
+| :-------------------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------- |
+| ${userHome}                       | Returns the string path of the current user's home directory.                        | Implementation-wise, we use node.js os.homedir. |
+| ${\<Environment Variables Name\>} | If the environment variable specified in $\{~\} exists, it is replaced by its value. |                                                 |
 
 ## Cautions
 ### `Installation appears to be corrupt [Unsupported]` message appears.
