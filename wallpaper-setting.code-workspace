@@ -10,16 +10,11 @@
 		"editor.detectIndentation": false,
 		"files.insertFinalNewline": true,
 		"files.trimFinalNewlines": true,
-		"typescript.tsc.autoDetect": "off",
 	},
 	"extensions": {
 		"recommendations": [
 			"mosapride.zenkaku",
 			"christian-kohler.path-intellisense",
-			"dbaeumer.vscode-eslint",
-			"esbenp.prettier-vscode",
-			"amodio.tsl-problem-matcher",
-			"cschleiden.vscode-github-actions",
 		]
 	}
 }
