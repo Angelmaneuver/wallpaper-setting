@@ -183,8 +183,6 @@ You can set a slide as the VSCode background.
 | Effect Fade in     |    -     | Display Fade in effect when switching images.               | Default True.                                                                 |
 | Load wait complete |    -     | Wait for the screen to display until all images are loaded. | Default False. <br /> Depending on the images file size, startup may be slow. |
 
-\*1 Same as the Wallpaper - Image.
-
 </details>
 
 ### Favorite
@@ -268,6 +266,19 @@ Let's uninstall it and erase all settings related to this extension.
 It won't pollute your environment.
 
 ## Other
+
+### Environment Variables Support
+
+Environment variables can be used in the path that specifies the image file.
+
+<details><summary>Click here to see the detail.</summary>
+
+| Notation                          | Description                                                                          | Remark                                          |
+| :-------------------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------- |
+| ${userHome}                       | Returns the string path of the current user's home directory.                        | Implementation-wise, we use node.js os.homedir. |
+| ${\<Environment Variables Name\>} | If the environment variable specified in $\{~\} exists, it is replaced by its value. |                                                 |
+
+</details>
 
 ### External libraries used by this extension
 
