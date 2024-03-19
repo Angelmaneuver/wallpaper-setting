@@ -68,6 +68,7 @@ Once you are satisfied that the migration results are satisfactory, perform a pu
 ## New feature
 
 1. Added the ability to set wallpaper in profile
+1. Added the ability to set wallpaper from server via WebSocket
 
 <details><summary>Click here to see the new feature.</summary>
 
@@ -76,6 +77,10 @@ Once you are satisfied that the migration results are satisfactory, perform a pu
 ![New Feature1](docs/new%20feature/profile.gif)
 
 This feature allows you to set a wallpaper for profile.
+
+#### Set Wallpaper from Server via WebSocket
+
+By preparing a dedicated server, wallpaper can be set via WebSocket.
 
 </details>
 
@@ -201,6 +206,36 @@ You can easily switch between them using the Favorite Setting.
 
 </details>
 
+### Profile
+
+Wallpaper can be set for each profile.
+
+It is easier to see what profile you are currently using.
+
+#### Attention
+
+![Profile1](docs/profile/profile1.png)
+
+When registering a profile, enter the two letters of the profile badge shown in the lower left corner of the VSCode, not the full name of the profile.
+
+\* In the case of the example in the image, enter the `TS`.
+
+Then, after registering the profile, activate it and run `Reset`.
+
+### WebSocket
+
+By preparing a [dedicated server](https://github.com/Angelmaneuver/fortune-slip), wallpaper can be set via WebSocket.
+
+otherwise, an application that sends image data when a client makes a WebSocket connection can be substituted.
+
+\* Please use only trusted server as we can't verify delivery data.
+
+#### Q&A
+
+Q. Why WebSocket instead of http ?
+
+A. VSCode only allows http**s** and ws in **C**ontent **S**ecurity **P**olicy
+
 ### Sync
 
 Are you developing on multiple machines?
@@ -238,22 +273,6 @@ The Base64 string uploaded to Settings Sync is encrypted in AES256 CTR mode.
 Therefore, there is no fear of prying eye.
 
 Unless you use poor values for password and salt, or I have made a mistake in the implementation of the cryptographic call.
-
-### Profile
-
-Wallpaper can be set for each profile.
-
-It is easier to see what profile you are currently using.
-
-### Attention
-
-![Profile1](docs/profile/profile1.png)
-
-When registering a profile, enter the two letters of the profile badge shown in the lower left corner of the VSCode, not the full name of the profile.
-
-\* In the case of the example in the image, enter the `TS`.
-
-Then, after registering the profile, activate it and ren `Reset`.
 
 ### Uninstall
 

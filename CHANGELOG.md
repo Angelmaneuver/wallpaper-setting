@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.1
+
+- Added the ability to set wallpaper from server via WebSocket
+
 ## 1.0.0
 
 - Disruptive Updates
