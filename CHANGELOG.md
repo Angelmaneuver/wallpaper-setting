@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.0
+
+- Added the ability to set watermark
+- improved optimize ability (Fixed to be able to get color theme's json file from pc)
+- Fixed bugs
+
 ## 1.0.1
 
 - Added the ability to set wallpaper from server via WebSocket
