@@ -134,6 +134,12 @@ You can change the image of VSCode watermark.
 
 Then, after set the watermark setting, run `Set` or `Reset`.
 
+### Wallpaper - Movie
+
+You can set an movie as the VSCode background.
+
+\* Mute is a specification.
+
 ### WebSocket
 
 By preparing a [dedicated server](https://github.com/Angelmaneuver/fortune-slip), wallpaper can be set via WebSocket.

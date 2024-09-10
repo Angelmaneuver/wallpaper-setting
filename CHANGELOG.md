@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.2.0
+
+- Added the ability to set movie file for wallpaper
+
+## 1.1.1
+
+- Added the following to ColorCustomizations
+
+  1. added 'editorGroup.emptyBackground' to area of overlap
+  1. added 'minimap.background' to area of overlap
+
 ## 1.1.0
 
 - Added the ability to set watermark
