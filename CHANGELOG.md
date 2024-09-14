@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.1
+
+- Fixed a bug that caused images to be loaded in batches regardless of the Load wait complete option
+
 ## 1.2.0
 
 - Added the ability to set movie file for wallpaper
