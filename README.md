@@ -13,6 +13,20 @@
 	</div>
 </div>
 
+## New feature
+
+1. Added the ability to on demand change image for wallpaper
+
+<details><summary>Click here to see the new feature.</summary>
+
+![On demand1](docs/ondemand/ondemand.gif)
+
+</details>
+
+## Warning
+
+In the near future, we will discontinue the migration function for obsolete parameters prior to version 1.0.0.
+
 <div style="font-size: 1.5rem; word-break: break-all;">
   <p>
     This extension provides VSCode with only the background transparent.
@@ -101,6 +115,18 @@ You can easily switch between them using the Favorite Setting.
 | Name     | Required | Description                                                               | Remark |
 | :------- | :------: | :------------------------------------------------------------------------ | :----- |
 | Start Up |    -     | Set a random background from the favorite settings when VSCode starts up. |        |
+
+</details>
+
+#### On demand
+
+You can switch images without having to install your favorite images each time.
+
+\* Only favorite images.
+
+<details><summary>Click here to see the parameter detail.</summary>
+
+![On demand1](docs/ondemand/ondemand.gif)
 
 </details>
 
