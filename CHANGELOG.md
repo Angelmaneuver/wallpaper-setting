@@ -1,5 +1,19 @@
 # Change Log
 
+## 1.3.1
+
+- Fixed a bug that caused incorrect menu display for the favorite feature
+- Fixed video placement to be the same as for images
+- Management of favorite images selected in the on demand feature has been changed to a per resource basis
+
+## 1.3.0
+
+- Added the ability to on demand change image for wallpaper
+
+## 1.2.2
+
+- Fixed a bug that prevented registering favorites from the initial state with no data
+
 ## 1.2.1
 
 - Fixed a bug that caused images to be loaded in batches regardless of the Load wait complete option

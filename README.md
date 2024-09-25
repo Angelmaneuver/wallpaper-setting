@@ -23,9 +23,7 @@
 
 </details>
 
-## Warning
-
-In the near future, we will discontinue the migration function for obsolete parameters prior to version 1.0.0.
+## Good news !
 
 <div style="font-size: 1.5rem; word-break: break-all;">
   <p>
@@ -49,6 +47,12 @@ In the near future, we will discontinue the migration function for obsolete para
     * The default theme is also supported.
   </p>
 </div>
+
+## Warning
+
+1. In the near future, we will discontinue the migration function for obsolete parameters prior to version 1.0.0.
+
+1. In the near future, we will discontinue the profile feature (because the on demand feature allows you to set the wallpaper for each profile)
 
 ## Usage
 
