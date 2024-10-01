@@ -106,6 +106,20 @@ You can set a slide as the VSCode background.
 
 </details>
 
+### Wallpaper - Movie
+
+You can set an movie as the VSCode background.
+
+\* Mute is a specification.
+
+<details><summary>Click here to see the parameter detail.</summary>
+
+| Name          | Required | Description          | Remark       |
+| :------------ | :------: | :------------------- | :----------- |
+| Playback Rate |    ○     | Movie playback rate. | Default 1.0. |
+
+</details>
+
 ### Favorite
 
 Do you have many favorite images or slides?
@@ -134,7 +148,7 @@ You can switch images without having to install your favorite images each time.
 
 </details>
 
-### Profile
+### Profile (deprecated)
 
 Wallpaper can be set for each profile.
 
@@ -163,12 +177,6 @@ Then, after registering the profile, run `Set` or `Reset`.
 You can change the image of VSCode watermark.
 
 Then, after set the watermark setting, run `Set` or `Reset`.
-
-### Wallpaper - Movie
-
-You can set an movie as the VSCode background.
-
-\* Mute is a specification.
 
 ### WebSocket
 

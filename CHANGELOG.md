@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.2
+
+- Movie ability changed from option to standard
+- Changed to be able to manage movie favorites
+- Fixed to allow setting of movie playback rate
+
 ## 1.3.1
 
 - Fixed a bug that caused incorrect menu display for the favorite feature
