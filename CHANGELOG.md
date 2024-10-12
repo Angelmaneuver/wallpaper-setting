@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.3.3
+
+- Color theme optimize of some parts can now be set individually
+
+  1. Activity Bar
+  1. Status Bar
+
 ## 1.3.2
 
 - Movie ability changed from option to standard

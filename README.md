@@ -15,6 +15,16 @@
 
 ## New feature
 
+1. Color theme optimize of some parts can now be set individually
+
+\* Once a color theme is optimize, it can be set individually.
+
+<details><summary>Click here to see the new feature.</summary>
+
+![Optimize1](docs/optimize/optimize.gif)
+
+</details>
+
 1. Added the ability to on demand change image for wallpaper
 
 <details><summary>Click here to see the new feature.</summary>
@@ -75,6 +85,14 @@ This completes the required work to use this extension, please select and execut
 This process is required once per Profile or once per Theme.
 
 Optimized Color Theme information will be added to profile's `settings.json`.
+
+Once a color theme is optimize, it can be set individually.
+
+<details><summary>Click here to see the new feature.</summary>
+
+![Optimize1](docs/optimize/optimize.gif)
+
+</details>
 
 ## Feature
 
