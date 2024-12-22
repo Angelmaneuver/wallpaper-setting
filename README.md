@@ -58,12 +58,6 @@
   </p>
 </div>
 
-## Warning
-
-1. In the near future, we will discontinue the migration function for obsolete parameters prior to version 1.0.0.
-
-1. In the near future, we will discontinue the profile feature (because the on demand feature allows you to set the wallpaper for each profile)
-
 ## Usage
 
 ![Usage1](docs/usage/usage1.png)
@@ -163,30 +157,6 @@ You can switch images without having to install your favorite images each time.
 <details><summary>Click here to see the parameter detail.</summary>
 
 ![On demand1](docs/ondemand/ondemand.gif)
-
-</details>
-
-### Profile (deprecated)
-
-Wallpaper can be set for each profile.
-
-It is easier to see what profile you are currently using.
-
-<details><summary>Click here to see more detail.</summary>
-
-![Profile1](docs/profile/profile1.gif)
-
-This feature allows you to set a wallpaper for profile.
-
-#### Attention
-
-![Profile2](docs/profile/profile2.png)
-
-When registering a profile, enter the two letters of the profile badge shown in the lower left corner of the VSCode, not the full name of the profile.
-
-\* In the case of the example in the image, enter the `TS`.
-
-Then, after registering the profile, run `Set` or `Reset`.
 
 </details>
 

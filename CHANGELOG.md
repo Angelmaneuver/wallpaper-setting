@@ -1,5 +1,19 @@
 # Change Log
 
+## 1.3.4
+
+- The following items added to the parts that can be optimize individually
+
+  1. Side Bar
+  1. Mini Map
+  1. Terminal
+
+- Fixed a problem with the on-demand change function appearing in the status bar when not installed
+
+- Discontinue the parameters prior to version 1.0.0
+
+- Preparation for discontinuation of the profile feature
+
 ## 1.3.3
 
 - Color theme optimize of some parts can now be set individually
