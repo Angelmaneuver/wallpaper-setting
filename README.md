@@ -1,8 +1,6 @@
-<img alt="EyeCatch" src="docs/eyecatch.png" />
-
 <div align="center" style="text-align:center;">
-	<h1>Wallpaper Setting</h1>
-	<p>Set an image as the VSCode background.</p>
+	<h1><i>Wallpaper Setting</i></h1>
+	<p><i>VSCode like a crystal clear.</i></p>
 	<div>
 		<img alt="Version" src="https://img.shields.io/visual-studio-marketplace/v/angelmaneuver.wallpaper-setting?color=blue" />
 		<img alt="Language" src="https://img.shields.io/badge/Language-en%2Cja-brightgreen?logo=Language">
@@ -13,283 +11,211 @@
 	</div>
 </div>
 
-## New feature
+<br />
 
-1. Color theme optimize of some parts can now be set individually
+_CODE, IMAGE, AND UI_
 
-\* Once a color theme is optimize, it can be set individually.
+<font size="7"><b><i>Let’s be clear.<br />It’s brilliant.</i></b></font>
 
-<details><summary>Click here to see the new feature.</summary>
+![Let’s be clear. It’s brilliant.](docs/images/readme01.png)
 
-![Optimize1](docs/optimize/optimize.gif)
+_The **Wallpaper Setting** is a sight to behold, with support for can be **transparent for only background** and vividness unmatched by other background setting extensions. UI and images pop with rich contrast and sharp detail, and code appears supercrisp for easy reading._
 
-</details>
+<font size="7"><b><i>Sacrificing nothing.</i></b></font>
 
-1. Added the ability to on demand change image for wallpaper
+<table width="100%">
+  <tr>
+    <th width="50%"><img src="docs/images/readme02.png" /></th>
+    <th width="50%"><img src="docs/images/readme03.png" /></th>
+  </tr>
+  <tr>
+    <td width="50%"><div align="center"><i><font size="3.5">Wallpaper Setting</font><br />Opacity 0.4%</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5">Other Extensions</font><br />Opacity 0.4% (0.6%)</i></div></td>
+  </tr>
+</table>
 
-<details><summary>Click here to see the new feature.</summary>
+_As a result of research **allowing only the background to be transparent**, it provides a **vivid editor that other extensions cannot reach**._
 
-![On demand1](docs/ondemand/ondemand.gif)
+<font size="7"><b><i>It is a piece of cake.</i></b></font>
 
-</details>
+![It is a piece of cake.](docs/images/readme04.gif)
 
-## Good news !
+_**Setting the background with Wallpaper Setting is a piece of cake**. Press `⇧⌘P` to bring up the command pallete and typing the `Wallpaper Setting`, and perform the `Optimize`, image or video setup._
 
-<div style="font-size: 1.5rem; word-break: break-all;">
-  <p>
-    This extension provides VSCode with only the background transparent.
-  </p>
-  <p>
-    Text and images will never be blurred.
-  </p>
-  <p>
-    You can concentrate on your creative work by preparing for images.
-  </p>
-  <p>
-    We have been researching VSCode for a long time and have finally found a way to get the color information of a theme. *
-  </p>
-  <p>
-    You no longer need to prepare json files for the theme you are using.
-  </p>
-</div>
-<div style="text-align: right; word-break: break-all;">
-  <p>
-    * The default theme is also supported.
-  </p>
-</div>
+<font size="7"><b><i>As you like.</i></b></font>
 
-## Usage
+![As you like.](docs/images/readme05.gif)
 
-![Usage1](docs/usage/usage1.png)
+_With Wallpaper Setting, **transparency can be set for VSCode parts**. Set the transparency of the parts to your satisfaction!_
 
-Press `⇧⌘P` to bring up the command pallete and enter '`Wallpaper Setting`', and select the `Setup`.
+<font size="7"><b><i>Let's Install Wallpaper Setting and get your VSCode just the way you like it!</i></b></font>
 
-![Usage2](docs/usage/usage2.png)
+<details><summary><h2><i>Detailed Specifications</i></h2></summary>
 
-Select the `Optimize`.
+### _Wallpaper - Image_
 
-![Usage3](docs/usage/usage3.png)
+_Set the background image._
 
-Enter the three types of transparency.
+| _Name_      | _Required_ | _Description_                                    | _Remark_ |
+| :---------- | :--------: | :----------------------------------------------- | :------- |
+| _File path_ |     ○      | _Path of the file to be used for the wallpaper._ |          |
 
-![Usage4](docs/usage/usage4.png)
+### _Wallpaper - Slide_
 
-This completes the required work to use this extension, please select and execute the necessary setting form the menu.
+_Set the background of images slide._
 
-This process is required once per Profile or once per Theme.
+| _Name_               | _Required_ | _Description_                                                 | _Remark_                                                                        |
+| :------------------- | :--------: | :------------------------------------------------------------ | :------------------------------------------------------------------------------ |
+| _File paths_         |     ○      | _Path of the files to be used for the images slide._          |                                                                                 |
+| _Interval time_      |     ○      | _Image switching time. (Hour, Minute, Second, MilliSecond)_   |                                                                                 |
+| _Randome play_       |     -      | _Randomize image switching._                                  | _Default False._                                                                |
+| _Effect fade in_     |     -      | _Display Fade in effect when switching image._                | _Default True._                                                                 |
+| _Load wait complete_ |     -      | _Wait for the screen to display until all images are loaded._ | _Default False. <br /> Depending on the images file size, startup may be slow._ |
 
-Optimized Color Theme information will be added to profile's `settings.json`.
+### _Wallpaper - Movie_
 
-Once a color theme is optimize, it can be set individually.
+_Set the background of movie._
 
-<details><summary>Click here to see the new feature.</summary>
+| _Name_          | _Required_ | _Description_          | _Remark_       |
+| :-------------- | :--------: | :--------------------- | :------------- |
+| _Playback rate_ |     ○      | _Movie playback rate._ | _Default 1.0._ |
 
-![Optimize1](docs/optimize/optimize.gif)
+\* _Mute is a specification._
 
-</details>
+### _Favorite_
 
-## Feature
+_Register and recall background settings._
 
-### Wallpaper - Image
+| _Name_     | _Required_ | _Description_                                                               | _Remark_ |
+| :--------- | :--------: | :-------------------------------------------------------------------------- | :------- |
+| _Start up_ |     -      | _Set a random background from the favorite settings when VSCode starts up._ |          |
 
-You can set an image as the VSCode background.
+#### _Favorite - On demand_
 
-<details><summary>Click here to see the parameter detail.</summary>
+_Switch images without having to install your favorite images each time._
 
-| Name     | Required | Description                                    | Remark |
-| :------- | :------: | :--------------------------------------------- | :----- |
-| FilePath |    ○     | Path of the file to be used for the wallpaper. |        |
+\* _Only favorite image._
 
-</details>
+### _Watermark_
 
-### Wallpaper - Slide
+_Change the image of VSCode's watermark._
 
-You can set a slide as the VSCode background.
+\* _Then, after set the watermark setting, run `Set` or `Reset`._
 
-<details><summary>Click here to see the parameter detail.</summary>
+### _WebSocket_
 
-| Name               | Required | Description                                                 | Remark                                                                        |
-| :----------------- | :------: | :---------------------------------------------------------- | :---------------------------------------------------------------------------- |
-| FilePaths          |    ○     | Path of the files to be used for the slide.                 |                                                                               |
-| Interval Time      |    ○     | Image switching time. (Hour, Minute, Second, MilliSecond)   |                                                                               |
-| Randome Play       |    -     | Randomize image switching.                                  | Default False.                                                                |
-| Effect Fade in     |    -     | Display Fade in effect when switching images.               | Default True.                                                                 |
-| Load wait complete |    -     | Wait for the screen to display until all images are loaded. | Default False. <br /> Depending on the images file size, startup may be slow. |
+_By preparing a [dedicated server](https://github.com/Angelmaneuver/fortune-slip), wallpaper can be set via WebSocket._
 
-</details>
+_otherwise, an application that sends image data when a client makes a WebSocket connection can be substituted._
 
-### Wallpaper - Movie
+\* _Please use only trusted server as we can't verify delivery data._
 
-You can set an movie as the VSCode background.
+#### _Q & A_
 
-\* Mute is a specification.
+_Q. Why WebSocket instead of http ?_
 
-<details><summary>Click here to see the parameter detail.</summary>
+_A. VSCode only allows http**s** and ws in **C**ontent **S**ecurity **P**olicy_
 
-| Name          | Required | Description          | Remark       |
-| :------------ | :------: | :------------------- | :----------- |
-| Playback Rate |    ○     | Movie playback rate. | Default 1.0. |
+### _Sync_
 
-</details>
+_Background image can be shared between different machines._
 
-### Favorite
+#### _Upload_
 
-Do you have many favorite images or slides?
+_Upload the background image._
 
-You can easily switch between them using the Favorite Setting.
+#### _Download_
 
-**_Don't repeat yourself!_** with this features.
+_Download and setup the background image._
 
-<details><summary>Click here to see the parameter detail.</summary>
+#### _Delete_
 
-| Name     | Required | Description                                                               | Remark |
-| :------- | :------: | :------------------------------------------------------------------------ | :----- |
-| Start Up |    -     | Set a random background from the favorite settings when VSCode starts up. |        |
+_Delete uploaded image._
 
-</details>
+<details><summary><h4><i>Warning</i></h4></summary>
 
-#### On demand
+_The Sync feature is achieved by converting image data to strings in Base64 and sharing them via Settings Sync._
 
-You can switch images without having to install your favorite images each time.
+_Settings Sync backend is probably provided by Microsoft. And definitely not intended for image data sharing._
 
-\* Only favorite images.
+_If you try to share an image file over MB (maybe even KB) with Settings Sync, **Microsoft will be offended**. They will reject the this extension and possibly **disable the account of the user using the this extension from Settings Sync**._
 
-<details><summary>Click here to see the parameter detail.</summary>
+_If you use it, please take its dangers into consideration._
 
-![On demand1](docs/ondemand/ondemand.gif)
+##### _About image data to be uploaded_
+
+_The Base64 string uploaded to Settings Sync is encrypted in AES256 CTR mode._
+
+_Therefore, there is no fear of prying eye._
+
+_Unless you use poor values for password and salt, or I have made a mistake in the implementation of the cryptographic call._
 
 </details>
 
-### Watermark
+### _Uninstall_
 
-You can change the image of VSCode watermark.
+_Erase wallpaper from VSCode, and delete data related to Wallpaper Setting._
 
-Then, after set the watermark setting, run `Set` or `Reset`.
+### _Environment Variables Support_
 
-### WebSocket
+_Environment variables can be used in the path that specifies the image file._
 
-By preparing a [dedicated server](https://github.com/Angelmaneuver/fortune-slip), wallpaper can be set via WebSocket.
-
-otherwise, an application that sends image data when a client makes a WebSocket connection can be substituted.
-
-\* Please use only trusted server as we can't verify delivery data.
-
-<details><summary>Click here to see more detail.</summary>
-
-#### Q&A
-
-Q. Why WebSocket instead of http ?
-
-A. VSCode only allows http**s** and ws in **C**ontent **S**ecurity **P**olicy
+| _Notation_                          | _Description_                                                                          | _Remark_                                          |
+| :---------------------------------- | :------------------------------------------------------------------------------------- | :------------------------------------------------ |
+| _${userHome}_                       | _Returns the string path of the current user's home directory._                        | _Implementation-wise, we use node.js os.homedir._ |
+| _${\<Environment Variables Name\>}_ | _If the environment variable specified in $\{~\} exists, it is replaced by its value._ |                                                   |
 
 </details>
 
-### Sync
+<details><summary><h2><i>Required</i></h2></summary>
 
-Are you developing on multiple machines?
+### _Write permission_
 
-**_You no longer need to hand out image!_** with this features.
+_This extension modifies the following files in the VSCode installation directory, so requires write permission._
 
-<details><summary>Click here to see more detail.</summary>
+1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
+1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)_
 
-#### Upload
-
-First, upload the wallpaper settings you wish to Sync.
-
-#### Download
-
-Next, download and setup the wallpaper settings on another machines.
-
-#### Delete
-
-Want to delete your uploaded wallpaper settings?
-
-Of course you can turn it delete. Just go to the menu and click on `Delete` or `Uninstall` and your uploaded wallpaper settings will be gone!
-
-#### Warning
-
-The Sync feature is achieved by converting image data to strings in Base64 and sharing them via Settings Sync.
-
-Settings Sync backend is probably provided by Microsoft. And definitely not intended for image data sharing.
-
-If you try to share an image file over MB (maybe even KB) with Settings Sync, **_Microsoft will be offended_**. They will reject the this extension and possibly **_disable the account of the user using the this extension from Settings Sync_**.
-
-If you use it, please take its dangers into consideration.
-
-#### About image data to be uploaded
-
-The Base64 string uploaded to Settings Sync is encrypted in AES256 CTR mode.
-
-Therefore, there is no fear of prying eye.
-
-Unless you use poor values for password and salt, or I have made a mistake in the implementation of the cryptographic call.
+_Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be obtained)._
 
 </details>
 
-### Uninstall
+<details><summary><h2><i>Caution</i></h2></summary>
 
-Didn't like this extension?
+### _How will this extension affect your environment ?_
 
-Sorry for not being able to help you.
+_This extension modifies the following files in the VSCode installation directory._
 
-Let's uninstall it and erase all settings related to this extension.
+1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
+1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)_
 
-It won't pollute your environment.
+_and following files._
 
-## Environment Variables Support
+1. _settings.json_
+1. _extensions.json (Only when using the Sync feature)_
 
-Environment variables can be used in the path that specifies the image file.
+### _You will be warned that it is not supported_
 
-<details><summary>Click here to see more detail.</summary>
+_Prior to VSCode 1.72, the relevant message was not displayed.
+In fact, it is more correct to display._
 
-| Notation                          | Description                                                                          | Remark                                          |
-| :-------------------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------- |
-| ${userHome}                       | Returns the string path of the current user's home directory.                        | Implementation-wise, we use node.js os.homedir. |
-| ${\<Environment Variables Name\>} | If the environment variable specified in $\{~\} exists, it is replaced by its value. |                                                 |
+_[The official explanation of this message is roughly as follows.](https://code.visualstudio.com/docs/supporting/faq#_installation-appears-to-be-corrupt-unsupported)_
+
+> _We are not trying to block VS Code patching, but we want to raise awareness that patching VS Code means you are running an unsupported version._
+
+_Respecting this assertion, this extension makes no attempt to prevent such messages from being displayed._
+
+_Even if we were to prevent it from being displayed, I believe the officials will block it._
 
 </details>
 
-## Required
+<details><summary><h2><i>Other</i></h2></summary>
 
-### Write permission
+## _External libraries used by this extension_
 
-This extension modifies the following files in the VSCode installation directory, so requires write permission.
+1. _[vscode/l10n](https://github.com/microsoft/vscode-l10n)_
+1. _[jsonc-parser](https://github.com/microsoft/node-jsonc-parser)_
+1. _[clean-css](https://github.com/clean-css/clean-css)_
+1. _[terser](https://github.com/terser/terser)_
 
-1. /Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js
-1. /Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)
-
-Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be obtained).
-
-## Caution
-
-### How will this extension affect your environment ?
-
-This extension modifies the following files in the VSCode installation directory.
-
-1. /Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js
-1. /Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)
-
-and following files.
-
-1. settings.json
-1. extensions.json (Only when using the Sync feature)
-
-### You will be warned that it is not supported
-
-Prior to VSCode 1.72, the relevant message was not displayed.
-In fact, it is more correct to display.
-
-[The official explanation of this message is roughly as follows.](https://code.visualstudio.com/docs/supporting/faq#_installation-appears-to-be-corrupt-unsupported)
-
-> We are not trying to block VS Code patching, but we want to raise awareness that patching VS Code means you are running an unsupported version.
-
-Respecting this assertion, this extension makes no attempt to prevent such messages from being displayed.
-
-Even if we were to prevent it from being displayed, I believe the officials will block it.
-
-## External libraries used by this extension
-
-1. [vscode/l10n](https://github.com/microsoft/vscode-l10n)
-1. [jsonc-parser](https://github.com/microsoft/node-jsonc-parser)
-1. [clean-css](https://github.com/clean-css/clean-css)
-1. [terser](https://github.com/terser/terser)
+</summary>

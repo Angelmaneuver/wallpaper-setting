@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.4.0
+
+- Fixed the ability to the all background parts that can be optimize individually
+- Fixed to that optimze can be performed even for parts where color information does not exist in the color theme
+- Review batch optimize targets
+- Fixed to display the menu without exiting the extension after each optimize command is execute
+
+## 1.3.5
+
+- Added the ability to remove optimized color theme information
+
 ## 1.3.4
 
 - The following items added to the parts that can be optimize individually
