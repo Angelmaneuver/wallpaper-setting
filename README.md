@@ -15,13 +15,13 @@
 
 _CODE, IMAGE, AND UI_
 
-<font size="7"><b><i>Let’s be clear.<br />It’s brilliant.</i></b></font>
+<font size="7"><span style="font-size:3.45rem;"><b><i>Let’s be clear.<br />It’s brilliant.</i></b></span></font>
 
 ![Let’s be clear. It’s brilliant.](docs/images/readme01.png)
 
 _The **Wallpaper Setting** is a sight to behold, with support for can be **transparent for only background** and vividness unmatched by other background setting extensions. UI and images pop with rich contrast and sharp detail, and code appears supercrisp for easy reading._
 
-<font size="7"><b><i>Sacrificing nothing.</i></b></font>
+<font size="7"><span style="font-size:3.45rem;"><b><i>Sacrificing nothing.</i></b></span></font>
 
 <table width="100%">
   <tr>
@@ -36,21 +36,21 @@ _The **Wallpaper Setting** is a sight to behold, with support for can be **trans
 
 _As a result of research **allowing only the background to be transparent**, it provides a **vivid editor that other extensions cannot reach**._
 
-<font size="7"><b><i>It is a piece of cake.</i></b></font>
+<font size="7"><span style="font-size:3.45rem;"><b><i>It is a piece of cake.</i></b></span></font>
 
 ![It is a piece of cake.](docs/images/readme04.gif)
 
 _**Setting the background with Wallpaper Setting is a piece of cake**. Press `⇧⌘P` to bring up the command pallete and typing the `Wallpaper Setting`, and perform the `Optimize`, image or video setup._
 
-<font size="7"><b><i>As you like.</i></b></font>
+<font size="7"><span style="font-size:3.45rem;"><b><i>As you like.</i></b></span></font>
 
 ![As you like.](docs/images/readme05.gif)
 
 _With Wallpaper Setting, **transparency can be set for VSCode parts**. Set the transparency of the parts to your satisfaction!_
 
-<font size="7"><b><i>Let's Install Wallpaper Setting and get your VSCode just the way you like it!</i></b></font>
+<font size="7"><span style="font-size:3.45rem;"><b><i>Let's Install Wallpaper Setting and get your VSCode just the way you like it!</i></b></span></font>
 
-<details><summary><h2><i>Detailed Specifications</i></h2></summary>
+<details><summary><i>Detailed Specifications</i></summary>
 
 ### _Wallpaper - Image_
 
@@ -132,7 +132,7 @@ _Download and setup the background image._
 
 _Delete uploaded image._
 
-<details><summary><h4><i>Warning</i></h4></summary>
+<details><summary><i>Warning</i></summary>
 
 _The Sync feature is achieved by converting image data to strings in Base64 and sharing them via Settings Sync._
 
@@ -167,7 +167,7 @@ _Environment variables can be used in the path that specifies the image file._
 
 </details>
 
-<details><summary><h2><i>Required</i></h2></summary>
+<details><summary><i>Required</i></summary>
 
 ### _Write permission_
 
@@ -180,7 +180,7 @@ _Therefor, this extension cannot be used with VSCode installed from "Snap Store"
 
 </details>
 
-<details><summary><h2><i>Caution</i></h2></summary>
+<details><summary><i>Caution</i></summary>
 
 ### _How will this extension affect your environment ?_
 
@@ -209,7 +209,7 @@ _Even if we were to prevent it from being displayed, I believe the officials wil
 
 </details>
 
-<details><summary><h2><i>Other</i></h2></summary>
+<details><summary><i>Other</i></summary>
 
 ## _External libraries used by this extension_
 

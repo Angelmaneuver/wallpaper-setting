@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.1
+
+- Fixed Readme
+
 ## 1.4.0
 
 - Fixed the ability to the all background parts that can be optimize individually
