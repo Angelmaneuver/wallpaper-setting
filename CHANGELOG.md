@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.2
+
+- Japanese language support to readme
+
 ## 1.4.1
 
 - Fixed Readme
