@@ -1,3 +1,9 @@
+<div align="right">
+
+[日本語](#日本語版)
+
+</div>
+
 <div align="center" style="text-align:center;">
 	<h1><i>Wallpaper Setting</i></h1>
 	<p><i>VSCode like a crystal clear.</i></p>
@@ -29,8 +35,8 @@ _The **Wallpaper Setting** is a sight to behold, with support for can be **trans
     <th width="50%"><img src="docs/images/readme03.png" /></th>
   </tr>
   <tr>
-    <td width="50%"><div align="center"><i><font size="3.5">Wallpaper Setting</font><br />Opacity 0.4%</i></div></td>
-    <td width="50%"><div align="center"><i><font size="3.5">Other Extensions</font><br />Opacity 0.4% (0.6%)</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Other Extensions</span></font><br />Opacity 0.4% (0.6%)</i></div></td>
   </tr>
 </table>
 
@@ -211,11 +217,227 @@ _Even if we were to prevent it from being displayed, I believe the officials wil
 
 <details><summary><i>Other</i></summary>
 
-## _External libraries used by this extension_
+### _External libraries used by this extension_
 
 1. _[vscode/l10n](https://github.com/microsoft/vscode-l10n)_
 1. _[jsonc-parser](https://github.com/microsoft/node-jsonc-parser)_
 1. _[clean-css](https://github.com/clean-css/clean-css)_
 1. _[terser](https://github.com/terser/terser)_
 
-</summary>
+</details>
+
+<br />
+
+# 日本語版
+
+<details><summary><i>日本語版を開く</i></summary>
+
+<br />
+
+_コード、画像、UI_
+
+<font size="7"><span style="font-size:3.45rem;"><b><i>はっきり言えます。<br />くっきりクリアです。</i></b></span></font>
+
+![くっきりクリアです。](docs/images/readme01.png)
+
+_**Wallpaper Setting**が提供する背景は、目の覚めるような美しさ。**VSCode の背景だけを透明にする**事ができ、他の背景設定拡張機能と比べ物にならない鮮やかさです。UI と画像は豊かなコントラストで細部までくっきり際立たせ、コードはどこまでもシャープに読みやすく映し出します。_
+
+<font size="7"><span style="font-size:3.45rem;"><b><i>デメリット？<br />メリットしかありません。</i></b></span></font>
+
+<table width="100%">
+  <tr>
+    <th width="50%"><img src="docs/images/readme02.png" /></th>
+    <th width="50%"><img src="docs/images/readme03.png" /></th>
+  </tr>
+  <tr>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Other Extensions</span></font><br />Opacity 0.4% (0.6%)</i></div></td>
+  </tr>
+</table>
+
+_**鮮やかなエディター。** Wallpaper Setting は**他の拡張機能では得られない鮮やかさ。** 何も犠牲にする事なく最高の体験が楽しめます。_
+
+<font size="7"><span style="font-size:3.45rem;"><b><i>Wallpaper Setting を使い始めよう。</i></b></span></font>
+
+![Wallpaper Setting を使い始めよう。](docs/images/readme04.ja.gif)
+
+_**Wallpaper Setting で背景を設定するのはお茶のこさいさいです。** `⇧⌘P` でコマンドパレットを表示して `Wallpaper Setting` と入力し、メニューから`最適化`を実行して画像や動画を背景に設定する。それだけ。_
+
+<font size="7"><span style="font-size:3.45rem;"><b><i>お気に召すまま。</i></b></span></font>
+
+![お気に召すまま。](docs/images/readme05.ja.gif)
+
+_Wallpaper Setting では VSCode のパーツ毎に透明度を設定できます。パーツ毎に見やすい透明度を設定して貴方だけの最高のエディターを手に入れましょう!_
+
+<font size="7"><span style="font-size:3.45rem;"><b><i>さぁ Wallpaper Setting をインストールして、最高の VSCode を手に入れよう!</i></b></span></font>
+
+<details><summary><i>詳細仕様</i></summary>
+
+### _Wallpaper - 画像_
+
+_画像を背景に設定する。_
+
+| _名前_      | _必須_ | _概要_                               | _備考_ |
+| :---------- | :----: | :----------------------------------- | :----- |
+| _File path_ |   ○    | _背景に使用する画像ファイルのパス。_ |        |
+
+### _Wallpaper - スライド_
+
+_画像のスライドを背景に設定する。_
+
+| _名前_               | _必須_ | _概要_                                                               | _備考_                                                                                       |
+| :------------------- | :----: | :------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| _File paths_         |   ○    | _画像のスライドに使用する画像ファイルのパス。_                       |                                                                                              |
+| _Interval time_      |   ○    | _画像の切り替え時間。 (時、分、秒、ミリ秒)_                          |                                                                                              |
+| _Randome play_       |   -    | _画像の切り替えをランダムにする。_                                   | _デフォルト False_                                                                           |
+| _Effect fade in_     |   -    | _画像の切り替え時にフェードイン効果を適用する。_                     | _デフォルト True_                                                                            |
+| _Load wait complete_ |   -    | _画像のスライドに使用する全ての画像ファイルが読み込まれるまで待つ。_ | _デフォルト False <br /> 画像のファイルサイズによっては、起動に時間が掛かる場合があります。_ |
+
+### _Wallpaper - 動画_
+
+_動画を背景に設定する。_
+
+| _名前_          | _必須_ | _概要_               | _備考_           |
+| :-------------- | :----: | :------------------- | :--------------- |
+| _Playback rate_ |   ○    | _動画の再生レート。_ | _デフォルト 1.0_ |
+
+\* _ミュートになるのは仕様です。_
+
+### _お気に入り_
+
+_壁紙設定の登録と呼び出す機能です。_
+
+| _Name_     | _Required_ | _Description_                                                 | _Remark_ |
+| :--------- | :--------: | :------------------------------------------------------------ | :------- |
+| _Start up_ |     -      | _VSCode 起動時の壁紙をお気に入り設定からランダムに設定する。_ |          |
+
+#### _お気に入り - オンデマンド_
+
+_お気に入りで設定した画像をインストールし直すことなく、背景画像を切り替えることができます。_
+
+\* _お気に入りで設定した画像設定のみ。_
+
+### _Watermark_
+
+_VSCode のウォーターマーク画像を変更します。_
+
+\* _ウォーターマークを設定した後で、`セット`か`リセット`を実行してください。_
+
+### _WebSocket_
+
+_[専用サーバー](https://github.com/Angelmaneuver/fortune-slip)を用意することで、 WebSocket 経由で壁紙を設定することができます。_
+
+_又は、クライアントから接続された時に画像ファイルを返すアプリケーションであればこの機能を利用することができます。_
+
+\* _サーバーからのレスポンスデータを検証できないので信頼できるサーバーでのみご利用ください。_
+
+#### _Q & A_
+
+_Q. なぜ http ではなく WebSocket なのか?_
+
+_A. VSCode は **C**ontent **S**ecurity **P**olicy (コンテンツセキュリティポリシー) で http**s** と **ws** しか許可していません。_
+
+### _同期_
+
+_異なるマシン間で背景を共有する機能です。_
+
+#### _アップロード_
+
+_背景画像をアップロードします。_
+
+#### _ダウンロード_
+
+_画像をダウンロードし、背景に設定します。_
+
+#### _デリート_
+
+_アップロードした画像を削除します。_
+
+<details><summary><i>注意事項</i></summary>
+
+_同期機能は画像ファイルのデータを Base64 (文字列データ) に変換し、Settings Sync で共有することで実現しています。_
+
+_Settings Sync のバックエンドは、おそらく Microsoft が提供しています。そして間違いなくこの用途 (画像データの共有) を目的としていません。_
+
+_もし MB (KB もあるかもしれない) 以上の画像ファイルを Settings Sync で共有しようとすると **Microsoft は怒る**かもしれない。そして Microsoft はこの拡張機能を無効化し、場合によってはこの**拡張機能を使用しているユーザーアカウントが Settings Sync を使用できないようにする**かもしれません。_
+
+_同期機能を使用する場合は、上記注意事項を理解した上でご利用ください。_
+
+##### _アップロードする画像データについて_
+
+_Settings Sync にアップロードされる Base64 データは、AES256 CTR モードで暗号化します。_
+
+_従って元の画像の眼が第三者の目に触れることはありません。_
+
+_貴方がパスワードとソルトに不適切な値を用いるか、暗号モジュール呼び出しの実装で、この拡張機能の開発者がミスをしない限りは。_
+
+</details>
+
+### _アンインストール_
+
+_VSCode から背景を消去し、この拡張機能に関するデータを削除します。_
+
+### _環境変数のサポート_
+
+_画像ファイルを指定するパスに環境変数を使用することができます。_
+
+| _記法_              | _概要_                                                                            | _備考_                                              |
+| :------------------ | :-------------------------------------------------------------------------------- | :-------------------------------------------------- |
+| _${userHome}_       | _ログインユーザーのホームディレクトリの文字列パスを返します。_                    | _実装的には node.js の os.homedir を使用している。_ |
+| _${\<環境変数名\>}_ | _$\{~\} で指定された環境変数が存在する場合、その環境変数の値で置き換えられます。_ |                                                     |
+
+</details>
+
+<details><summary><i>必要要件</i></summary>
+
+### _書き込み権限_
+
+_この拡張機能は VSCode インストールディレクトリ配下にある以下のファイルを変更します。そのため、それらのファイルへの書き込み権限が必要です。_
+
+1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
+1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (プロセスエクスプローラーへ背景色を設定する時のみ)_
+
+_そのため Linux 向けの App Store 『Snap Store』からインストールした VSCode では、この拡張機能を使用できません (書き込み権限が取得できないため)。_
+
+</details>
+
+<details><summary><i>注意事項</i></summary>
+
+### _この拡張機能は貴方の環境にどのような影響を与えますか?_
+
+_この拡張機能は VSCode インストールディレクトリ配下の以下のファイルを変更します。_
+
+1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
+1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (プロセスエクスプローラーへ背景色を設定する時のみ)_
+
+_及び以下のファイルに変更を加えます。_
+
+1. _settings.json_
+1. _extensions.json (同期機能を使用する時のみ)_
+
+### _サポートされていないと警告が表示される_
+
+_VSCode 1.72 以前では当該メッセージは表示されませんでした。実際は表示されるのが正しいです。_
+
+_[この警告メッセージに関して公式は、以下のように述べています。](https://code.visualstudio.com/docs/supporting/faq#_installation-appears-to-be-corrupt-unsupported)_
+
+> _私たちは VSCode のパッチ適用をブロックしようとしているわけではありませんが、VSCode にパッチを適用するということはサポートされていない VSCode を使用しているという認識を高めたいと考えています。_
+
+_この主張を尊重し、この拡張機能では当該メッセージが表示されないようにするような対応はしません。_
+
+_仮に表示されないようにしたとしても公式はさらにそれを防ごうとして、いたちごっこになると考えています。_
+
+</details>
+
+<details><summary><i>その他</i></summary>
+
+### _この拡張機能で使用している外部ライブラリ_
+
+1. _[vscode/l10n](https://github.com/microsoft/vscode-l10n)_
+1. _[jsonc-parser](https://github.com/microsoft/node-jsonc-parser)_
+1. _[clean-css](https://github.com/clean-css/clean-css)_
+1. _[terser](https://github.com/terser/terser)_
+
+</details>
+
+</details>
