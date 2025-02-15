@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.4
+
+- The opacity setting applied in the menu for batch optimization has been changed from basic area to selected area
+
 ## 1.4.3
 
 - Fixed Readme
