@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.5
+
+- Fixed so that slide file paths can also be managed by directory (to data slimming in settings.json)
+
 ## 1.4.4
 
 - The opacity setting applied in the menu for batch optimization has been changed from basic area to selected area
