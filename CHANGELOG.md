@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.6
+
+- Changed the status bar display to an icon when no images is unselected in the on-demand feature
+
 ## 1.4.5
 
 - Fixed so that slide file paths can also be managed by directory (to data slimming in settings.json)
