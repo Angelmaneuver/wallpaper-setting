@@ -93,6 +93,19 @@ _VSCode のウォーターマーク画像を変更します。_
 
 \* _ウォーターマークを設定した後で、`セット`か`リセット`を実行してください。_
 
+### _フィルター_
+
+_以下のグラフィック効果を画像や動画に適用する事が出来ます。_
+
+- ぼかし
+- 明度
+- コントラスト
+- グレイスケール
+- 彩度
+- セピア
+
+\* _フィルターを設定した後で、`セット`か`リセット`を実行してください。_
+
 ### _WebSocket_
 
 _[専用サーバー](https://github.com/Angelmaneuver/fortune-slip)を用意することで、 WebSocket 経由で壁紙を設定することができます。_
@@ -317,6 +330,19 @@ _Switch images without having to install your favorite images each time._
 _Change the image of VSCode's watermark._
 
 \* _Then, after set the watermark setting, run `Set` or `Reset`._
+
+### _Filter_
+
+_The following graphical effects can be applied to image or video._
+
+- Blur
+- Brightness
+- Contrast
+- Grayscale
+- Saturate
+- Sepia
+
+\* _Then, after set the filter setting, run `Set` or `Reset`._
 
 ### _WebSocket_
 

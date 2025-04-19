@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.7
+
+- Added filter feature to apply graphic effects
+
 ## 1.4.6
 
 - Changed the status bar display to an icon when no images is unselected in the on-demand feature
