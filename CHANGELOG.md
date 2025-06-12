@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.4.9
+
+- Temporary response to malfunction due to specification change in Process Explorer
+
+## 1.4.8
+
+- Exclude terminals from batch optimized
+
 ## 1.4.7
 
 - Added filter feature to apply graphic effects
