@@ -178,7 +178,6 @@ _画像ファイルを指定するパスに環境変数を使用することが�
 _この拡張機能は VSCode インストールディレクトリ配下にある以下のファイルを変更します。よって、それらのファイルへの書き込み権限が必要です。_
 
 1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
-1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (プロセスエクスプローラーへ背景色を設定する時のみ)_
 
 _そのため Linux 向けの App Store 『Snap Store』からインストールした VSCode では、この拡張機能を使用できません (書き込み権限が取得できないため)。_
 
@@ -191,7 +190,6 @@ _そのため Linux 向けの App Store 『Snap Store』からインストール
 _この拡張機能は VSCode インストールディレクトリ配下の以下のファイルを変更します。_
 
 1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
-1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (プロセスエクスプローラーへ背景色を設定する時のみ)_
 
 _及び以下のファイルに変更を加えます。_
 
@@ -416,7 +414,6 @@ _Environment variables can be used in the path that specifies the image file._
 _This extension modifies the following files in the VSCode installation directory, so requires write permission._
 
 1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
-1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)_
 
 _Therefor, this extension cannot be used with VSCode installed from "Snap Store" App Store for Linux (Because write permission cannot be obtained)._
 
@@ -429,7 +426,6 @@ _Therefor, this extension cannot be used with VSCode installed from "Snap Store"
 _This extension modifies the following files in the VSCode installation directory._
 
 1. _/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.js_
-1. _/Resources/app/out/vs/code/electron-sandbox/processExplorer/processExplorer.js (Only when setting the background color for Process Explorer)_
 
 _and following files._
 

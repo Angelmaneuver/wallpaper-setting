@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.0
+
+- Discontinued the feature to add background color to the Process Explorer
+- Fixed batch optimization to include terminals (Cancel v1.4.8)
+- Added feature to set wallpaper for individual layouts
+
 ## 1.4.9
 
 - Temporary response to malfunction due to specification change in Process Explorer
