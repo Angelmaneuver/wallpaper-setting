@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.5.2
+
+- Support for version 1.102.0
+
+## 1.5.1
+
+- Fixed the editor area displaying differently from full screen when wallpaper is set for individual layouts
+
 ## 1.5.0
 
 - Discontinued the feature to add background color to the Process Explorer
