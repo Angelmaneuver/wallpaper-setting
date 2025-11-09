@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.1
+
+- Fixed bug where abnormal behavior occurs only after webpack bundling
+- Fixed bug with import from favorites
+- Fixed bug when combining slide fade-in with filter brightness
+
 ## 2.0.0
 
 - Major Update
