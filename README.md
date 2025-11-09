@@ -8,16 +8,35 @@ _コード、画像、UI_
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>はっきり言えます。<br />くっきりクリアです。</i></b></span></font>
 
-![くっきりクリアです。](docs/images/readme01.png)
+![くっきりクリアです。](docs/images/ja/readme01-ja.png)
 
 _**Wallpaper Setting**が提供する背景は、目の覚めるような美しさ。**VSCode の背景だけを透明にする**事ができ、他の背景設定拡張機能と比べ物にならない鮮やかさです。UI と画像は豊かなコントラストで細部までくっきり際立たせ、コードはどこまでもシャープに読みやすく映し出します。_
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>デメリット？<br />メリットしかありません。</i></b></span></font>
 
+<div align="center" style="text-align:center;">
+  <b><i>フルスクリーン</i></b>
+</div>
+
 <table width="100%">
   <tr>
-    <th width="50%"><img src="docs/images/readme02.png" /></th>
-    <th width="50%"><img src="docs/images/readme03.png" /></th>
+    <th width="50%"><img src="docs/images/ja/readme02-ja.png" /></th>
+    <th width="50%"><img src="docs/images/ja/readme03-ja.png" /></th>
+  </tr>
+  <tr>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Other Extensions</span></font><br />Opacity 0.4% (0.6%)</i></div></td>
+  </tr>
+</table>
+
+<div align="center" style="text-align:center;">
+  <b><i>レイアウト</i></b>
+</div>
+
+<table width="100%">
+  <tr>
+    <th width="50%"><img src="docs/images/ja/readme04-ja.png" /></th>
+    <th width="50%"><img src="docs/images/ja/readme05-ja.png" /></th>
   </tr>
   <tr>
     <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
@@ -29,13 +48,13 @@ _**鮮やかなエディター。** Wallpaper Setting は**他の拡張機能で
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>Wallpaper Setting を使い始めよう。</i></b></span></font>
 
-![Wallpaper Setting を使い始めよう。](docs/images/readme04.ja.gif)
+![Wallpaper Setting を使い始めよう。](docs/images/ja/readme06-ja.gif)
 
 _**Wallpaper Setting で背景を設定するのはお茶のこさいさいです。** `⇧⌘P` でコマンドパレットを表示して `Wallpaper Setting` と入力し、メニューから`最適化`を実行して画像や動画を背景に設定する。それだけ。_
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>お気に召すまま。</i></b></span></font>
 
-![お気に召すまま。](docs/images/readme05.ja.gif)
+![お気に召すまま。](docs/images/ja/readme07-ja.gif)
 
 _Wallpaper Setting では VSCode のパーツ毎に透明度を設定できます。パーツ毎に見やすい透明度を設定して貴方だけの最高のエディターを手に入れましょう!_
 
@@ -47,49 +66,59 @@ _Wallpaper Setting では VSCode のパーツ毎に透明度を設定できま�
 
 _画像を背景に設定する。_
 
-| _名前_      | _必須_ | _概要_                               | _備考_ |
-| :---------- | :----: | :----------------------------------- | :----- |
-| _File path_ |   ○    | _背景に使用する画像ファイルのパス。_ |        |
+| _Name_      | _Required_ | _Description_                            | _Remark_                 |
+| :---------- | :--------: | :--------------------------------------- | :----------------------- |
+| _File path_ |     ○      | _壁紙として設定する画像ファイルのパス。_ |                          |
+| _Size_      |     -      | _壁紙の画像サイズ。_                     | _デフォルト "cover"_     |
+| _Position_  |     -      | _壁紙の画像位置。_                       | _デフォルト "center"_    |
+| _Repeat_    |     -      | _壁紙の画像の繰り返す方法。_             | _デフォルト "no-repeat"_ |
 
 ### _Wallpaper - スライド_
 
 _画像のスライドを背景に設定する。_
 
-| _名前_               | _必須_ | _概要_                                                               | _備考_                                                                                       |
-| :------------------- | :----: | :------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
-| _File paths_         |   ○    | _画像のスライドに使用する画像ファイルのパス。_                       |                                                                                              |
-| _Interval time_      |   ○    | _画像の切り替え時間。 (時、分、秒、ミリ秒)_                          |                                                                                              |
-| _Randome play_       |   -    | _画像の切り替えをランダムにする。_                                   | _デフォルト False_                                                                           |
-| _Effect fade in_     |   -    | _画像の切り替え時にフェードイン効果を適用する。_                     | _デフォルト True_                                                                            |
-| _Load wait complete_ |   -    | _画像のスライドに使用する全ての画像ファイルが読み込まれるまで待つ。_ | _デフォルト False <br /> 画像のファイルサイズによっては、起動に時間が掛かる場合があります。_ |
+| _Name_               | _Required_ | _Description_                                          | _Remark_                                                                                   |
+| :------------------- | :--------: | :----------------------------------------------------- | :----------------------------------------------------------------------------------------- |
+| _File paths_         |     ○      | _画像スライドで使用される画像ファイルのパス。_         |                                                                                            |
+| _Size_               |     -      | _壁紙の画像サイズ。_                                   | _デフォルト "cover"_                                                                       |
+| _Position_           |     -      | _壁紙の画像位置。_                                     | _デフォルト "center"_                                                                      |
+| _Repeat_             |     -      | _壁紙の画像の繰り返す方法。_                           | _デフォルト "no-repeat"_                                                                   |
+| _Interval time_      |     -      | _画像の切り替え時間。 (時、分、秒、ミリ秒)_            | _デフォルト 25 分_                                                                         |
+| _Randome play_       |     -      | _画像の切り替え順番をランダムにするかどうか。_         | _デフォルト False_                                                                         |
+| _Effect fade in_     |     -      | _画像切り替え時にフェードインするかどうか。_           | _デフォルト True_                                                                          |
+| _Load wait complete_ |     -      | _画像の読み込みが完了するまで待つようにするかどうか。_ | _デフォルト False <br /> 画像のファイルサイズによっては起動に時間が掛かる場合があります。_ |
 
 ### _Wallpaper - 動画_
 
 _動画を背景に設定する。_
 
-| _名前_          | _必須_ | _概要_               | _備考_           |
-| :-------------- | :----: | :------------------- | :--------------- |
-| _Playback rate_ |   ○    | _動画の再生レート。_ | _デフォルト 1.0_ |
+| _Name_          | _Required_ | _Description_                            | _Remark_         |
+| :-------------- | :--------: | :--------------------------------------- | :--------------- |
+| _File path_     |     ○      | _壁紙として設定する動画ファイルのパス。_ |
+| _Playback rate_ |     -      | _動画の再生レート。_                     | _デフォルト 1.0_ |
 
-\* _ミュートになるのは仕様です。_
+\* _全画面壁紙モードのみ_
+
+\* _ミュートは仕様。_
 
 ### _お気に入り_
 
-_壁紙設定の登録と呼び出す機能です。_
+_背景設定の登録と呼び出す機能です。_
 
-| _Name_     | _Required_ | _Description_                                                 | _Remark_ |
-| :--------- | :--------: | :------------------------------------------------------------ | :------- |
-| _Start up_ |     -      | _VSCode 起動時の壁紙をお気に入り設定からランダムに設定する。_ |          |
+| _Name_     | _Required_ | _Description_                                                    | _Remark_                                                                    |
+| :--------- | :--------: | :--------------------------------------------------------------- | :-------------------------------------------------------------------------- |
+| _Start up_ |     -      | _起動時にお気に入りの設定から壁紙をランダムに設定するかどうか。_ | _デフォルト False_                                                          |
+| _Filter_   |     -      | _起動時に設定する壁紙の種類。_                                   | _選択肢:`All`, `Image`, `Slide`, `Movie`, `Layout` <br /> デフォルト `All`_ |
 
 #### _お気に入り - オンデマンド_
 
-_お気に入りで設定した画像をインストールし直すことなく、背景画像を切り替えることができます。_
+_お気に入りの画像をインストールし直すことなく、背景画像を切り替えることができます。_
 
-\* _お気に入りで設定した画像設定のみ。_
+\* _全画面の画像か、画像のみで構成されたレイアウトのみ。スライドと動画は対象外です。_
 
 ### _ウォーターマーク_
 
-_VSCode のウォーターマーク画像を変更します。_
+_VSCode のウォーターマーク画像を変更、又は非表示にすることが出来ます。_
 
 \* _ウォーターマークを設定した後で、`セット`か`リセット`を実行してください。_
 
@@ -227,7 +256,7 @@ _仮に表示されないようにしたとしても公式はさらにそれを�
 
 <div align="center" style="text-align:center;">
 	<h1><i>Wallpaper Setting</i></h1>
-	<p><i>VSCode like a crystal clear.</i></p>
+	<p><i>Go ahead, I'll show you the real background!</i></p>
 	<div>
 		<img alt="Version" src="https://img.shields.io/visual-studio-marketplace/v/angelmaneuver.wallpaper-setting?color=blue" />
 		<img alt="Language" src="https://img.shields.io/badge/Language-en%2Cja-brightgreen?logo=Language">
@@ -244,16 +273,35 @@ _CODE, IMAGE, AND UI_
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>Let’s be clear.<br />It’s brilliant.</i></b></span></font>
 
-![Let’s be clear. It’s brilliant.](docs/images/readme01.png)
+![Let’s be clear. It’s brilliant.](docs/images/en/readme01.png)
 
 _The **Wallpaper Setting** is a sight to behold, with support for can be **transparent for only background** and vividness unmatched by other background setting extensions. UI and images pop with rich contrast and sharp detail, and code appears supercrisp for easy reading._
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>Sacrificing nothing.</i></b></span></font>
 
+<div align="center" style="text-align:center;">
+  <b><i>Full Screen</i></b>
+</div>
+
 <table width="100%">
   <tr>
-    <th width="50%"><img src="docs/images/readme02.png" /></th>
-    <th width="50%"><img src="docs/images/readme03.png" /></th>
+    <th width="50%"><img src="docs/images/en/readme02.png" /></th>
+    <th width="50%"><img src="docs/images/en/readme03.png" /></th>
+  </tr>
+  <tr>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
+    <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Other Extensions</span></font><br />Opacity 0.4% (0.6%)</i></div></td>
+  </tr>
+</table>
+
+<div align="center" style="text-align:center;">
+  <b><i>Layout</i></b>
+</div>
+
+<table width="100%">
+  <tr>
+    <th width="50%"><img src="docs/images/en/readme04.png" /></th>
+    <th width="50%"><img src="docs/images/en/readme05.png" /></th>
   </tr>
   <tr>
     <td width="50%"><div align="center"><i><font size="3.5"><span style="font-size:1.15rem;">Wallpaper Setting</span></font><br />Opacity 0.4%</i></div></td>
@@ -265,13 +313,13 @@ _As a result of research **allowing only the background to be transparent**, it 
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>It is a piece of cake.</i></b></span></font>
 
-![It is a piece of cake.](docs/images/readme04.gif)
+![It is a piece of cake.](docs/images/en/readme06.gif)
 
 _**Setting the background with Wallpaper Setting is a piece of cake**. Press `⇧⌘P` to bring up the command pallete and typing the `Wallpaper Setting`, and perform the `Optimize`, image or video setup._
 
 <font size="7"><span style="font-size:3.45rem;"><b><i>As you like.</i></b></span></font>
 
-![As you like.](docs/images/readme05.gif)
+![As you like.](docs/images/en/readme07.gif)
 
 _With Wallpaper Setting, **transparency can be set for VSCode parts**. Set the transparency of the parts to your satisfaction!_
 
@@ -283,29 +331,38 @@ _With Wallpaper Setting, **transparency can be set for VSCode parts**. Set the t
 
 _Set the background image._
 
-| _Name_      | _Required_ | _Description_                                    | _Remark_ |
-| :---------- | :--------: | :----------------------------------------------- | :------- |
-| _File path_ |     ○      | _Path of the file to be used for the wallpaper._ |          |
+| _Name_      | _Required_ | _Description_                                    | _Remark_              |
+| :---------- | :--------: | :----------------------------------------------- | :-------------------- |
+| _File path_ |     ○      | _Path of the image file to be set as wallpaper._ |                       |
+| _Size_      |     -      | _Size of the wallpaper image._                   | _Default "cover"_     |
+| _Position_  |     -      | _Position for wallpaper image._                  | _Default "center"_    |
+| _Repeat_    |     -      | _Sets how wallpaper image are repeated._         | _Default "no-repeat"_ |
 
 ### _Wallpaper - Slide_
 
-_Set the background of images slide._
+_Set the background of image sliding._
 
-| _Name_               | _Required_ | _Description_                                                 | _Remark_                                                                        |
-| :------------------- | :--------: | :------------------------------------------------------------ | :------------------------------------------------------------------------------ |
-| _File paths_         |     ○      | _Path of the files to be used for the images slide._          |                                                                                 |
-| _Interval time_      |     ○      | _Image switching time. (Hour, Minute, Second, MilliSecond)_   |                                                                                 |
-| _Randome play_       |     -      | _Randomize image switching._                                  | _Default False._                                                                |
-| _Effect fade in_     |     -      | _Display Fade in effect when switching image._                | _Default True._                                                                 |
-| _Load wait complete_ |     -      | _Wait for the screen to display until all images are loaded._ | _Default False. <br /> Depending on the images file size, startup may be slow._ |
+| _Name_               | _Required_ | _Description_                                               | _Remark_                                                                       |
+| :------------------- | :--------: | :---------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| _File paths_         |     ○      | _Path to the image files used by the images slide._         |                                                                                |
+| _Size_               |     -      | _Size of the wallpaper image._                              | _Default "cover"_                                                              |
+| _Position_           |     -      | _Position for wallpaper image._                             | _Default "center"_                                                             |
+| _Repeat_             |     -      | _Sets how wallpaper image are repeated._                    | _Default "no-repeat"_                                                          |
+| _Interval time_      |     -      | _Image switching time. (Hour, Minute, Second, MilliSecond)_ | _Default 25 Minute_                                                            |
+| _Randome play_       |     -      | _Randomize the order in which images slide._                | _Default False_                                                                |
+| _Effect fade in_     |     -      | _Fade in when the slide image changes._                     | _Default True_                                                                 |
+| _Load wait complete_ |     -      | _Wait until the images loading to complete._                | _Default False <br /> Depending on the images file size, startup may be slow._ |
 
 ### _Wallpaper - Movie_
 
 _Set the background of movie._
 
-| _Name_          | _Required_ | _Description_          | _Remark_       |
-| :-------------- | :--------: | :--------------------- | :------------- |
-| _Playback rate_ |     ○      | _Movie playback rate._ | _Default 1.0._ |
+| _Name_          | _Required_ | _Description_                                    | _Remark_      |
+| :-------------- | :--------: | :----------------------------------------------- | :------------ |
+| _File path_     |     ○      | _Path of the movie file to be set as wallpaper._ |
+| _Playback rate_ |     -      | _Movie playback rate._                           | _Default 1.0_ |
+
+\* _Fullscreen wallpaper mode only._
 
 \* _Mute is a specification._
 
@@ -313,19 +370,20 @@ _Set the background of movie._
 
 _Register and recall background settings._
 
-| _Name_     | _Required_ | _Description_                                                               | _Remark_ |
-| :--------- | :--------: | :-------------------------------------------------------------------------- | :------- |
-| _Start up_ |     -      | _Set a random background from the favorite settings when VSCode starts up._ |          |
+| _Name_     | _Required_ | _Description_                                               | _Remark_                                                                  |
+| :--------- | :--------: | :---------------------------------------------------------- | :------------------------------------------------------------------------ |
+| _Start up_ |     -      | _Randomly set wallpaper from favorite settings at startup._ | _Default False_                                                           |
+| _Filter_   |     -      | _Specifies the type of wallpaper to be set at start up._    | _Options:`All`, `Image`, `Slide`, `Movie`, `Layout` <br /> Default `All`_ |
 
 #### _Favorite - On demand_
 
 _Switch images without having to install your favorite images each time._
 
-\* _Only favorite image._
+\* _Only fullscreen image or layout composed solely of images. Slide and movie are excluded._
 
 ### _Watermark_
 
-_Change the image of VSCode's watermark._
+_Change the image or invisible of VSCode's watermark._
 
 \* _Then, after set the watermark setting, run `Set` or `Reset`._
 

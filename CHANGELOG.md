@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.0
+
+- Major Update
+- Support for the feature to set background for individual layouts
+
 ## 1.5.2
 
 - Support for version 1.102.0
