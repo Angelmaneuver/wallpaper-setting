@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.2
+
+- Fixed bug an individual layouts with slides were being processed with unintended values
+
 ## 2.0.1
 
 - Fixed bug where abnormal behavior occurs only after webpack bundling
