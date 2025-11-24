@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.3
+
+- Added the main area as a target for individual layout setting
+
 ## 2.0.2
 
 - Fixed bug an individual layouts with slides were being processed with unintended values
