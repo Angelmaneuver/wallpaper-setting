@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.4
+
+- Support for 1.107.0 (Watermark Specification Change)
+
 ## 2.0.3
 
 - Added the main area as a target for individual layout setting
