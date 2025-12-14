@@ -13,8 +13,7 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"mosapride.zenkaku",
-			"christian-kohler.path-intellisense",
+			"christian-kohler.path-intellisense"
 		]
 	}
 }
