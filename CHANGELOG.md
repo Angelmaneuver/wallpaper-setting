@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.5
+
+- Fixed an issue where the transparency of panel background colors was not functioning properly
+
 ## 2.0.4
 
 - Support for 1.107.0 (Watermark Specification Change)
