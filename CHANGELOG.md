@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.6
+
+- Fixed for RGBA 4-digit color code (from issue [#18](https://github.com/Angelmaneuver/wallpaper-setting/issues/18))
+- When using the [Blue Sky Theme](https://marketplace.visualstudio.com/items?itemName=Angelmaneuver.blue-skies-theme), fixed to not entering initial setup guide mode.
+
 ## 2.0.5
 
 - Fixed an issue where the transparency of panel background colors was not functioning properly
@@ -91,7 +96,6 @@
 ## 1.3.4
 
 - The following items added to the parts that can be optimize individually
-
   1. Side Bar
   1. Mini Map
   1. Terminal
@@ -105,7 +109,6 @@
 ## 1.3.3
 
 - Color theme optimize of some parts can now be set individually
-
   1. Activity Bar
   1. Status Bar
 
@@ -140,7 +143,6 @@
 ## 1.1.1
 
 - Added the following to ColorCustomizations
-
   1. added 'editorGroup.emptyBackground' to area of overlap
   1. added 'minimap.background' to area of overlap
 
