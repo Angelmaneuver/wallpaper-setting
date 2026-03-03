@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.7
+
+- Fixed an typo in the message for the filter function enable/disable selection menu
+- Fixed so that values are not saved to `settings.json` when not selected in the on-demand feature
+- Fixed the folder displayed in the file selection dialog to be either the folder of previously entered file or the home folder
+- Fixed to skip when color information is stored in an array format for colors (from issue [#20](https://github.com/Angelmaneuver/wallpaper-setting/issues/20))
+
 ## 2.0.6
 
 - Fixed for RGBA 4-digit color code (from issue [#18](https://github.com/Angelmaneuver/wallpaper-setting/issues/18))
