@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.1.0
+
+- Fixed to support both full screen mode and layout mode
+
 ## 2.0.7
 
 - Fixed an typo in the message for the filter function enable/disable selection menu
