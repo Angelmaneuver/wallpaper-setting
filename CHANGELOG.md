@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.1.1
+
+- Fixed to work under the Experimental Modern UI
+- Added the layout background of the Experimental Modern UI
+
 ## 2.1.0
 
 - Fixed to support both full screen mode and layout mode
